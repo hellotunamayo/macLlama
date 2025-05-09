@@ -1,5 +1,7 @@
  # Ollama UI App
 
+![Ollama UI App preview image](ollama_preview.png)
+
 Welcome to the Ollama UI App! This application is designed to provide a seamless user experience on macOS, utilizing the power of SwiftUI. To fully utilize the capabilities of our app, you'll need to install the Ollama CLI and ensure it is running before using this client. Here's how to install the Ollama CLI through Homebrew:
 
 1. Open Terminal.
