@@ -89,7 +89,7 @@ Minyoung Yoo - yoo@minyoungyoo.com
 
 Project Link: https://github.com/hellotunamayo/Ollama-UI-App *(Replace with your repo URL)*
 
-## 🙏 Acknowledgements (Optional)
+## 🙏 Acknowledgements
 
 *   Ollama Team
 *   Contributors to libraries used
