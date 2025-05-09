@@ -1,26 +1,100 @@
- # Ollama UI App
+# Ollama UI App for macOS
 
 ![Ollama UI App preview image](ollama_preview.png)
 
-Welcome to the Ollama UI App! This application is designed to provide a seamless user experience on macOS, utilizing the power of SwiftUI. To fully utilize the capabilities of our app, you'll need to install the Ollama CLI and ensure it is running before using this client. Here's how to install the Ollama CLI through Homebrew:
+Welcome to the Ollama UI App for macOS! This application provides a native and intuitive SwiftUI-based user interface to interact with your local Ollama instance. Chat with your favorite large language models directly from your Mac.
 
-1. Open Terminal.
-2. Run the following command to install Homebrew if not already installed:
-   ```
-   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-   ```
-3. Install Ollama CLI using Homebrew:
-   ```
-   brew install ollama
-   ```
-4. Verify the installation by running `ollama --version`. You should see a message showing the installed version of Ollama CLI.
+## ✨ Features
 
-Now that you have installed Ollama CLI, ensure it is running before using the client app. To run the Ollama CLI, open Terminal and type:
+*   **Model Selection:** Easily view and select from your available Ollama models.
+*   **Chat Interface:** Clean and user-friendly chat interface for conversing with models.
+*   **Markdown Support:** Renders model responses in Markdown for better readability.
+*   **Native macOS Experience:** Built with SwiftUI for a responsive and integrated feel.
+*   **Automatic Model Detection:** Detects available models from your running Ollama instance.
 
-```
-ollama start //or ollama serve
-```
+## 🛠️ Built With
 
-Once the Ollama CLI is running, you can use the Ollama UI App without any issues. I am very glad to see that you are interested in contributing to this open-source app! If you have any ideas, suggestions, or bug reports, please open an issue or submit a pull request.
+*   SwiftUI - For the user interface.
+*   SwiftData - (If used for local data persistence, otherwise remove)
+*   MarkdownUI - For rendering Markdown content.
 
-For any questions or further assistance, feel free to reach out to us at [yoo@minyoungyoo.com](mailto:yoo@minyoungyoo.com). Enjoy using the Ollama UI App! 😊
+## 🚀 Getting Started
+
+### Prerequisites
+
+To fully utilize the capabilities of this app, you'll need to have Ollama installed and running on your system.
+
+1.  **Install Ollama:**
+    If you haven't already, download and install Ollama from the official website or via Homebrew:
+    ```bash
+    brew install ollama
+    ```
+2.  **Verify Ollama Installation:**
+    ```bash
+    ollama --version
+    ```
+3.  **Run Ollama:**
+    Ensure the Ollama service is running. You can start it by typing the following in your Terminal:
+    ```bash
+    ollama serve
+    ```
+    Or, if you have the Ollama macOS application, ensure it is running.
+4.  **Pull a Model (Optional but Recommended):**
+    If you don't have any models yet, pull one using the Ollama CLI:
+    ```bash
+    ollama pull llama3 # Or any other model you prefer, e.g., mistral, gemma
+    ```
+
+### Installation & Running the App
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/your-username/OllamaUIApp.git # Replace with your repo URL
+    cd OllamaUIApp
+    ```
+2.  **Open in Xcode:**
+    Open the `OllamaUIApp.xcodeproj` file in Xcode (Version X.Y or later recommended).
+3.  **Build and Run:**
+    Select a target simulator or your Mac and click the "Run" button.
+
+## 📖 Usage
+
+1.  Ensure your Ollama service is running in the background.
+2.  Launch the Ollama UI App.
+3.  The app will attempt to load available models from your Ollama instance.
+4.  Select a model from the dropdown menu.
+5.  Type your message in the input field and press Enter or click the "Send" button.
+6.  Converse with the model!
+
+## 🤝 Contributing
+
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Don't forget to give the project a star! Thanks again!
+
+1.  Fork the Project
+2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4.  Push to the Branch (`git push origin feature/AmazingFeature`)
+5.  Open a Pull Request
+
+*(Optional: Consider adding a `CONTRIBUTING.md` file with more detailed guidelines for code style, testing, etc.)*
+
+## 📜 License
+
+Distributed under the MIT License. See `LICENSE.txt` for more information.
+*(You'll need to add a `LICENSE.txt` file to your repository. The MIT license is a common and permissive choice.)*
+
+## 📧 Contact
+
+Minyoung Yoo - yoo@minyoungyoo.com
+
+Project Link: https://github.com/hellotunamayo/Ollama-UI-App *(Replace with your repo URL)*
+
+## 🙏 Acknowledgements (Optional)
+
+*   Ollama Team
+*   Contributors to libraries used
+
+Enjoy using the Ollama UI App! 😊
