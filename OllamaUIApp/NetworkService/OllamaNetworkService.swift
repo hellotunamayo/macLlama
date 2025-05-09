@@ -104,7 +104,6 @@ actor OllamaNetworkService: ObservableObject {
             switch httpResponse.statusCode {
                 case 200..<300:
                     let ollamaResponse = try JSONDecoder().decode(OllamaChatResponse.self, from: data)
-                    print("Requested prompt \(ollamaRequest.messages.last?.content ?? "N/A") to \(ollamaResponse.model).")
                     return ollamaResponse
                 default:
                     print("Failed to fetch data")

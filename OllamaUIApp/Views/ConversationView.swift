@@ -12,8 +12,9 @@ import MarkdownUI
 
 struct Chat: Identifiable {
     var id: UUID = UUID()
-    var message: String
-    var isUser: Bool
+    let message: String
+    let isUser: Bool
+    let modelName: String
 }
 
 struct ConversationView: View, OllamaNetworkServiceUser {
@@ -171,7 +172,7 @@ struct ConversationView: View, OllamaNetworkServiceUser {
         self.isThinking = true
         
         //Set user prompt
-        let userChatModel = Chat(message: prompt, isUser: true)
+        let userChatModel = Chat(message: prompt, isUser: true, modelName: currentModel)
         chatHistory.append(userChatModel)
         
         //Set response
@@ -184,7 +185,7 @@ struct ConversationView: View, OllamaNetworkServiceUser {
         self.prompt = ""
         self.isThinking = false
         
-        let responseChatModel = Chat(message: response.message.content, isUser: false)
+        let responseChatModel = Chat(message: response.message.content, isUser: false, modelName: currentModel)
         chatHistory.append(responseChatModel)
         
         self.scrollToIndex = self.chatHistory.count - 1
