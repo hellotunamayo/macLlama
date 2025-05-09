@@ -16,7 +16,7 @@ Welcome to the Ollama UI App! This application is designed to provide a seamless
 Now that you have installed Ollama CLI, ensure it is running before using the client app. To run the Ollama CLI, open Terminal and type:
 
 ```
-ollama start
+ollama start //or ollama serve
 ```
 
 Once the Ollama CLI is running, you can use the Ollama UI App without any issues. I am very glad to see that you are interested in contributing to this open-source app! If you have any ideas, suggestions, or bug reports, please open an issue or submit a pull request.
