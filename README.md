@@ -21,4 +21,4 @@ ollama start
 
 Once the Ollama CLI is running, you can use the Ollama UI App without any issues. I am very glad to see that you are interested in contributing to this open-source app! If you have any ideas, suggestions, or bug reports, please open an issue or submit a pull request.
 
-For any questions or further assistance, feel free to reach out to us at [mailto:yoo@minyoungyoo.com](mailto:yoo@minyoungyoo.com). Enjoy using the Ollama UI App! 😊
+For any questions or further assistance, feel free to reach out to us at [yoo@minyoungyoo.com](mailto:yoo@minyoungyoo.com). Enjoy using the Ollama UI App! 😊
