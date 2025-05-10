@@ -15,7 +15,6 @@ Welcome to the Ollama UI App for macOS! This application provides a native and i
 ## 🛠️ Built With
 
 *   SwiftUI - For the user interface.
-*   SwiftData - (If used for local data persistence, otherwise remove)
 *   MarkdownUI - For rendering Markdown content.
 
 ## 🚀 Getting Started
