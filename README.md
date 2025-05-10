@@ -86,7 +86,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 Minyoung Yoo - yoo@minyoungyoo.com
 
-Project Link: https://github.com/hellotunamayo/Ollama-UI-App *(Replace with your repo URL)*
+Project Link: https://github.com/hellotunamayo/Ollama-UI-App
 
 ## 🙏 Acknowledgements
 
