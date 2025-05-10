@@ -52,7 +52,7 @@ To fully utilize the capabilities of this app, you'll need to have Ollama instal
     cd OllamaUIApp
     ```
 2.  **Open in Xcode:**
-    Open the `OllamaUIApp.xcodeproj` file in Xcode (Version X.Y or later recommended).
+    Open the `OllamaUIApp.xcodeproj` file in Xcode.
 3.  **Build and Run:**
     Select a target simulator or your Mac and click the "Run" button.
 
