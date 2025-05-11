@@ -15,7 +15,6 @@ Welcome to the Ollama UI App for macOS! This application provides a native and i
 ## 🛠️ Built With
 
 *   SwiftUI - For the user interface.
-*   SwiftData - (If used for local data persistence, otherwise remove)
 *   MarkdownUI - For rendering Markdown content.
 
 ## 🚀 Getting Started
@@ -53,7 +52,7 @@ To fully utilize the capabilities of this app, you'll need to have Ollama instal
     cd OllamaUIApp
     ```
 2.  **Open in Xcode:**
-    Open the `OllamaUIApp.xcodeproj` file in Xcode (Version X.Y or later recommended).
+    Open the `OllamaUIApp.xcodeproj` file in Xcode.
 3.  **Build and Run:**
     Select a target simulator or your Mac and click the "Run" button.
 
@@ -87,7 +86,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 Minyoung Yoo - yoo@minyoungyoo.com
 
-Project Link: https://github.com/hellotunamayo/Ollama-UI-App *(Replace with your repo URL)*
+Project Link: https://github.com/hellotunamayo/Ollama-UI-App
 
 ## 🙏 Acknowledgements
 
