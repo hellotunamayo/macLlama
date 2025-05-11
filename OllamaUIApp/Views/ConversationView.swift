@@ -30,7 +30,7 @@ struct ConversationView: View, OllamaNetworkServiceUser {
     @State private var userProfileImage: NSImage?
 
     let ollamaProfilePicture: NSImage? = NSImage(named: "llama_gray")
-    var ollamaService: OllamaNetworkService?
+    var ollamaNetworkService: OllamaNetworkService?
     
     var body: some View {
         ZStack {
@@ -72,7 +72,7 @@ struct ConversationView: View, OllamaNetworkServiceUser {
                     .padding()
                     .onChange(of: currentModel) { oldValue, newValue in
                         Task {
-                            await self.ollamaService?.changeModel(model: newValue)
+                            await self.ollamaNetworkService?.changeModel(model: newValue)
                         }
                     }
                 }
@@ -176,7 +176,7 @@ struct ConversationView: View, OllamaNetworkServiceUser {
         chatHistory.append(userChatModel)
         
         //Set response
-        guard let response = try await self.ollamaService?.sendConversationRequest(prompt: self.prompt, context: chatHistory) else {
+        guard let response = try await self.ollamaNetworkService?.sendConversationRequest(prompt: self.prompt, context: chatHistory) else {
             self.isThinking = false
             return
         }
@@ -193,9 +193,9 @@ struct ConversationView: View, OllamaNetworkServiceUser {
     
     ///Initialize Model List
     private func initModelList() async throws {
-        modelList = try await ollamaService?.getModels() ?? []
+        modelList = try await ollamaNetworkService?.getModels() ?? []
         currentModel = modelList.first?.name ?? ""
-        await self.ollamaService?.changeModel(model: currentModel)
+        await self.ollamaNetworkService?.changeModel(model: currentModel)
     }
 }
 

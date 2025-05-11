@@ -7,7 +7,7 @@
 import Foundation
 
 protocol OllamaNetworkServiceUser {
-    var ollamaService: OllamaNetworkService? { get set }
+    var ollamaNetworkService: OllamaNetworkService? { get set }
 }
 
 actor OllamaNetworkService: ObservableObject {
@@ -64,13 +64,14 @@ actor OllamaNetworkService: ObservableObject {
         var data: [ContextDatum] = []
         chatContext.forEach { chat in
             let newElement: ContextDatum = ContextDatum(role: chat.isUser ? "user" : "assistant",
-                                                                    content: chat.message)
+                                                        content: chat.message)
             data.append(newElement)
         }
         
         return data
     }
     
+    ///Send conversation request to Ollama Server
     func sendConversationRequest(prompt: String, context: [Chat]) async throws -> OllamaChatResponse? {
         do {
             //Set Context
@@ -115,6 +116,7 @@ actor OllamaNetworkService: ObservableObject {
         }
     }
     
+    ///Set initial model
     private func setInitialModel() async {
         Task {
             guard let models = try await self.getModels() else { return }
