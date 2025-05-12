@@ -27,7 +27,6 @@ struct ConversationView: View, OllamaNetworkServiceUser {
     @State private var currentModel: String = ""
     @State private var isThinking: Bool = false
     @State private var scrollToIndex: Int = 0
-    @State private var ollamaWarningBouncingYOffset: CGFloat = 0
     @State internal var ollamaNetworkService: OllamaNetworkService?
 
     let ollamaProfilePicture: NSImage? = NSImage(named: "llama_gray")
@@ -36,14 +35,7 @@ struct ConversationView: View, OllamaNetworkServiceUser {
         ZStack {
             //MARK: Background View(Llama Image)
             if !self.currentModel.isEmpty {
-                VStack {
-                    Image("llama_gray")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(maxWidth: Units.appFrameMinHeight / 2, maxHeight: Units.appFrameMinHeight / 2)
-                        .offset(y: Units.appFrameMinHeight / 20 * -1)
-                        .opacity(self.colorScheme == .dark ? 0.06 : 0.07)
-                }
+                ChatBackgroundView()
             }
             
             //MARK: Conversation view
@@ -149,59 +141,8 @@ struct ConversationView: View, OllamaNetworkServiceUser {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .overlay {
                 if self.modelList.isEmpty {
-                    VStack {
-                        Image("ollama_profile")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(maxWidth: Units.appFrameMinWidth / 3,
-                                   maxHeight: Units.appFrameMinHeight / 4)
-                            .foregroundStyle(.yellow)
-                            .background(Color(nsColor: NSColor.windowBackgroundColor))
-                            .clipShape(Circle())
-                            .shadow(color:.black.opacity(0.2), radius: 3)
-                            .padding(.bottom, -5)
-                            .offset(y: ollamaWarningBouncingYOffset)
-                            .animation(.bouncy(duration: 1.5, extraBounce: 1), value: ollamaWarningBouncingYOffset)
-                            .onAppear {
-                                self.ollamaWarningBouncingYOffset = 3
-                            }
-                        
-                        Text("Start your local AI engine\nwith Ollama")
-                            .fontWeight(.bold)
-                            .font(.largeTitle)
-                            .multilineTextAlignment(.center)
-                        
-                        Button {
-                            Task {
-                                guard let _ = await ShellService.runShellScript("ollama serve") else { return }
-                                
-                                //TODO: Replace this temporary solution!
-                                sleep(1)
-                                
-                                ollamaNetworkService = OllamaNetworkService(stream: false)
-                                try await self.initModelList()
-                            }
-                        } label: {
-                            Label("Start the server and go", systemImage: "power")
-                                .padding(.trailing, Units.normalGap / 4)
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .controlSize(.large)
-                        .padding(.top, Units.normalGap / 2)
-                        
-                        Divider()
-                            .frame(maxWidth: 30)
-                            .padding(.vertical, Units.normalGap)
-                        
-                        Text("If the service fails to start, please check\nthat the Ollama server is installed on your system")
-                            .foregroundStyle(Color.gray)
-                            .lineSpacing(Units.normalGap / 5)
-                            .multilineTextAlignment(.center)
-                            .font(.subheadline)
-                        
-                        Link("Bug report or feature request", destination: URL(string: "https://github.com/hellotunamayo/Ollama-UI-App/discussions")!)
-                            .font(.subheadline)
-                            .padding(.top, Units.normalGap / 2)
+                    StartServerView(ollamaNetworkService: $ollamaNetworkService) {
+                        try await self.initModelList()
                     }
                     .padding(.top, Units.normalGap * -3)
                 }
