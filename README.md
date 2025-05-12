@@ -96,15 +96,14 @@ To fully utilize the capabilities of this app, you'll need to have Ollama instal
 
 ### Installation & Running the App
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/your-username/OllamaUIApp.git # Replace with your repo URL
-    cd OllamaUIApp
-    ```
-2.  **Open in Xcode:**
-    Open the `OllamaUIApp.xcodeproj` file in Xcode.
-3.  **Build and Run:**
-    Select a target simulator or your Mac and click the "Run" button.
+1.  **Download the Application:**
+    *   Go to the Releases Page of this repository.
+    *   Download the latest `OllamaUIApp.app.zip` file from the Assets section. This archive contains the `OllamaUIApp.app` file.
+2.  **Install:**
+    *   Unzip the downloaded file.
+    *   Drag the extracted `OllamaUIApp.app` file to your `/Applications` folder.
+3.  **Run the App:**
+    Open `OllamaUIApp` from your Applications folder.
 
 ## 📖 Usage
 
