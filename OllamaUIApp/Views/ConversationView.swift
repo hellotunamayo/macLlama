@@ -28,6 +28,7 @@ struct ConversationView: View, OllamaNetworkServiceUser {
     @State private var isThinking: Bool = false
     @State private var scrollToIndex: Int = 0
     @State private var userProfileImage: NSImage?
+    @State private var ollamaWarningBouncingYOffset: CGFloat = 0
     @State internal var ollamaNetworkService: OllamaNetworkService?
 
     let ollamaProfilePicture: NSImage? = NSImage(named: "llama_gray")
@@ -35,13 +36,15 @@ struct ConversationView: View, OllamaNetworkServiceUser {
     var body: some View {
         ZStack {
             //MARK: Background View(Llama Image)
-            VStack {
-                Image("llama_gray")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(maxWidth: Units.appFrameMinHeight / 2, maxHeight: Units.appFrameMinHeight / 2)
-                    .offset(y: Units.appFrameMinHeight / 20 * -1)
-                    .opacity(self.colorScheme == .dark ? 0.06 : 0.07)
+            if !self.currentModel.isEmpty {
+                VStack {
+                    Image("llama_gray")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(maxWidth: Units.appFrameMinHeight / 2, maxHeight: Units.appFrameMinHeight / 2)
+                        .offset(y: Units.appFrameMinHeight / 20 * -1)
+                        .opacity(self.colorScheme == .dark ? 0.06 : 0.07)
+                }
             }
             
             //MARK: Conversation view
@@ -156,7 +159,13 @@ struct ConversationView: View, OllamaNetworkServiceUser {
                             .foregroundStyle(.yellow)
                             .background(Color(nsColor: NSColor.windowBackgroundColor))
                             .clipShape(Circle())
-                            .shadow(radius: 2)
+                            .shadow(color:.black.opacity(0.2), radius: 3)
+                            .padding(.bottom, -10)
+                            .offset(y: ollamaWarningBouncingYOffset)
+                            .animation(.bouncy(duration: 1.5, extraBounce: 1), value: ollamaWarningBouncingYOffset)
+                            .onAppear {
+                                self.ollamaWarningBouncingYOffset = 3
+                            }
                         
                         Text("Your Ollama server may down.\nTry to turn it on.")
                             .font(.largeTitle)
