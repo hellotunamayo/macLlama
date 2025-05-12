@@ -28,9 +28,9 @@ struct ConversationView: View, OllamaNetworkServiceUser {
     @State private var isThinking: Bool = false
     @State private var scrollToIndex: Int = 0
     @State private var userProfileImage: NSImage?
+    @State internal var ollamaNetworkService: OllamaNetworkService?
 
     let ollamaProfilePicture: NSImage? = NSImage(named: "llama_gray")
-    var ollamaNetworkService: OllamaNetworkService?
     
     var body: some View {
         ZStack {
@@ -46,21 +46,7 @@ struct ConversationView: View, OllamaNetworkServiceUser {
             
             //MARK: Conversation view
             VStack {
-                //If model data is nil or server is down.
-                if self.modelList.isEmpty {
-                    Text("Your Ollama server may down or Ollama doesn't have any model yet.\nMake sure the server's status.")
-                        .padding(.top, Units.normalGap / 2)
-                        .multilineTextAlignment(.center)
-                    Button {
-                        Task {
-                            try await self.initModelList()
-                        }
-                    } label: {
-                        Text("Reload Models")
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .padding(.top, Units.normalGap / 2)
-                } else {
+                if !self.modelList.isEmpty {
                     Picker("Select a model", selection: $currentModel) {
                         ForEach(modelList, id: \.self) { model in
                             Text(model.name)
@@ -156,6 +142,41 @@ struct ConversationView: View, OllamaNetworkServiceUser {
                     }
                     .frame(height: 60)
                     .padding()
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .overlay {
+                if self.modelList.isEmpty {
+                    VStack {
+                        Image("ollama_warning")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(maxWidth: Units.appFrameMinWidth / 3,
+                                   maxHeight: Units.appFrameMinHeight / 4)
+                            .foregroundStyle(.yellow)
+                            .background(Color(nsColor: NSColor.windowBackgroundColor))
+                            .clipShape(Circle())
+                            .shadow(radius: 2)
+                        
+                        Text("Your Ollama server may down.\nTry to turn it on.")
+                            .font(.largeTitle)
+                            .multilineTextAlignment(.center)
+                        
+                        Button {
+                            Task {
+                                guard let scriptOutput = await ShellService.runShellScript("ollama serve") else { return }
+                                print(scriptOutput)
+                                ollamaNetworkService = OllamaNetworkService(stream: false)
+                                try await self.initModelList()
+                            }
+                        } label: {
+                            Label("Try to turn on Ollama Server", systemImage: "power")
+                                .padding(.trailing, Units.normalGap / 4)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .controlSize(.large)
+                        .padding(.top, Units.normalGap / 2)
+                    }
                 }
             }
         }
