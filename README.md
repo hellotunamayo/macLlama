@@ -4,6 +4,15 @@
 
 Welcome to the Ollama UI App! This macOS application, built with SwiftUI, offers a user-friendly interface for interacting with Ollama. We've recently added features to **start the Ollama server directly from the app** and made several **UI improvements** for a smoother experience.
 
+## System Requirements
+
+To ensure the best experience with the Ollama UI App, your system should meet the following requirements:
+
+*   **Operating System:** macOS 14.0 Sonoma or later.
+*   **Processor:** Apple Silicon (e.g., M1, M2, M3 series).
+*   **Memory (RAM):** The memory required will depend on the Ollama models you plan to use. Larger models require more RAM. Please refer to the official [Ollama documentation](https://github.com/ollama/ollama/blob/main/docs/faq.md#what-are-the-system-requirements-to-run-ollama) for model-specific recommendations.
+*   **Ollama Installation:** A working installation of Ollama is required (see Prerequisites below).
+
 ## Prerequisites
 
 To use this app, you'll first need to install Ollama.
