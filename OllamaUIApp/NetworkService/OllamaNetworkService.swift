@@ -10,7 +10,7 @@ protocol OllamaNetworkServiceUser {
     var ollamaNetworkService: OllamaNetworkService? { get set }
 }
 
-actor OllamaNetworkService: ObservableObject {
+actor OllamaNetworkService {
     private(set) var modelName: String?
     private(set) var stream: Bool
     
