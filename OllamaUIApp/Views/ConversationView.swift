@@ -205,6 +205,7 @@ struct ConversationView: View, OllamaNetworkServiceUser {
         }
     }
     
+    //MARK: Internal functions
     ///Send message to Ollama server
     private func sendMessage() async throws {
         if self.prompt.isEmpty {
