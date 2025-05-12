@@ -22,16 +22,16 @@
 
 /* Begin PBXFileReference section */
 		E13451642DD0B58A00377907 /* OllamaUIAppTest.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OllamaUIAppTest.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		E1D4DA822DCB2661002407FD /* OllamaUIApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OllamaUIApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E1D4DA822DCB2661002407FD /* macLlama.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = macLlama.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		E1D4DA9A2DCB2A6A002407FD /* Exceptions for "OllamaUIApp" folder in "OllamaUIApp" target */ = {
+		E1D4DA9A2DCB2A6A002407FD /* Exceptions for "OllamaUIApp" folder in "macLlama" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = E1D4DA812DCB2661002407FD /* OllamaUIApp */;
+			target = E1D4DA812DCB2661002407FD /* macLlama */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -44,7 +44,7 @@
 		E1D4DA842DCB2661002407FD /* OllamaUIApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				E1D4DA9A2DCB2A6A002407FD /* Exceptions for "OllamaUIApp" folder in "OllamaUIApp" target */,
+				E1D4DA9A2DCB2A6A002407FD /* Exceptions for "OllamaUIApp" folder in "macLlama" target */,
 			);
 			path = OllamaUIApp;
 			sourceTree = "<group>";
@@ -82,7 +82,7 @@
 		E1D4DA832DCB2661002407FD /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E1D4DA822DCB2661002407FD /* OllamaUIApp.app */,
+				E1D4DA822DCB2661002407FD /* macLlama.app */,
 				E13451642DD0B58A00377907 /* OllamaUIAppTest.xctest */,
 			);
 			name = Products;
@@ -114,9 +114,9 @@
 			productReference = E13451642DD0B58A00377907 /* OllamaUIAppTest.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		E1D4DA812DCB2661002407FD /* OllamaUIApp */ = {
+		E1D4DA812DCB2661002407FD /* macLlama */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E1D4DA932DCB2662002407FD /* Build configuration list for PBXNativeTarget "OllamaUIApp" */;
+			buildConfigurationList = E1D4DA932DCB2662002407FD /* Build configuration list for PBXNativeTarget "macLlama" */;
 			buildPhases = (
 				E1D4DA7E2DCB2661002407FD /* Sources */,
 				E1D4DA7F2DCB2661002407FD /* Frameworks */,
@@ -129,12 +129,12 @@
 			fileSystemSynchronizedGroups = (
 				E1D4DA842DCB2661002407FD /* OllamaUIApp */,
 			);
-			name = OllamaUIApp;
+			name = macLlama;
 			packageProductDependencies = (
 				E1F6F2DE2DCB9F25008B22FA /* MarkdownUI */,
 			);
 			productName = OllamaUIApp;
-			productReference = E1D4DA822DCB2661002407FD /* OllamaUIApp.app */;
+			productReference = E1D4DA822DCB2661002407FD /* macLlama.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -173,7 +173,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				E1D4DA812DCB2661002407FD /* OllamaUIApp */,
+				E1D4DA812DCB2661002407FD /* macLlama */,
 				E13451632DD0B58A00377907 /* OllamaUIAppTest */,
 			);
 		};
@@ -216,7 +216,7 @@
 /* Begin PBXTargetDependency section */
 		E13451692DD0B58A00377907 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E1D4DA812DCB2661002407FD /* OllamaUIApp */;
+			target = E1D4DA812DCB2661002407FD /* macLlama */;
 			targetProxy = E13451682DD0B58A00377907 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -390,7 +390,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = OllamaUIApp/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Ollama UI App";
+				INFOPLIST_KEY_CFBundleDisplayName = macLlama;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "© Copyright 2025, Minyoung Yoo";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -422,7 +422,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = OllamaUIApp/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Ollama UI App";
+				INFOPLIST_KEY_CFBundleDisplayName = macLlama;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "© Copyright 2025, Minyoung Yoo";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -459,7 +459,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E1D4DA932DCB2662002407FD /* Build configuration list for PBXNativeTarget "OllamaUIApp" */ = {
+		E1D4DA932DCB2662002407FD /* Build configuration list for PBXNativeTarget "macLlama" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E1D4DA942DCB2662002407FD /* Debug */,

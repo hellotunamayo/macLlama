@@ -15,6 +15,15 @@ struct StartServerView: View {
     
     var body: some View {
         VStack {
+            HStack {
+                Text("mac")
+                    .font(.system(size: Units.appFrameMinWidth * 0.15, weight: .thin, design: .default))
+                    .padding(.trailing, Units.appFrameMinWidth * -0.015)
+                Text("Llama")
+                    .font(.system(size: Units.appFrameMinWidth * 0.15, weight: .medium, design: .default))
+            }
+            .padding(.bottom, -5)
+            
             Image("ollama_profile")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
@@ -24,7 +33,6 @@ struct StartServerView: View {
                 .background(Color(nsColor: NSColor.windowBackgroundColor))
                 .clipShape(Circle())
                 .shadow(color:.black.opacity(0.2), radius: 3)
-                .padding(.bottom, -5)
                 .offset(y: ollamaWarningBouncingYOffset)
                 .animation(.bouncy(duration: 1.5, extraBounce: 1), value: ollamaWarningBouncingYOffset)
                 .onAppear {
@@ -32,9 +40,10 @@ struct StartServerView: View {
                 }
             
             Text("Start your local AI engine\nwith Ollama")
-                .fontWeight(.bold)
-                .font(.largeTitle)
+                .fontWeight(.regular)
+                .font(.title)
                 .multilineTextAlignment(.center)
+                .padding(.top, Units.normalGap)
             
             Button {
                 Task {

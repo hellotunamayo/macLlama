@@ -25,10 +25,10 @@ struct OllamaUIAppApp: App {
     @State var ollama: OllamaNetworkService?
 
     var body: some Scene {
-        Window("Ollama UI App", id: "main") {
+        Window("macLlama", id: "main") {
             NavigationStack {
                 ConversationView(ollamaNetworkService: ollama)
-                    .navigationTitle("Conversation with Ollama")
+                    .navigationTitle("macLlama")
             }
             .frame(minWidth: Units.appFrameMinWidth, idealWidth: Units.appFrameMinWidth,
                    minHeight: Units.appFrameMinHeight, idealHeight: Units.appFrameMinHeight)
