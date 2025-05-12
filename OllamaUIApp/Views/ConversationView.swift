@@ -165,7 +165,10 @@ struct ConversationView: View, OllamaNetworkServiceUser {
                         Button {
                             Task {
                                 guard let scriptOutput = await ShellService.runShellScript("ollama serve") else { return }
-                                print(scriptOutput)
+                                
+                                //TODO: Replace this temporary solution!
+                                sleep(1)
+                                
                                 ollamaNetworkService = OllamaNetworkService(stream: false)
                                 try await self.initModelList()
                             }
