@@ -12,8 +12,9 @@ import MarkdownUI
 
 struct Chat: Identifiable {
     var id: UUID = UUID()
-    var message: String
-    var isUser: Bool
+    let message: String
+    let isUser: Bool
+    let modelName: String
 }
 
 struct ConversationView: View, OllamaNetworkServiceUser {
@@ -26,40 +27,20 @@ struct ConversationView: View, OllamaNetworkServiceUser {
     @State private var currentModel: String = ""
     @State private var isThinking: Bool = false
     @State private var scrollToIndex: Int = 0
-    @State private var userProfileImage: NSImage?
+    @State internal var ollamaNetworkService: OllamaNetworkService?
 
     let ollamaProfilePicture: NSImage? = NSImage(named: "llama_gray")
-    var ollamaService: OllamaNetworkService?
     
     var body: some View {
         ZStack {
             //MARK: Background View(Llama Image)
-            VStack {
-                Image("llama_gray")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(maxWidth: Units.appFrameMinHeight / 2, maxHeight: Units.appFrameMinHeight / 2)
-                    .offset(y: Units.appFrameMinHeight / 20 * -1)
-                    .opacity(self.colorScheme == .dark ? 0.06 : 0.07)
+            if !self.currentModel.isEmpty {
+                ChatBackgroundView()
             }
             
             //MARK: Conversation view
             VStack {
-                //If model data is nil or server is down.
-                if self.modelList.isEmpty {
-                    Text("Your Ollama server may down or Ollama doesn't have any model yet.\nMake sure the server's status.")
-                        .padding(.top, Units.normalGap / 2)
-                        .multilineTextAlignment(.center)
-                    Button {
-                        Task {
-                            try await self.initModelList()
-                        }
-                    } label: {
-                        Text("Reload Models")
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .padding(.top, Units.normalGap / 2)
-                } else {
+                if !self.modelList.isEmpty {
                     Picker("Select a model", selection: $currentModel) {
                         ForEach(modelList, id: \.self) { model in
                             Text(model.name)
@@ -71,7 +52,7 @@ struct ConversationView: View, OllamaNetworkServiceUser {
                     .padding()
                     .onChange(of: currentModel) { oldValue, newValue in
                         Task {
-                            await self.ollamaService?.changeModel(model: newValue)
+                            await self.ollamaNetworkService?.changeModel(model: newValue)
                         }
                     }
                 }
@@ -157,9 +138,19 @@ struct ConversationView: View, OllamaNetworkServiceUser {
                     .padding()
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .overlay {
+                if self.modelList.isEmpty {
+                    StartServerView(ollamaNetworkService: $ollamaNetworkService) {
+                        try await self.initModelList()
+                    }
+                    .padding(.top, Units.normalGap * -3)
+                }
+            }
         }
     }
     
+    //MARK: Internal functions
     ///Send message to Ollama server
     private func sendMessage() async throws {
         if self.prompt.isEmpty {
@@ -171,11 +162,11 @@ struct ConversationView: View, OllamaNetworkServiceUser {
         self.isThinking = true
         
         //Set user prompt
-        let userChatModel = Chat(message: prompt, isUser: true)
+        let userChatModel = Chat(message: prompt, isUser: true, modelName: currentModel)
         chatHistory.append(userChatModel)
         
         //Set response
-        guard let response = try await self.ollamaService?.sendConversationRequest(prompt: self.prompt, context: chatHistory) else {
+        guard let response = try await self.ollamaNetworkService?.sendConversationRequest(prompt: self.prompt, context: chatHistory) else {
             self.isThinking = false
             return
         }
@@ -184,7 +175,7 @@ struct ConversationView: View, OllamaNetworkServiceUser {
         self.prompt = ""
         self.isThinking = false
         
-        let responseChatModel = Chat(message: response.message.content, isUser: false)
+        let responseChatModel = Chat(message: response.message.content, isUser: false, modelName: currentModel)
         chatHistory.append(responseChatModel)
         
         self.scrollToIndex = self.chatHistory.count - 1
@@ -192,9 +183,9 @@ struct ConversationView: View, OllamaNetworkServiceUser {
     
     ///Initialize Model List
     private func initModelList() async throws {
-        modelList = try await ollamaService?.getModels() ?? []
+        modelList = try await ollamaNetworkService?.getModels() ?? []
         currentModel = modelList.first?.name ?? ""
-        await self.ollamaService?.changeModel(model: currentModel)
+        await self.ollamaNetworkService?.changeModel(model: currentModel)
     }
 }
 

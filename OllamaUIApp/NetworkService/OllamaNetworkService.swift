@@ -7,10 +7,10 @@
 import Foundation
 
 protocol OllamaNetworkServiceUser {
-    var ollamaService: OllamaNetworkService? { get set }
+    var ollamaNetworkService: OllamaNetworkService? { get set }
 }
 
-actor OllamaNetworkService: ObservableObject {
+actor OllamaNetworkService {
     private(set) var modelName: String?
     private(set) var stream: Bool
     
@@ -64,13 +64,14 @@ actor OllamaNetworkService: ObservableObject {
         var data: [ContextDatum] = []
         chatContext.forEach { chat in
             let newElement: ContextDatum = ContextDatum(role: chat.isUser ? "user" : "assistant",
-                                                                    content: chat.message)
+                                                        content: chat.message)
             data.append(newElement)
         }
         
         return data
     }
     
+    ///Send conversation request to Ollama Server
     func sendConversationRequest(prompt: String, context: [Chat]) async throws -> OllamaChatResponse? {
         do {
             //Set Context
@@ -104,7 +105,6 @@ actor OllamaNetworkService: ObservableObject {
             switch httpResponse.statusCode {
                 case 200..<300:
                     let ollamaResponse = try JSONDecoder().decode(OllamaChatResponse.self, from: data)
-                    print("Requested prompt \(ollamaRequest.messages.last?.content ?? "N/A") to \(ollamaResponse.model).")
                     return ollamaResponse
                 default:
                     print("Failed to fetch data")
@@ -116,6 +116,7 @@ actor OllamaNetworkService: ObservableObject {
         }
     }
     
+    ///Set initial model
     private func setInitialModel() async {
         Task {
             guard let models = try await self.getModels() else { return }
