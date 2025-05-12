@@ -10,7 +10,7 @@ Welcome to **macLlama**! This macOS application, built with SwiftUI, offers a us
 
 ## System Requirements
 
-To ensure the best experience with the Ollama UI App, your system should meet the following requirements:
+To ensure the best experience with the macLlama, your system should meet the following requirements:
 
 *   **Operating System:** macOS 14.0 Sonoma or later.
 *   **Processor:** Apple Silicon (e.g., M1, M2, M3 series).
@@ -49,9 +49,9 @@ Once Homebrew is installed, you can install Ollama.
 
 ### 1. Running the Ollama Server
 
-The Ollama UI App can now help you start the Ollama server. Alternatively, you can start it manually.
+The macLlama can now help you start the Ollama server. Alternatively, you can start it manually.
 
-*   **From the App:** Look for an option within the Ollama UI App to start the server.
+*   **From the App:** Look for an option within the macLlama to start the server.
 *   **Manually (via Terminal):**
     ```bash
     ollama serve
@@ -71,9 +71,9 @@ ollama pull llama3:8b-instruct
 ```
 You can find a list of available models on the [Ollama Library](https://ollama.com/library).
 
-## Using the Ollama UI App
+## Using the macLlama
 
-Once the Ollama server is running and you have at least one model installed, you can launch and use the Ollama UI App to interact with your local large language models.
+Once the Ollama server is running and you have at least one model installed, you can launch and use the macLlama to interact with your local large language models.
 
 ## Contributing
 
@@ -111,17 +111,17 @@ To fully utilize the capabilities of this app, you'll need to have Ollama instal
 
 1.  **Download the Application:**
     *   Go to the Releases Page of this repository.
-    *   Download the latest `OllamaUIApp.app.zip` file from the Assets section. This archive contains the `OllamaUIApp.app` file.
+    *   Download the latest `macLlama.app.zip` file from the Assets section. This archive contains the `macLlama.app` file.
 2.  **Install:**
     *   Unzip the downloaded file.
-    *   Drag the extracted `OllamaUIApp.app` file to your `/Applications` folder.
+    *   Drag the extracted `macLlama.app` file to your `/Applications` folder.
 3.  **Run the App:**
-    Open `OllamaUIApp` from your Applications folder.
+    Open `macLlama` from your Applications folder.
 
 ## 📖 Usage
 
 1.  Ensure your Ollama service is running in the background.
-2.  Launch the Ollama UI App.
+2.  Launch the macLlama.
 3.  The app will attempt to load available models from your Ollama instance.
 4.  Select a model from the dropdown menu.
 5.  Type your message in the input field and press Enter or click the "Send" button.
@@ -155,4 +155,4 @@ Project Link: https://github.com/hellotunamayo/macLlama
 *   Ollama Team
 *   Contributors to libraries used
 
-Enjoy using the Ollama UI App! 😊
+Enjoy using the macLlama! 😊
