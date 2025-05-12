@@ -2,7 +2,6 @@
 
 ![Ollama UI App preview image](ollama_preview.png) <!-- Consider updating this preview image if UI improvements are significant -->
 
-<<<<<<< HEAD
 Welcome to the Ollama UI App! This macOS application, built with SwiftUI, offers a user-friendly interface for interacting with Ollama. We've recently added features to **start the Ollama server directly from the app** and made several **UI improvements** for a smoother experience.
 
 ## Prerequisites
@@ -64,19 +63,6 @@ You can find a list of available models on the [Ollama Library](https://ollama.c
 Once the Ollama server is running and you have at least one model installed, you can launch and use the Ollama UI App to interact with your local large language models.
 
 ## Contributing
-=======
-Welcome to the Ollama UI App for macOS! This application provides a native and intuitive SwiftUI-based user interface to interact with your local Ollama instance. Chat with your favorite large language models directly from your Mac.
-
-## ✨ Features
-
-*   **Model Selection:** Easily view and select from your available Ollama models.
-*   **Chat Interface:** Clean and user-friendly chat interface for conversing with models.
-*   **Markdown Support:** Renders model responses in Markdown for better readability.
-*   **Native macOS Experience:** Built with SwiftUI for a responsive and integrated feel.
-*   **Automatic Model Detection:** Detects available models from your running Ollama instance.
-
-## 🛠️ Built With
->>>>>>> ad233bbb75de54389ea5c1a256e0f3bf6287e3ed
 
 *   SwiftUI - For the user interface.
 *   MarkdownUI - For rendering Markdown content.
