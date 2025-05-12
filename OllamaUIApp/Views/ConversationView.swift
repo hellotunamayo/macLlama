@@ -27,7 +27,6 @@ struct ConversationView: View, OllamaNetworkServiceUser {
     @State private var currentModel: String = ""
     @State private var isThinking: Bool = false
     @State private var scrollToIndex: Int = 0
-    @State private var userProfileImage: NSImage?
     @State private var ollamaWarningBouncingYOffset: CGFloat = 0
     @State internal var ollamaNetworkService: OllamaNetworkService?
 
