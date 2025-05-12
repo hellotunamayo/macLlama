@@ -164,7 +164,7 @@ struct ConversationView: View, OllamaNetworkServiceUser {
                         
                         Button {
                             Task {
-                                guard let scriptOutput = await ShellService.runShellScript("ollama serve") else { return }
+                                guard let _ = await ShellService.runShellScript("ollama serve") else { return }
                                 
                                 //TODO: Replace this temporary solution!
                                 sleep(1)
