@@ -9,7 +9,6 @@ import Foundation
 
 actor ShellService {
     
-    
     ///Run shell script
     static func runShellScript(_ command: String) async -> String? {
         let customPath = "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
@@ -31,7 +30,7 @@ actor ShellService {
         }
     }
     
-    ///kill ollama
+    ///Kill ollama server
     static func killOllama() {
         let customPath = "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
         let fullCommand = "\(customPath) killall ollama"
