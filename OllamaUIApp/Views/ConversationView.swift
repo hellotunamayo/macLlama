@@ -167,7 +167,7 @@ struct ConversationView: View, OllamaNetworkServiceUser {
                                 self.ollamaWarningBouncingYOffset = 3
                             }
                         
-                        Text("Your Ollama server may down.\nTry to turn it on.")
+                        Text("Your Ollama server may down")
                             .font(.largeTitle)
                             .multilineTextAlignment(.center)
                         
@@ -188,7 +188,18 @@ struct ConversationView: View, OllamaNetworkServiceUser {
                         .buttonStyle(.borderedProminent)
                         .controlSize(.large)
                         .padding(.top, Units.normalGap / 2)
+                        
+                        Divider()
+                            .frame(maxWidth: 30)
+                            .padding(.vertical, Units.normalGap)
+                        
+                        Text("If the problem persists, please check\nthat the Ollama server is installed on your system")
+                            .foregroundStyle(Color.gray)
+                            .lineSpacing(Units.normalGap / 5)
+                            .multilineTextAlignment(.center)
+                            .font(.subheadline)
                     }
+                    .padding(.top, Units.normalGap * -3)
                 }
             }
         }
