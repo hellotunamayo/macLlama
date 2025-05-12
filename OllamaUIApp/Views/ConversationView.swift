@@ -150,7 +150,7 @@ struct ConversationView: View, OllamaNetworkServiceUser {
             .overlay {
                 if self.modelList.isEmpty {
                     VStack {
-                        Image("ollama_warning")
+                        Image("ollama_profile")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(maxWidth: Units.appFrameMinWidth / 3,
@@ -159,14 +159,15 @@ struct ConversationView: View, OllamaNetworkServiceUser {
                             .background(Color(nsColor: NSColor.windowBackgroundColor))
                             .clipShape(Circle())
                             .shadow(color:.black.opacity(0.2), radius: 3)
-                            .padding(.bottom, -10)
+                            .padding(.bottom, -5)
                             .offset(y: ollamaWarningBouncingYOffset)
                             .animation(.bouncy(duration: 1.5, extraBounce: 1), value: ollamaWarningBouncingYOffset)
                             .onAppear {
                                 self.ollamaWarningBouncingYOffset = 3
                             }
                         
-                        Text("Your Ollama server may down")
+                        Text("Start your local AI engine\nwith Ollama")
+                            .fontWeight(.bold)
                             .font(.largeTitle)
                             .multilineTextAlignment(.center)
                         
@@ -181,7 +182,7 @@ struct ConversationView: View, OllamaNetworkServiceUser {
                                 try await self.initModelList()
                             }
                         } label: {
-                            Label("Try to turn on Ollama Server", systemImage: "power")
+                            Label("Start the server and go", systemImage: "power")
                                 .padding(.trailing, Units.normalGap / 4)
                         }
                         .buttonStyle(.borderedProminent)
@@ -192,11 +193,15 @@ struct ConversationView: View, OllamaNetworkServiceUser {
                             .frame(maxWidth: 30)
                             .padding(.vertical, Units.normalGap)
                         
-                        Text("If the problem persists, please check\nthat the Ollama server is installed on your system")
+                        Text("If the service fails to start, please check\nthat the Ollama server is installed on your system")
                             .foregroundStyle(Color.gray)
                             .lineSpacing(Units.normalGap / 5)
                             .multilineTextAlignment(.center)
                             .font(.subheadline)
+                        
+                        Link("Bug report or feature request", destination: URL(string: "https://github.com/hellotunamayo/Ollama-UI-App/discussions")!)
+                            .font(.subheadline)
+                            .padding(.top, Units.normalGap / 2)
                     }
                     .padding(.top, Units.normalGap * -3)
                 }
