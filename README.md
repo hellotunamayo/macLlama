@@ -1,6 +1,6 @@
 # macLlama
 
-![macLlama preview image](macllama_logo.jpg)
+![macLlama preview image](macllama_logo.png)
 
 ## macLlama: A Native macOS GUI for Ollama
 
