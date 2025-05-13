@@ -24,7 +24,7 @@ struct StartServerView: View {
             }
             .padding(.bottom, -5)
             
-            Image("ollama_profile")
+            Image("macLlama-profile")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(maxWidth: Units.appFrameMinWidth / 3,
