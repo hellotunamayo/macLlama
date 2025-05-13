@@ -42,56 +42,11 @@ struct ConversationView: View, OllamaNetworkServiceUser {
             //MARK: Conversation view
             VStack {
                 if !self.modelList.isEmpty {
-                    HStack{
-                        Circle()
-                            .fill(isServerOnline ? Color.green : Color.red)
-                            .frame(width: 8, height: 8)
-                        
-                        Picker("Current Model", selection: $currentModel) {
-                            ForEach(modelList, id: \.self) { model in
-                                Text(model.name)
-                                    .foregroundStyle(.primary)
-                                    .tag(model.name)
-                            }
-                        }
-                        .pickerStyle(MenuPickerStyle())
-                        .frame(width: Units.appFrameMinWidth * 0.5)
-                        .onChange(of: currentModel) { oldValue, newValue in
-                            Task {
-                                await self.ollamaNetworkService?.changeModel(model: newValue)
-                            }
-                        }
-                        
-                        Button {
-                            withAnimation {
-                                self.isModelLoading.toggle()
-                            }
-                            
-                            Task {
-                                self.isModelLoading = true
-                                try await self.initModelList()
-                                self.isModelLoading = false
-                            }
-                        } label: {
-                            VStack {
-                                if self.isModelLoading {
-                                    Label("Loading...", systemImage: "rays")
-                                } else {
-                                    Label("Reload", systemImage: "arrow.clockwise")
-                                }
-                            }
-                            .padding(.vertical, Units.normalGap / 8)
-                            .frame(width: 80)
-                        }
-                        .tint(.primary)
-                        .controlSize(.regular)
-                        .buttonStyle(.bordered)
-                    }
-                    .padding()
-                    .task {
-                        guard let isServerOnline = try? await self.ollamaNetworkService?.isServerOnline() else { return }
-                        if isServerOnline {
-                            self.isServerOnline = true
+                    ModelSelectView(isServerOnline: $isServerOnline, modelList: $modelList,
+                                    currentModel: $currentModel, ollamaNetworkService: $ollamaNetworkService,
+                                    isModelLoading: $isModelLoading) {
+                        Task {
+                            try await self.initModelList()
                         }
                     }
                     
