@@ -46,7 +46,7 @@ struct ConversationView: View, OllamaNetworkServiceUser {
                                     currentModel: $currentModel, ollamaNetworkService: $ollamaNetworkService,
                                     isModelLoading: $isModelLoading) {
                         Task {
-                            try await self.initModelList()
+                            try? await self.initModelList()
                         }
                     }
                     
@@ -62,15 +62,18 @@ struct ConversationView: View, OllamaNetworkServiceUser {
                             
                             if chatHistory[index].done {
                                 ChatBubbleView(chatData: chatHistory[index])
-                                    .padding(.horizontal)
+                                    .padding()
                                     .id(index)
                             } else {
-                                Text("⚠️ An error occurred while communicating with Ollama.\nPlease check your Ollama server is running.")
-                                    .multilineTextAlignment(.center)
-                                    .padding()
-                                    .background(
-                                        Capsule().fill(.yellow.opacity(0.15))
-                                    )
+                                VStack {
+                                    Text("⚠️ Please check your Ollama server is running.")
+                                        .multilineTextAlignment(.center)
+                                        .padding()
+                                        .background(
+                                            Capsule().fill(.yellow.opacity(0.15))
+                                        )
+                                }
+                                .padding()
                                 
                                 ChatBubbleView(chatData: chatHistory[index])
                                     .padding()
@@ -118,14 +121,7 @@ struct ConversationView: View, OllamaNetworkServiceUser {
                         }
                     }
                     .task {
-                        do {
-                            if let serverStatus = try await ollamaNetworkService?.isServerOnline() {
-                                self.isServerOnline = serverStatus
-                                try await self.initModelList()
-                            }
-                        } catch {
-                            print("Error: \(error.localizedDescription)")
-                        }
+                        try? await initModelList()
                     }
                     .onChange(of: scrollToIndex) { _, newValue in
                         self.scrollToIndex = newValue
@@ -200,9 +196,16 @@ extension ConversationView {
     
     ///Initialize Model List
     private func initModelList() async throws {
-        modelList = try await ollamaNetworkService?.getModels() ?? []
-        currentModel = modelList.first?.name ?? ""
-        await self.ollamaNetworkService?.changeModel(model: currentModel)
+        do {
+            if let serverStatus = try await ollamaNetworkService?.isServerOnline() {
+                self.isServerOnline = serverStatus
+                modelList = try await ollamaNetworkService?.getModels() ?? []
+                currentModel = modelList.first?.name ?? ""
+                await self.ollamaNetworkService?.changeModel(model: currentModel)
+            }
+        } catch {
+            print("Error: \(error.localizedDescription)")
+        }
     }
 }
 
