@@ -22,7 +22,7 @@ actor OllamaNetworkService {
     }
     
     ///Checks Ollama server is online.
-    func isServerOnline() async throws {
+    func isServerOnline() async throws -> Bool {
         do {
             let urlString: String = "http://127.0.0.1:11434"
             guard let url = URL(string: urlString) else { throw URLError(.badURL) }
@@ -30,26 +30,30 @@ actor OllamaNetworkService {
             guard let response = response as? HTTPURLResponse else { throw URLError(.badServerResponse) }
             
             if 200..<300 ~= response.statusCode {
-                return
+                return true
             } else {
                 throw URLError(.badServerResponse)
             }
         } catch {
-            print(error.localizedDescription)
+            debugPrint(error.localizedDescription)
+            return false
         }
     }
     
     ///Get all available models from Ollama server.
     func getModels() async throws -> [OllamaModel]? {
         do {
-            try await self.isServerOnline()
-            let urlString: String = "http://127.0.0.1:11434/api/tags"
-            guard let url = URL(string: urlString) else { throw URLError(.badURL) }
-            let (data, _) = try await URLSession.shared.data(from: url)
-            let modelList = try JSONDecoder().decode(OllamaModels.self, from: data)
-            return modelList.models
+            if try await self.isServerOnline() {
+                let urlString: String = "http://127.0.0.1:11434/api/tags"
+                guard let url = URL(string: urlString) else { throw URLError(.badURL) }
+                let (data, _) = try await URLSession.shared.data(from: url)
+                let modelList = try JSONDecoder().decode(OllamaModels.self, from: data)
+                return modelList.models
+            } else {
+                throw URLError(.badServerResponse)
+            }
         } catch {
-            print("Error: \(error.localizedDescription)")
+            debugPrint("Error: \(error.localizedDescription)")
             return nil
         }
     }
@@ -79,7 +83,9 @@ actor OllamaNetworkService {
             let promptWithContext = try makePromptWithContext(chatContext: context, currentUserPrompt: userPrompt)
             
             //Check server status
-            try await self.isServerOnline()
+            if try await self.isServerOnline() == false {
+                throw URLError(.badServerResponse)
+            }
             
             //Preparing url
             let urlString: String = "http://127.0.0.1:11434/api/chat"
@@ -107,12 +113,14 @@ actor OllamaNetworkService {
                     let ollamaResponse = try JSONDecoder().decode(OllamaChatResponse.self, from: data)
                     return ollamaResponse
                 default:
-                    print("Failed to fetch data")
                     return nil
             }
         } catch {
-            print("Error: \(error.localizedDescription)")
-            return nil
+            let contextDatum: ContextDatum = ContextDatum(role: "assistant", content: "Ollama Error: \(error.localizedDescription)")
+            let ollamaErrorResponse = OllamaChatResponse(model: modelName ?? "Error Model", createdAt: Date().description,
+                                                    message: contextDatum, done: false, doneReason: nil)
+            debugPrint("Error: \(error.localizedDescription)")
+            return ollamaErrorResponse
         }
     }
     

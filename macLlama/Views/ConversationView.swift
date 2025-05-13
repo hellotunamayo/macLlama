@@ -14,6 +14,7 @@ struct Chat: Identifiable {
     let message: String
     let isUser: Bool
     let modelName: String
+    let done: Bool
 }
 
 struct ConversationView: View, OllamaNetworkServiceUser {
@@ -26,6 +27,7 @@ struct ConversationView: View, OllamaNetworkServiceUser {
     @State private var isThinking: Bool = false
     @State private var scrollToIndex: Int = 0
     @State private var isModelLoading: Bool = false
+    @State private var isServerOnline: Bool = false
     @State internal var ollamaNetworkService: OllamaNetworkService?
 
     let ollamaProfilePicture: NSImage? = NSImage(named: "llama_gray")
@@ -41,6 +43,10 @@ struct ConversationView: View, OllamaNetworkServiceUser {
             VStack {
                 if !self.modelList.isEmpty {
                     HStack{
+                        Circle()
+                            .fill(isServerOnline ? Color.green : Color.red)
+                            .frame(width: 8, height: 8)
+                        
                         Picker("Current Model", selection: $currentModel) {
                             ForEach(modelList, id: \.self) { model in
                                 Text(model.name)
@@ -82,6 +88,12 @@ struct ConversationView: View, OllamaNetworkServiceUser {
                         .buttonStyle(.bordered)
                     }
                     .padding()
+                    .task {
+                        guard let isServerOnline = try? await self.ollamaNetworkService?.isServerOnline() else { return }
+                        if isServerOnline {
+                            self.isServerOnline = true
+                        }
+                    }
                     
                     Divider()
                         .foregroundStyle(Color(nsColor: .systemGray))
@@ -93,9 +105,56 @@ struct ConversationView: View, OllamaNetworkServiceUser {
                     ScrollView {
                         ForEach(0..<self.chatHistory.count, id: \.self) { index in
                             
-                            ChatBubbleView(chatData: chatHistory[index])
-                                .padding()
-                                .id(index)
+                            if chatHistory[index].done {
+                                ChatBubbleView(chatData: chatHistory[index])
+                                    .padding(.horizontal)
+                                    .id(index)
+                            } else {
+                                Text("⚠️ An error occurred while communicating with Ollama.\nPlease check your Ollama server is running.")
+                                    .multilineTextAlignment(.center)
+                                    .padding()
+                                    .background(
+                                        Capsule().fill(.yellow.opacity(0.15))
+                                    )
+                                
+                                ChatBubbleView(chatData: chatHistory[index])
+                                    .padding()
+                                    .id(index)
+                                    .background(
+                                        Rectangle().fill(.red.opacity(0.15))
+                                    )
+                                
+                                if !self.isServerOnline {
+                                    Button {
+                                        Task {
+                                            guard let _ = await ShellService.runShellScript("ollama serve") else { return }
+                                            
+                                            //TODO: Replace this temporary solution!
+                                            sleep(1)
+                                            
+                                            if let isServerOnline = try await ollamaNetworkService?.isServerOnline() {
+                                                switch isServerOnline {
+                                                    case true:
+                                                        debugPrint("Server is online")
+                                                        self.isServerOnline = true
+                                                        ollamaNetworkService = OllamaNetworkService(stream: false)
+                                                        try await self.initModelList()
+                                                    case false:
+                                                        return
+                                                }
+                                            }
+                                            
+                                        }
+                                    } label: {
+                                        Label("Restart Server", systemImage: "power")
+                                    }
+                                    .padding()
+                                } else {
+                                    Text("Server is now online")
+                                        .foregroundStyle(Color(nsColor: .systemGray))
+                                        .padding()
+                                }
+                            }
                             
                             Divider()
                                 .foregroundStyle(Color(nsColor: .systemGray))
@@ -105,7 +164,10 @@ struct ConversationView: View, OllamaNetworkServiceUser {
                     }
                     .task {
                         do {
-                            try await self.initModelList()
+                            if let serverStatus = try await ollamaNetworkService?.isServerOnline() {
+                                self.isServerOnline = serverStatus
+                                try await self.initModelList()
+                            }
                         } catch {
                             print("Error: \(error.localizedDescription)")
                         }
@@ -152,23 +214,33 @@ extension ConversationView {
         self.isThinking = true
         
         //Set user prompt
-        let userChatModel = Chat(message: prompt, isUser: true, modelName: currentModel)
+        let userChatModel = Chat(message: prompt, isUser: true, modelName: currentModel, done: true)
         chatHistory.append(userChatModel)
         
+        //Filter the chat isn't error
+        let filteredHistory = chatHistory.filter { $0.done == true }
+        
         //Set response
-        guard let response = try await self.ollamaNetworkService?.sendConversationRequest(prompt: self.prompt, context: chatHistory) else {
+        if let response = try await self.ollamaNetworkService?.sendConversationRequest(prompt: self.prompt,
+                                                                                       context: filteredHistory) {
             self.isThinking = false
-            return
+            // Clear prompt and end thinking state
+            self.prompt = ""
+            self.isThinking = false
+            
+            let responseChatModel = Chat(message: response.message.content, isUser: false,
+                                         modelName: currentModel, done: response.done)
+            
+            if !responseChatModel.done {
+                self.isServerOnline = false
+            }
+            
+            chatHistory.append(responseChatModel)
+            self.scrollToIndex = self.chatHistory.count - 1
+        } else {
+            self.isThinking = false
+            print("Something Wrong!!")
         }
-        
-        // Clear prompt and end thinking state
-        self.prompt = ""
-        self.isThinking = false
-        
-        let responseChatModel = Chat(message: response.message.content, isUser: false, modelName: currentModel)
-        chatHistory.append(responseChatModel)
-        
-        self.scrollToIndex = self.chatHistory.count - 1
     }
     
     ///Initialize Model List
