@@ -77,5 +77,11 @@ struct StartServerView: View {
                 .font(.subheadline)
                 .padding(.top, Units.normalGap / 2)
         }
+        .padding(60)
+        .background(
+            RoundedRectangle(cornerRadius: 10)
+                .fill(Color(nsColor: NSColor.windowBackgroundColor))
+        )
+        .shadow(radius: 3)
     }
 }
