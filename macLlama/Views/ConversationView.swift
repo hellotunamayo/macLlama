@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import AppKit
 import SwiftData
 import MarkdownUI
 
@@ -149,8 +148,11 @@ struct ConversationView: View, OllamaNetworkServiceUser {
             }
         }
     }
+}
+
+//MARK: Internal functions
+extension ConversationView {
     
-    //MARK: Internal functions
     ///Send message to Ollama server
     private func sendMessage() async throws {
         if self.prompt.isEmpty {
