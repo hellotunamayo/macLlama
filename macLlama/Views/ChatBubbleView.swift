@@ -1,6 +1,6 @@
 //
 //  ChatBubbleView.swift
-//  OllamaUIApp
+//  macLlama
 //
 //  Created by Minyoung Yoo on 5/9/25.
 //

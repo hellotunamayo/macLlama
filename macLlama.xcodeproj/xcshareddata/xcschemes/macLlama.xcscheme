@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
    LastUpgradeVersion = "1600"
-   version = "1.7">
+   version = "2.2">
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES"
@@ -19,6 +19,43 @@
                BuildableName = "macLlama.app"
                BlueprintName = "macLlama"
                ReferencedContainer = "container:OllamaUIApp.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <AutocreatedTestPlanReference>
+            </AutocreatedTestPlanReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E1D4DA812DCB2661002407FD"
+               BuildableName = "macLlama.app"
+               BlueprintName = "macLlama"
+               ReferencedContainer = "container:macLlama.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E13451632DD0B58A00377907"
+               BuildableName = "macLlamaTest.xctest"
+               BlueprintName = "macLlamaTest"
+               ReferencedContainer = "container:macLlama.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -60,9 +97,18 @@
             BlueprintIdentifier = "E1D4DA812DCB2661002407FD"
             BuildableName = "macLlama.app"
             BlueprintName = "macLlama"
-            ReferencedContainer = "container:OllamaUIApp.xcodeproj">
+            ReferencedContainer = "container:macLlama.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "E1D4DA812DCB2661002407FD"
+            BuildableName = "macLlama.app"
+            BlueprintName = "macLlama"
+            ReferencedContainer = "container:OllamaUIApp.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -80,6 +126,15 @@
             ReferencedContainer = "container:OllamaUIApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "E1D4DA812DCB2661002407FD"
+            BuildableName = "macLlama.app"
+            BlueprintName = "macLlama"
+            ReferencedContainer = "container:OllamaUIApp.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

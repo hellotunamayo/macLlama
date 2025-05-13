@@ -1,6 +1,6 @@
 //
 //  Units.swift
-//  OllamaUIApp
+//  macLlama
 //
 //  Created by Minyoung Yoo on 5/8/25.
 //

@@ -1,6 +1,6 @@
 //
 //  OllamaUIAppApp.swift
-//  OllamaUIApp
+//  macLlama
 //
 //  Created by Minyoung Yoo on 5/7/25.
 //
@@ -20,7 +20,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 }
 
 @main
-struct OllamaUIAppApp: App {
+struct macLlamaApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @State var ollama: OllamaNetworkService?
 

@@ -1,6 +1,6 @@
 //
 //  ContentView.swift
-//  OllamaUIApp
+//  macLlama
 //
 //  Created by Minyoung Yoo on 5/7/25.
 //
