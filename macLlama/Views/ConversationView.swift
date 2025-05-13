@@ -18,7 +18,6 @@ struct Chat: Identifiable {
 
 struct ConversationView: View, OllamaNetworkServiceUser {
     @Environment(\.colorScheme) var colorScheme
-    @FocusState private var promptFocusState: Bool
     
     @State private var prompt: String = ""
     @State private var chatHistory: [Chat] = []
@@ -86,55 +85,9 @@ struct ConversationView: View, OllamaNetworkServiceUser {
                 
                 //MARK: Input Area
                 if !self.modelList.isEmpty {
-                    HStack {
-                        //Input text field
-                        VStack {
-                            TextEditor(text: $prompt)
-                                .font(.title2)
-                                .frame(height: 34)
-                                .clipShape(.rect(cornerRadius: 8))
-                                .focused($promptFocusState)
-                                .onKeyPress { keypress in
-                                    if keypress.key == .return {
-                                        Task {
-                                            try await self.sendMessage()
-                                        }
-                                        return .handled
-                                    } else {
-                                        return .ignored
-                                    }
-                                }
-                        }
-                        .frame(height: 60)
-                        .onAppear {
-                            self.promptFocusState = true
-                        }
-                        
-                        //Send button
-                        Button {
-                            if self.isThinking {
-                                print("One message at a time, please!")
-                            } else {
-                                Task {
-                                    try await self.sendMessage()
-                                }
-                            }
-                        } label: {
-                            if self.isThinking {
-                                ThinkingView()
-                            } else {
-                                Label("Send", systemImage: "paperplane.fill")
-                                    .font(.title2)
-                                    .padding(.horizontal, Units.normalGap)
-                                    .padding(.vertical, Units.normalGap / 3.5)
-                                    .frame(minWidth: 100)
-                            }
-                        }
-                        .tint(self.isThinking ? .gray : .accent)
-                        .buttonStyle(.borderedProminent)
+                    ChatInputView(isThinking: $isThinking, prompt: $prompt) {
+                        try await self.sendMessage()
                     }
-                    .frame(height: 60)
-                    .padding()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
