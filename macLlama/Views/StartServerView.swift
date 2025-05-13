@@ -73,7 +73,7 @@ struct StartServerView: View {
                 .multilineTextAlignment(.center)
                 .font(.subheadline)
             
-            Link("Bug report or feature request", destination: URL(string: "https://github.com/hellotunamayo/Ollama-UI-App/discussions")!)
+            Link("Bug report or feature request", destination: URL(string: "https://github.com/hellotunamayo/macLlama/discussions")!)
                 .font(.subheadline)
                 .padding(.top, Units.normalGap / 2)
         }
