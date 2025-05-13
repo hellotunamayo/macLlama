@@ -31,9 +31,9 @@ struct ChatBubbleView: View {
             }
             
             //MARK: Ollama Answer
-            VStack(alignment: .leading) {
-                if !chatData.isUser {
-                    HStack {
+            VStack(alignment: chatData.isUser ? .trailing : .leading) {
+                HStack {
+                    if !chatData.isUser {
                         VStack {
                             Text(chatData.modelName)
                                 .padding(.horizontal, Units.normalGap / 1.5)
@@ -44,51 +44,61 @@ struct ChatBubbleView: View {
                         .clipShape(Capsule())
                         
                         Spacer()
-                        
-                        VStack {
-                            Label("Copied to clipboard", systemImage: "checkmark.circle")
-                                .font(.system(size: 12))
-                                .padding(.horizontal, Units.normalGap / 1.3)
-                                .padding(.vertical, Units.normalGap / 4)
-                                .background(.green.opacity(colorScheme == .dark ? 0.5 : 0.3))
-                                .clipShape(Capsule())
-                                .opacity(messageAnimationFactor)
-                                .offset(x: messageAnimated ? 0 : messageAnimationFactor + 5)
-                        }
-                        .padding(.trailing, Units.normalGap / 4)
-                        
-                        Button {
-                            if !chatData.isUser {
-                                copyChatToClipboard()
-                            }
-                        } label: {
-                            Image(systemName: "document.on.document")
-                                .padding(.horizontal, Units.normalGap / 4)
-                                .padding(.vertical, Units.normalGap / 6)
-                        }
-                        .tint(.gray)
-                        .controlSize(.small)
-                        .buttonStyle(.bordered)
                     }
+                    
+                    VStack {
+                        Label("Copied to clipboard", systemImage: "checkmark.circle")
+                            .font(.system(size: 12))
+                            .padding(.horizontal, Units.normalGap / 1.3)
+                            .padding(.vertical, Units.normalGap / 4)
+                            .background(.green.opacity(colorScheme == .dark ? 0.5 : 0.3))
+                            .clipShape(Capsule())
+                            .opacity(messageAnimationFactor)
+                            .offset(x: messageAnimated ? 0 : messageAnimationFactor + 5)
+                    }
+                    .padding(.trailing, Units.normalGap / 4)
+                    
+                    Button {
+                        copyChatToClipboard()
+                    } label: {
+                        Image(systemName: "document.on.document")
+                            .padding(.horizontal, Units.normalGap / 4)
+                            .padding(.vertical, Units.normalGap / 6)
+                    }
+                    .tint(.gray)
+                    .controlSize(.small)
+                    .buttonStyle(.bordered)
                 }
                 
-                Markdown {
-                    MarkdownContent(chatData.message)
+                VStack {
+                    Markdown {
+                        MarkdownContent(chatData.message)
+                    }
+                    .markdownTextStyle(\.code) {
+                        FontFamilyVariant(.monospaced)
+                    }
+                    .markdownTextStyle(\.text) {
+                        BackgroundColor(nil)
+                        FontSize(18)
+                    }
+                    .markdownTheme(.gitHub)
                 }
-                .markdownTextStyle(\.code) {
-                    FontFamilyVariant(.monospaced)
-                }
-                .markdownTextStyle(\.text) {
-                    BackgroundColor(nil)
-                    FontSize(18)
-                }
-                .markdownTheme(.gitHub)
+                .padding(.horizontal, chatData.isUser ? Units.normalGap * 1.3 : 0)
+                .padding(.vertical, chatData.isUser ? Units.normalGap / 1.5 : 0)
+                .background(chatData.isUser ? .black.opacity(0.15) : .clear)
+                .clipShape(chatData.isUser ? RoundedRectangle(cornerRadius: 8) : RoundedRectangle(cornerRadius: 0))
+                .frame(maxWidth: .infinity, alignment: chatData.isUser ? .trailing : .leading)
             }
-            .padding(.horizontal, chatData.isUser ? Units.normalGap * 1.3 : 0)
-            .padding(.vertical, chatData.isUser ? Units.normalGap / 1.5 : 0)
-            .background(chatData.isUser ? .black.opacity(0.15) : .clear)
-            .clipShape(chatData.isUser ? RoundedRectangle(cornerRadius: 8) : RoundedRectangle(cornerRadius: 0))
-            .frame(maxWidth: .infinity, alignment: chatData.isUser ? .trailing : .leading)
+            
+            if chatData.isUser {
+                Circle()
+                    .fill(Color.gray)
+                    .overlay{
+                        Text("You")
+                            .font(.title2)
+                    }
+                    .frame(width: 50, height: 50)
+            }
         }
     }
     
