@@ -8,33 +8,42 @@
 import SwiftUI
 
 struct ChatInputView: View {
-    
+    @Environment(\.colorScheme) var colorScheme
     @Binding var isThinking: Bool
     @Binding var prompt: String
+    
+    let placeholders: [String] = [
+        "Ask me anything...",
+        "What’s on your mind?",
+        "Type your question here...",
+        "Need help? Start typing...",
+        "How can I assist you today?"
+    ]
     
     let sendMessage: () async throws -> Void
     
     var body: some View {
         HStack {
             //Input text field
-            VStack {
-                TextEditor(text: $prompt)
-                    .font(.title2)
-                    .frame(height: 34)
-                    .clipShape(.rect(cornerRadius: 8))
-//                    .focused($promptFocusState) //for future Feature
-                    .onKeyPress { keypress in
-                        if keypress.key == .return {
-                            Task {
-                                try await self.sendMessage()
-                            }
-                            return .handled
-                        } else {
-                            return .ignored
+            TextField(placeholders.randomElement() ?? "Ask me something...", text: $prompt)
+                .font(.title2)
+                .padding(.horizontal, 8)
+                .textFieldStyle(.plain)
+                .frame(height: 32)
+                .background(
+                    RoundedRectangle(cornerRadius: Units.normalGap / 3)
+                        .stroke(colorScheme == .dark ? Color.gray.opacity(0.5) : Color.black.opacity(0.5), lineWidth: 1)
+                )
+                .onKeyPress { keypress in
+                    if keypress.key == .return {
+                        Task {
+                            try await self.sendMessage()
                         }
+                        return .handled
+                    } else {
+                        return .ignored
                     }
-            }
-            .frame(height: 60)
+                }
             
             //Send button
             Button {
