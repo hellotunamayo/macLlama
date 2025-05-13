@@ -10,9 +10,9 @@ import MarkdownUI
 
 struct ChatBubbleView: View {
     @Environment(\.colorScheme) var colorScheme
-    
     @State private var messageAnimationFactor: CGFloat = 0.0
     @State private var messageAnimated: Bool = false
+    
     let chatData: Chat
     
     var body: some View {
@@ -90,15 +90,17 @@ struct ChatBubbleView: View {
                 .frame(maxWidth: .infinity, alignment: chatData.isUser ? .trailing : .leading)
             }
             
-            if chatData.isUser {
-                Circle()
-                    .fill(Color.gray)
-                    .overlay{
-                        Text("You")
-                            .font(.title2)
-                    }
-                    .frame(width: 50, height: 50)
-            }
+            //Remains for future features (User's chat avatar)
+//            if chatData.isUser {
+//                Circle()
+//                    .fill(Color.gray)
+//                    .overlay{
+//                        Text("You")
+//                            .frame(width: 50, height: 50)
+//                            .clipShape(Circle())
+//                    }
+//                    .frame(width: 50, height: 50)
+//            }
         }
     }
     
