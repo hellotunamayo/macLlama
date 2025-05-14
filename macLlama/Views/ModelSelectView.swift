@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ModelSelectView: View {
-    @Binding var isServerOnline: Bool
+    @EnvironmentObject var serverStatus: ServerStatusIndicator
     @Binding var modelList: [OllamaModel]
     @Binding var currentModel: String
     @Binding var ollamaNetworkService: OllamaNetworkService?
@@ -19,7 +19,7 @@ struct ModelSelectView: View {
     var body: some View {
         HStack{
             Circle()
-                .fill(isServerOnline ? Color.green : Color.red)
+                .fill(serverStatus.indicator ? Color.green : Color.red)
                 .frame(width: 8, height: 8)
             
             Picker("Current Model", selection: $currentModel) {
@@ -47,9 +47,9 @@ struct ModelSelectView: View {
                     
                     if try await OllamaNetworkService.isServerOnline() {
                         reloadButtonAction()
-                        isServerOnline = true
+                        serverStatus.updateServerStatusIndicatorTo(true)
                     } else {
-                        isServerOnline = false
+                        serverStatus.updateServerStatusIndicatorTo(false)
                         modelList.removeAll()
                     }
                     
@@ -74,9 +74,7 @@ struct ModelSelectView: View {
         .padding()
         .task {
             guard let isServerOnline = try? await OllamaNetworkService.isServerOnline() else { return }
-            if isServerOnline {
-                self.isServerOnline = true
-            }
+            serverStatus.updateServerStatusIndicatorTo(isServerOnline)
         }
     }
 }
