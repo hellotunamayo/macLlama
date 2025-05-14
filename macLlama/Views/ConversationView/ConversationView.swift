@@ -192,7 +192,7 @@ extension ConversationView {
         do {
             if let serverStatus = try? await OllamaNetworkService.isServerOnline() {
                 self.isServerOnline = serverStatus
-                modelList = try await ollamaNetworkService?.getModels() ?? []
+                modelList = try await OllamaNetworkService.getModels() ?? []
                 currentModel = modelList.first?.name ?? ""
                 await self.ollamaNetworkService?.changeModel(model: currentModel)
             }
