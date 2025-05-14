@@ -11,6 +11,7 @@ import MarkdownUI
 
 struct ConversationView: View, @preconcurrency OllamaNetworkServiceUser {
     @Environment(\.colorScheme) var colorScheme
+    @EnvironmentObject var serverStatus: ServerStatusIndicator
     
     @State private var prompt: String = ""
     @State private var chatHistory: [Chat] = []
@@ -19,7 +20,6 @@ struct ConversationView: View, @preconcurrency OllamaNetworkServiceUser {
     @State private var isThinking: Bool = false
     @State private var scrollToIndex: Int = 0
     @State private var isModelLoading: Bool = false
-    @State private var isServerOnline: Bool = false
     @State internal var ollamaNetworkService: OllamaNetworkService?
 
     let ollamaProfilePicture: NSImage? = NSImage(named: "llama_gray")
@@ -34,7 +34,7 @@ struct ConversationView: View, @preconcurrency OllamaNetworkServiceUser {
             //MARK: Conversation view
             VStack {
                 if !self.modelList.isEmpty {
-                    ModelSelectView(isServerOnline: $isServerOnline, modelList: $modelList,
+                    ModelSelectView(modelList: $modelList,
                                     currentModel: $currentModel, ollamaNetworkService: $ollamaNetworkService,
                                     isModelLoading: $isModelLoading) {
                         Task {
@@ -74,27 +74,23 @@ struct ConversationView: View, @preconcurrency OllamaNetworkServiceUser {
                                         Rectangle().fill(.red.opacity(0.15))
                                     )
                                 
-                                if !self.isServerOnline {
+                                if !serverStatus.indicator {
                                     Button {
                                         Task {
                                             guard let _ = await ShellService.runShellScript("ollama serve") else { return }
                                             
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                                Task {
-                                                    if let isServerOnline = try? await OllamaNetworkService.isServerOnline() {
-                                                        switch isServerOnline {
-                                                            case true:
-                                                                debugPrint("Server is online")
-                                                                self.isServerOnline = true
-                                                                ollamaNetworkService = OllamaNetworkService(stream: false)
-                                                                try await self.initModelList()
-                                                            case false:
-                                                                return
-                                                        }
-                                                    }
+                                            try? await Task.sleep(for: .seconds(1))
+                                            
+                                            if let isServerOnline = try? await OllamaNetworkService.isServerOnline() {
+                                                switch isServerOnline {
+                                                    case true:
+                                                        debugPrint("Server is online")
+                                                        serverStatus.updateServerStatusIndicatorTo(true)
+                                                        try await self.initModelList()
+                                                    case false:
+                                                        return
                                                 }
                                             }
-                                            
                                         }
                                     } label: {
                                         Label("Restart Server", systemImage: "power")
@@ -177,7 +173,7 @@ extension ConversationView {
                                          modelName: currentModel, done: response.done)
             
             if !responseChatModel.done {
-                self.isServerOnline = false
+                serverStatus.updateServerStatusIndicatorTo(false)
             }
             
             chatHistory.append(responseChatModel)
@@ -192,13 +188,14 @@ extension ConversationView {
     private func initModelList() async throws {
         do {
             if let serverStatus = try? await OllamaNetworkService.isServerOnline() {
-                self.isServerOnline = serverStatus
+                self.serverStatus.updateServerStatusIndicatorTo(serverStatus)
                 modelList = try await OllamaNetworkService.getModels() ?? []
                 currentModel = modelList.first?.name ?? ""
                 await self.ollamaNetworkService?.changeModel(model: currentModel)
             }
         } catch {
-            print("Error: \(error.localizedDescription)")
+            debugPrint("ConversationViewError:")
+            debugPrint("Error: \(error.localizedDescription)")
         }
     }
 }
