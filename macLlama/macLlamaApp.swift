@@ -30,12 +30,14 @@ struct macLlamaApp: App {
                 ConversationView(ollamaNetworkService: ollama)
                     .navigationTitle("macLlama")
             }
+            .environmentObject(ServerStatusIndicator())
             .frame(minWidth: Units.appFrameMinWidth, idealWidth: Units.appFrameMinWidth,
                    minHeight: Units.appFrameMinHeight, idealHeight: Units.appFrameMinHeight)
         }
         
         MenuBarExtra("macLlama", image: "macLlama-menuIcon") {
             MenuBarExtraView()
+                .environmentObject(ServerStatusIndicator())
         }
     }
 }
