@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 import MarkdownUI
 
-struct ConversationView: View, OllamaNetworkServiceUser {
+struct ConversationView: View, @preconcurrency OllamaNetworkServiceUser {
     @Environment(\.colorScheme) var colorScheme
     
     @State private var prompt: String = ""
@@ -79,18 +79,19 @@ struct ConversationView: View, OllamaNetworkServiceUser {
                                         Task {
                                             guard let _ = await ShellService.runShellScript("ollama serve") else { return }
                                             
-                                            //TODO: Replace this temporary solution!
-                                            sleep(1)
-                                            
-                                            if let isServerOnline = try? await OllamaNetworkService.isServerOnline() {
-                                                switch isServerOnline {
-                                                    case true:
-                                                        debugPrint("Server is online")
-                                                        self.isServerOnline = true
-                                                        ollamaNetworkService = OllamaNetworkService(stream: false)
-                                                        try await self.initModelList()
-                                                    case false:
-                                                        return
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                                Task {
+                                                    if let isServerOnline = try? await OllamaNetworkService.isServerOnline() {
+                                                        switch isServerOnline {
+                                                            case true:
+                                                                debugPrint("Server is online")
+                                                                self.isServerOnline = true
+                                                                ollamaNetworkService = OllamaNetworkService(stream: false)
+                                                                try await self.initModelList()
+                                                            case false:
+                                                                return
+                                                        }
+                                                    }
                                                 }
                                             }
                                             
