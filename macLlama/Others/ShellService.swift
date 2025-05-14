@@ -6,8 +6,18 @@
 //
 
 import Foundation
+import AppKit
 
 actor ShellService {
+    
+    ///Open Terminal.app
+    static func openTerminal() async throws {
+        guard let appUrl = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.apple.Terminal")
+        else { return }
+        
+        try await NSWorkspace.shared.open([], withApplicationAt: appUrl,
+                                          configuration: NSWorkspace.OpenConfiguration() )
+    }
     
     ///Run shell script
     static func runShellScript(_ command: String) async -> String? {
