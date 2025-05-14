@@ -7,10 +7,11 @@
 
 import Foundation
 
-final class ServerStatus: ObservableObject {
-    private(set) var isRunning: Bool = false
+@MainActor
+final class ServerStatusIndicator: ObservableObject {
+    @Published private(set) var indicator: Bool = false
     
-    public func updateServerStatusTo(_ status: Bool) {
-        isRunning = status
+    func updateServerStatusIndicatorTo(_ status: Bool) {
+        self.indicator = status
     }
 }
