@@ -8,23 +8,31 @@
 import SwiftUI
 
 struct MenuBarExtraView: View {
-    @Environment(\.scenePhase) var scenePhase
-    @State private var isServerOnline: Bool = false
+    @EnvironmentObject var serverStatus: ServerStatusIndicator
+    
     let versionString: Any = Bundle.main.infoDictionary?["CFBundleShortVersionString"] ?? ""
     let buildString: Any = Bundle.main.infoDictionary?["CFBundleVersion"] ?? ""
     
     var body: some View {
         VStack {
             Text("macLlama v\(versionString) (\(buildString))")
+            HStack {
+                Text("Ollama server is \(serverStatus.indicator ? "on" : "off")")
+                    .foregroundStyle(serverStatus.indicator ? .green : .red)
+            }
             
             Divider()
             
             Button {
                 Task {
-                    if let serverStatus: Bool = try? await OllamaNetworkService.isServerOnline() {
-                        self.isServerOnline = serverStatus
-                    } else {
-                        self.isServerOnline = false
+                    if let _ = await ShellService.runShellScript("ollama serve") {
+                        
+                        try? await Task.sleep(for: .seconds(1))
+                        
+                        let status = try await OllamaNetworkService.isServerOnline()
+                        serverStatus.updateServerStatusIndicatorTo(status)
+                        debugPrint(serverStatus)
+                        
                     }
                 }
             } label: {
@@ -42,7 +50,8 @@ struct MenuBarExtraView: View {
             #if DEBUG
             Button {
                 Task {
-                    await ShellService.runShellScript("killall ollama")
+                    let _ = await ShellService.runShellScript("killall ollama")
+                    serverStatus.updateServerStatusIndicatorTo(false)
                 }
             } label: {
                 Text("Kill Ollama server")
@@ -61,13 +70,6 @@ struct MenuBarExtraView: View {
                 NSApplication.shared.terminate(nil)
             } label: {
                 Text("Quit macLlama")
-            }
-        }
-        .onChange(of: scenePhase) { _, _ in
-            Task {
-                let serverStatus = try await OllamaNetworkService.isServerOnline()
-                self.isServerOnline = serverStatus ? true : false
-                debugPrint(self.isServerOnline)
             }
         }
     }
