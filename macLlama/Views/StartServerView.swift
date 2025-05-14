@@ -49,8 +49,7 @@ struct StartServerView: View {
                 Task {
                     guard let _ = await ShellService.runShellScript("ollama serve") else { return }
                     
-                    //TODO: Replace this temporary solution!
-                    sleep(1)
+                    try? await Task.sleep(for: .seconds(1))
                     
                     ollamaNetworkService = OllamaNetworkService(stream: false)
                     try await startServerAction()
