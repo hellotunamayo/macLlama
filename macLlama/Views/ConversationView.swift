@@ -139,6 +139,7 @@ struct ConversationView: View, OllamaNetworkServiceUser {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .opacity(modelList.isEmpty ? 0.1 : 1)
             .overlay {
                 if self.modelList.isEmpty {
                     StartServerView(ollamaNetworkService: $ollamaNetworkService) {
