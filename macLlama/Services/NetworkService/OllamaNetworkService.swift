@@ -25,17 +25,18 @@ actor OllamaNetworkService {
     static func isServerOnline() async throws -> Bool {
         do {
             let urlString: String = "http://127.0.0.1:11434"
-            guard let url = URL(string: urlString) else { throw URLError(.badURL) }
+            guard let url = URL(string: urlString) else { return false }
             let (_, response) = try await URLSession.shared.data(from: url)
-            guard let response = response as? HTTPURLResponse else { throw URLError(.badServerResponse) }
+            guard let response = response as? HTTPURLResponse else { return false }
             
-            if 200..<300 ~= response.statusCode {
-                return true
-            } else {
-                throw URLError(.badServerResponse)
+            switch response.statusCode {
+                case 200..<300:
+                    return true
+                default:
+                    return false
             }
         } catch {
-            debugPrint(error.localizedDescription)
+//            debugPrint(error.localizedDescription)
             return false
         }
     }
@@ -50,7 +51,7 @@ actor OllamaNetworkService {
                 let modelList = try JSONDecoder().decode(OllamaModels.self, from: data)
                 return modelList.models
             } else {
-                throw URLError(.badServerResponse)
+                return nil
             }
         } catch {
             debugPrint("Error: \(error.localizedDescription)")
