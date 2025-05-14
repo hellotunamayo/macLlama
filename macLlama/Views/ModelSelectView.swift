@@ -44,9 +44,8 @@ struct ModelSelectView: View {
                 
                 Task {
                     self.isModelLoading = true
-                    guard let ollamaNetworkService = ollamaNetworkService else { return }
                     
-                    if try await ollamaNetworkService.isServerOnline() {
+                    if try await OllamaNetworkService.isServerOnline() {
                         reloadButtonAction()
                         isServerOnline = true
                     } else {
@@ -74,7 +73,7 @@ struct ModelSelectView: View {
         }
         .padding()
         .task {
-            guard let isServerOnline = try? await self.ollamaNetworkService?.isServerOnline() else { return }
+            guard let isServerOnline = try? await OllamaNetworkService.isServerOnline() else { return }
             if isServerOnline {
                 self.isServerOnline = true
             }

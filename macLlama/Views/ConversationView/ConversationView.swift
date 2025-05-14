@@ -9,14 +9,6 @@ import SwiftUI
 import SwiftData
 import MarkdownUI
 
-struct Chat: Identifiable {
-    var id: UUID = UUID()
-    let message: String
-    let isUser: Bool
-    let modelName: String
-    let done: Bool
-}
-
 struct ConversationView: View, OllamaNetworkServiceUser {
     @Environment(\.colorScheme) var colorScheme
     
@@ -90,7 +82,7 @@ struct ConversationView: View, OllamaNetworkServiceUser {
                                             //TODO: Replace this temporary solution!
                                             sleep(1)
                                             
-                                            if let isServerOnline = try await ollamaNetworkService?.isServerOnline() {
+                                            if let isServerOnline = try? await OllamaNetworkService.isServerOnline() {
                                                 switch isServerOnline {
                                                     case true:
                                                         debugPrint("Server is online")
@@ -198,7 +190,7 @@ extension ConversationView {
     ///Initialize Model List
     private func initModelList() async throws {
         do {
-            if let serverStatus = try await ollamaNetworkService?.isServerOnline() {
+            if let serverStatus = try? await OllamaNetworkService.isServerOnline() {
                 self.isServerOnline = serverStatus
                 modelList = try await ollamaNetworkService?.getModels() ?? []
                 currentModel = modelList.first?.name ?? ""

@@ -22,7 +22,7 @@ actor OllamaNetworkService {
     }
     
     ///Checks Ollama server is online.
-    func isServerOnline() async throws -> Bool {
+    static func isServerOnline() async throws -> Bool {
         do {
             let urlString: String = "http://127.0.0.1:11434"
             guard let url = URL(string: urlString) else { throw URLError(.badURL) }
@@ -41,9 +41,9 @@ actor OllamaNetworkService {
     }
     
     ///Get all available models from Ollama server.
-    func getModels() async throws -> [OllamaModel]? {
+    static func getModels() async throws -> [OllamaModel]? {
         do {
-            if try await self.isServerOnline() {
+            if try await OllamaNetworkService.isServerOnline() {
                 let urlString: String = "http://127.0.0.1:11434/api/tags"
                 guard let url = URL(string: urlString) else { throw URLError(.badURL) }
                 let (data, _) = try await URLSession.shared.data(from: url)
@@ -83,7 +83,7 @@ actor OllamaNetworkService {
             let promptWithContext = try makePromptWithContext(chatContext: context, currentUserPrompt: userPrompt)
             
             //Check server status
-            if try await self.isServerOnline() == false {
+            if try await OllamaNetworkService.isServerOnline() == false {
                 throw URLError(.badServerResponse)
             }
             
@@ -127,7 +127,7 @@ actor OllamaNetworkService {
     ///Set initial model
     private func setInitialModel() async {
         Task {
-            guard let models = try await self.getModels() else { return }
+            guard let models = try await OllamaNetworkService.getModels() else { return }
             self.modelName = models.first?.name ?? nil
         }
     }
