@@ -44,9 +44,19 @@ struct ModelSelectView: View {
                 
                 Task {
                     self.isModelLoading = true
-                    reloadButtonAction()
+                    guard let ollamaNetworkService = ollamaNetworkService else { return }
+                    
+                    if try await ollamaNetworkService.isServerOnline() {
+                        reloadButtonAction()
+                        isServerOnline = true
+                    } else {
+                        isServerOnline = false
+                        modelList.removeAll()
+                    }
+                    
                     self.isModelLoading = false
                 }
+                
             } label: {
                 VStack {
                     if self.isModelLoading {
