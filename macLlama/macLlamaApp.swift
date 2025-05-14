@@ -35,52 +35,7 @@ struct macLlamaApp: App {
         }
         
         MenuBarExtra("macLlama", image: "macLlama-menuIcon") {
-            let versionString: Any = Bundle.main.infoDictionary?["CFBundleShortVersionString"] ?? ""
-            let buildString: Any = Bundle.main.infoDictionary?["CFBundleVersion"] ?? ""
-            Text("macLlama v\(versionString) (\(buildString))")
-            
-            Divider()
-            
-            Button {
-                Task {
-                    await ShellService.runShellScript("ollama serve")
-                }
-            } label: {
-                Text("Start Ollama Server")
-            }
-            
-            Button {
-                Task {
-                    try await ShellService.openTerminal()
-                }
-            } label: {
-                Text("Open Terminal.app")
-            }
-            
-            #if DEBUG
-            Button {
-                Task {
-                    await ShellService.runShellScript("killall ollama")
-                }
-            } label: {
-                Text("Kill Ollama server")
-                    .foregroundStyle(.red)
-            }
-            #endif
-            
-            Divider()
-            
-            Link("Check for Update", destination: URL(string: "https://github.com/hellotunamayo/macLlama/releases")!)
-            Link("macLlama on GitHub", destination: URL(string: "https://github.com/hellotunamayo/macLlama")!)
-            
-            Divider()
-            
-            Button {
-                NSApplication.shared.terminate(nil)
-            } label: {
-                Text("Quit macLlama")
-            }
+            MenuBarExtraView()
         }
-        
     }
 }
