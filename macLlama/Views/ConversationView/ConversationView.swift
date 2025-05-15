@@ -13,13 +13,21 @@ struct ConversationView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var serverStatus: ServerStatusIndicator
     
+    //Chat history state
     @State private var history: [(isUser: Bool, modelName: String, message: String)] = []
+    
+    //Request state
     @State private var prompt: String = ""
     @State private var modelList: [OllamaModel] = []
-    @State private var currentModel: String = ""
     @State private var isThinking: Bool = false
+    
+    //Model selector state
+    @State private var currentModel: String = ""
     @State private var isModelLoading: Bool = false
-    @State private var tempMessage: String = ""
+    
+    //Auto scrolling state
+    @State private var isAutoScrolling: Bool = false
+    @State private var autoScrollTask: Task<Void, Never>?
     
     let chatService: OllamaChatService = OllamaChatService()
     let ollamaNetworkService: OllamaNetworkService = OllamaNetworkService()
@@ -75,8 +83,18 @@ struct ConversationView: View {
                         }
                     }
                     .onChange(of: history.count) { _, _ in
-                        withAnimation {
-                            proxy.scrollTo(history.count - 1, anchor: .bottom)
+                        autoScrollTask = Task {
+                            while !Task.isCancelled {
+                                try? await Task.sleep(nanoseconds: 1_500_000_000)
+                                
+                                withAnimation(.linear(duration: 2.0)) {
+                                    proxy.scrollTo(history.count - 1, anchor: .bottom)
+                                }
+                                
+                                if !isAutoScrolling {
+                                    break
+                                }
+                            }
                         }
                     }
                 }
@@ -112,6 +130,9 @@ extension ConversationView {
             //Reset user prompt
             self.prompt.removeAll()
             
+            //Enable auto scrolling
+            self.isAutoScrolling = true
+            
             self.history.append((isUser: false, modelName: self.currentModel, message: ""))
             
             //Start stream from model
@@ -120,15 +141,23 @@ extension ConversationView {
                 self.history[self.history.count - 1].message = update
             }
             
-            //Action when stream ends
+            //Save last response to history
             self.history[self.history.count - 1].message = await chatService.allMessages().last?.content ?? ""
+            
+            //Reset state
             self.isThinking = false
+            self.isAutoScrolling = false
+            self.autoScrollTask = nil
         } else {
             debugPrint("ConversationViewError:")
             debugPrint("Server is not online")
             serverStatus.updateServerStatusIndicatorTo(false)
             self.modelList.removeAll()
+            
+            //Reset state
             self.isThinking = false
+            self.isAutoScrolling = false
+            self.autoScrollTask = nil
         }
     }
     
