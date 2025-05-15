@@ -13,7 +13,7 @@ struct ChatBubbleView: View {
     @State private var messageAnimationFactor: CGFloat = 0.0
     @State private var messageAnimated: Bool = false
     
-    let chatData: Chat
+    let chatData: (isUser: Bool, modelName: String, message: String)
     
     var body: some View {
         HStack(alignment: .top) {
