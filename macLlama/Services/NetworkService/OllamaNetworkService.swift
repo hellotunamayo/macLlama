@@ -65,10 +65,10 @@ actor OllamaNetworkService {
     }
     
     ///Make chat history array for maintaing conversation context.
-    func makePromptWithContext(chatContext: [Chat], currentUserPrompt: ContextDatum) throws -> [ContextDatum] {
-        var data: [ContextDatum] = []
+    func makePromptWithContext(chatContext: [Chat], currentUserPrompt: OllamaChatMessage) throws -> [OllamaChatMessage] {
+        var data: [OllamaChatMessage] = []
         chatContext.forEach { chat in
-            let newElement: ContextDatum = ContextDatum(role: chat.isUser ? "user" : "assistant",
+            let newElement: OllamaChatMessage = OllamaChatMessage(role: chat.isUser ? "user" : "assistant",
                                                         content: chat.message)
             data.append(newElement)
         }
@@ -80,7 +80,7 @@ actor OllamaNetworkService {
     func sendConversationRequest(prompt: String, context: [Chat]) async throws -> OllamaChatResponse? {
         do {
             //Set Context
-            let userPrompt: ContextDatum = ContextDatum(role: "user", content: prompt)
+            let userPrompt: OllamaChatMessage = OllamaChatMessage(role: "user", content: prompt)
             let promptWithContext = try makePromptWithContext(chatContext: context, currentUserPrompt: userPrompt)
             
             //Check server status
@@ -117,7 +117,7 @@ actor OllamaNetworkService {
                     return nil
             }
         } catch {
-            let contextDatum: ContextDatum = ContextDatum(role: "assistant", content: "Ollama Error: \(error.localizedDescription)")
+            let contextDatum: OllamaChatMessage = OllamaChatMessage(role: "assistant", content: "Ollama Error: \(error.localizedDescription)")
             let ollamaErrorResponse = OllamaChatResponse(model: modelName ?? "Error Model", createdAt: Date().description,
                                                     message: contextDatum, done: false, doneReason: nil)
             debugPrint("Error: \(error.localizedDescription)")

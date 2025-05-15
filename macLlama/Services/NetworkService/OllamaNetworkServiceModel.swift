@@ -6,21 +6,22 @@
 //
 import Foundation
 
-struct ContextDatum: Codable {
+struct OllamaChatMessage: Codable, Identifiable {
+    var id: UUID = UUID()
     let role: String
     let content: String
 }
 
 struct OllamaRequest: Encodable {
     let model: String
-    let messages: [ContextDatum]
+    let messages: [OllamaChatMessage]
     let stream: Bool
 }
 
 struct OllamaChatResponse: Codable {
     let model: String
     let createdAt: String
-    let message: ContextDatum
+    let message: OllamaChatMessage
     let done: Bool
     let doneReason: String?
     
