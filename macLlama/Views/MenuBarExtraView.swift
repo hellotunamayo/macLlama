@@ -20,6 +20,10 @@ struct MenuBarExtraView: View {
                 Text("Ollama server is \(serverStatus.indicator ? "on" : "off")")
                     .foregroundStyle(serverStatus.indicator ? .green : .red)
             }
+            .task {
+                let status = try? await OllamaNetworkService.isServerOnline()
+                serverStatus.updateServerStatusIndicatorTo(status ?? false)
+            }
             
             Divider()
             
