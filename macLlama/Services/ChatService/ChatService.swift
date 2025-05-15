@@ -8,7 +8,7 @@
 import Foundation
 
 actor OllamaChatService {
-    private var messages: [ChatMessage] = []
+    private(set) var messages: [ChatMessage] = []
     
     func sendMessage(model: String, userInput: String) async throws -> AsyncStream<String> {
         messages.append(ChatMessage(role: "user", content: userInput))
@@ -17,15 +17,16 @@ actor OllamaChatService {
             throw URLError(.badURL)
         }
         
+        //Set request & header
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
+        //Set request body
         let requestBody: [String: Any] = [
             "model": model,
-            "messages": try messages
-                .map { try JSONEncoder().encode($0) }
-                .map { try JSONSerialization.jsonObject(with: $0) },
+            "messages": try messages.map { try JSONEncoder().encode($0) }
+                                    .map { try JSONSerialization.jsonObject(with: $0) },
             "stream": true
         ]
         
@@ -33,8 +34,10 @@ actor OllamaChatService {
         
         let (bytesStream, _) = try await URLSession.shared.bytes(for: request)
         
+        //Prepare response from Ollama
         var assistantContent = ""
         
+        //Broadcast model response chunks
         let stream = AsyncStream { continuation in
             Task {
                 do {
@@ -63,6 +66,7 @@ actor OllamaChatService {
         return stream
     }
     
+    ///Return full conversation list
     func allMessages() -> [ChatMessage] {
         return messages
     }
