@@ -6,8 +6,7 @@
 //
 import Foundation
 
-struct OllamaChatMessage: Codable, Identifiable {
-    var id: UUID = UUID()
+struct OllamaChatMessage: Codable {
     let role: String
     let content: String
 }
