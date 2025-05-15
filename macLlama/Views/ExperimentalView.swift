@@ -1,14 +1,11 @@
 //
-//  macLlamaTest.swift
-//  macLlamaTest
+//  ExperimentalView.swift
+//  macLlama
 //
-//  Created by Minyoung Yoo on 5/11/25.
+//  Created by Minyoung Yoo on 5/15/25.
 //
 
-import Foundation
-import Testing
-@testable import macLlama
-import SwiftUICore
+import SwiftUI
 
 struct ChatMessage: Identifiable, Codable, Equatable {
     var id: UUID = UUID()
@@ -33,8 +30,8 @@ actor OllamaChatService {
         let requestBody: [String: Any] = [
             "model": "gemma3:4b",
             "messages": try messages
-                                .map { try JSONEncoder().encode($0) }
-                                .map { try JSONSerialization.jsonObject(with: $0) },
+                .map { try JSONEncoder().encode($0) }
+                .map { try JSONSerialization.jsonObject(with: $0) },
             "stream": true
         ]
         
@@ -77,20 +74,26 @@ actor OllamaChatService {
     }
 }
 
-struct macLlamaTest: View {
-    
+struct ExperimentalView: View {
     @State private var text: String = ""
     
     let chatService = OllamaChatService()
     
     var body: some View {
-        Text(text)
-            .onChange(of: text) { _, newValue in
-                print(newValue)
+        VStack {
+            Text(text)
+            Button {
+                Task {
+                    try await self.test()
+                }
+            } label: {
+                Text("run")
             }
+
+        }
     }
     
-    @Test func example() async throws {
+    private func test() async throws {
         let stream = try await chatService.sendMessage(userInput: "Hello")
         for await update in stream {
             print("Streaming: \(update)")
@@ -98,5 +101,8 @@ struct macLlamaTest: View {
         }
         // Write your test here and use APIs like `#expect(...)` to check expected conditions.
     }
-    
+}
+
+#Preview {
+    ExperimentalView()
 }
