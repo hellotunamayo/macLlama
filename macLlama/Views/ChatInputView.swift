@@ -12,20 +12,12 @@ struct ChatInputView: View {
     @Binding var isThinking: Bool
     @Binding var prompt: String
     
-    let placeholders: [String] = [
-        "Ask me anything...",
-        "What’s on your mind?",
-        "Type your question here...",
-        "Need help? Start typing...",
-        "How can I assist you today?"
-    ]
-    
     let sendMessage: () async throws -> Void
     
     var body: some View {
         HStack {
             //Input text field
-            TextField(placeholders.randomElement() ?? "Ask me something...", text: $prompt)
+            TextField("Ask me something...", text: $prompt)
                 .font(.title2)
                 .padding(.horizontal, 8)
                 .textFieldStyle(.plain)
