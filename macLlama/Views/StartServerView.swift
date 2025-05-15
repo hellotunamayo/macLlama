@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct StartServerView: View {
+    @EnvironmentObject var serverStatus: ServerStatusIndicator
     @State private var ollamaWarningBouncingYOffset: CGFloat = 0
-    @Binding var ollamaNetworkService: OllamaNetworkService?
     
+    let ollamaNetworkService: OllamaNetworkService = OllamaNetworkService()
     let startServerAction: () async throws -> Void
     
     var body: some View {
@@ -51,7 +52,6 @@ struct StartServerView: View {
                     
                     try? await Task.sleep(for: .seconds(1))
                     
-                    ollamaNetworkService = OllamaNetworkService(stream: false)
                     try await startServerAction()
                 }
             } label: {

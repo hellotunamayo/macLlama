@@ -9,24 +9,21 @@ import SwiftUI
 import SwiftData
 import MarkdownUI
 
-struct ConversationView: View, @preconcurrency OllamaNetworkServiceUser {
+struct ConversationView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var serverStatus: ServerStatusIndicator
     
+    @State private var history: [(isUser: Bool, modelName: String, message: String)] = []
     @State private var prompt: String = ""
-    @State private var chatHistory: [Chat] = []
     @State private var modelList: [OllamaModel] = []
     @State private var currentModel: String = ""
     @State private var isThinking: Bool = false
-    @State private var scrollToIndex: Int = 0
     @State private var isModelLoading: Bool = false
-    @State internal var ollamaNetworkService: OllamaNetworkService?
-
-    let ollamaProfilePicture: NSImage? = NSImage(named: "llama_gray")
+    @State private var tempMessage: String = ""
     
-    //experimental feature
-    @State private var conversationText: String = ""
-    let chatService = OllamaChatService()
+    let chatService: OllamaChatService = OllamaChatService()
+    let ollamaNetworkService: OllamaNetworkService = OllamaNetworkService()
+    let ollamaProfilePicture: NSImage? = NSImage(named: "llama_gray")
     
     var body: some View {
         ZStack {
@@ -38,9 +35,8 @@ struct ConversationView: View, @preconcurrency OllamaNetworkServiceUser {
             //MARK: Conversation view
             VStack {
                 if !self.modelList.isEmpty {
-                    ModelSelectView(modelList: $modelList,
-                                    currentModel: $currentModel, ollamaNetworkService: $ollamaNetworkService,
-                                    isModelLoading: $isModelLoading) {
+                    ModelSelectView(modelList: $modelList, currentModel: $currentModel,
+                                    isModelLoading: $isModelLoading, ollamaNetworkService: self.ollamaNetworkService) {
                         Task {
                             try? await self.initModelList()
                         }
@@ -51,28 +47,36 @@ struct ConversationView: View, @preconcurrency OllamaNetworkServiceUser {
                         .opacity(self.colorScheme == .dark ? 1.0 : 0.9)
                 }
                 
-                //MARK: Chat Scroll View
+                //experimental
                 ScrollViewReader { proxy in
                     ScrollView {
-                        ForEach(0..<self.chatHistory.count, id: \.self) { index in
-                            
-                            ChatBubbleView(chatData: chatHistory[index])
+                        ForEach(0..<self.history.count, id: \.self) { index in
+                            if history[index].message != "" {
+
+                                ChatBubbleView(chatData: history[index])
+                                    .padding()
+                                    .id(index)
+                                
+                                Divider()
+                                    .foregroundStyle(Color(nsColor: .systemGray))
+                                    .opacity(self.colorScheme == .dark ? 1.0 : 0.9)
+                            } else {
+                                VStack {
+                                    ProgressView()
+                                        .frame(width: 14, height: 14)
+                                        .padding(.bottom)
+                                    
+                                    Text("Ollama is Thinking...")
+                                        .font(.title3)
+                                        .foregroundStyle(.secondary)
+                                }
                                 .padding()
-                                .id(index)
-                            
-                            Divider()
-                                .foregroundStyle(Color(nsColor: .systemGray))
-                                .opacity(self.colorScheme == .dark ? 1.0 : 0.9)
-                            
+                            }
                         }
                     }
-                    .task {
-                        try? await initModelList()
-                    }
-                    .onChange(of: scrollToIndex) { _, newValue in
-                        self.scrollToIndex = newValue
+                    .onChange(of: history.count) { _, _ in
                         withAnimation {
-                            proxy.scrollTo(newValue, anchor: .center)
+                            proxy.scrollTo(history.count - 1, anchor: .bottom)
                         }
                     }
                 }
@@ -80,7 +84,9 @@ struct ConversationView: View, @preconcurrency OllamaNetworkServiceUser {
                 //MARK: Input Area
                 if !self.modelList.isEmpty {
                     ChatInputView(isThinking: $isThinking, prompt: $prompt) {
-                        try await self.sendMessage()
+                        self.history.append((isUser: true, modelName: self.currentModel, message: self.prompt))
+                        self.isThinking = true
+                        try await self.sendChat(model: self.currentModel, prompt: self.prompt)
                     }
                 }
             }
@@ -88,7 +94,7 @@ struct ConversationView: View, @preconcurrency OllamaNetworkServiceUser {
             .opacity(modelList.isEmpty ? 0.1 : 1)
             .overlay {
                 if self.modelList.isEmpty {
-                    StartServerView(ollamaNetworkService: $ollamaNetworkService) {
+                    StartServerView() {
                         try await self.initModelList()
                     }
                     .padding(.top, Units.normalGap * -3)
@@ -100,53 +106,29 @@ struct ConversationView: View, @preconcurrency OllamaNetworkServiceUser {
 
 //MARK: Internal functions
 extension ConversationView {
-    
-    private func sendChat(prompt: String) async throws {
-        let stream = try await chatService.sendMessage(model: "gemma3:4b", userInput: prompt)
-        for await update in stream {
-            print("Streaming: \(update)")
-            self.conversationText = update
-        }
-        // Write your test here and use APIs like `#expect(...)` to check expected conditions.
-    }
-    
-    ///Send message to Ollama server
-    private func sendMessage() async throws {
-        if self.prompt.isEmpty {
-            print("Prompt must be filled.")
-            return
-        }
-        
-        //Enter thinking state
-        self.isThinking = true
-        
-        //Set user prompt
-        let userChatModel = Chat(message: prompt, isUser: true, modelName: currentModel, done: true)
-        chatHistory.append(userChatModel)
-        
-        //Filter the chat isn't error
-        let filteredHistory = chatHistory.filter { $0.done == true }
-        
-        //Set response
-        if let response = try await self.ollamaNetworkService?.sendConversationRequest(prompt: self.prompt,
-                                                                                       context: filteredHistory) {
-            self.isThinking = false
-            // Clear prompt and end thinking state
-            self.prompt = ""
-            self.isThinking = false
+    ///Send Chat to Ollama server
+    private func sendChat(model: String, prompt: String) async throws {
+        if try await OllamaNetworkService.isServerOnline() { //server online check
+            //Reset user prompt
+            self.prompt.removeAll()
             
-            let responseChatModel = Chat(message: response.message.content, isUser: false,
-                                         modelName: currentModel, done: response.done)
+            self.history.append((isUser: false, modelName: self.currentModel, message: ""))
             
-            if !responseChatModel.done {
-                serverStatus.updateServerStatusIndicatorTo(false)
+            //Start stream from model
+            let stream = try await chatService.sendMessage(model: model, userInput: prompt)
+            for await update in stream {
+                self.history[self.history.count - 1].message = update
             }
             
-            chatHistory.append(responseChatModel)
-            self.scrollToIndex = self.chatHistory.count - 1
-        } else {
+            //Action when stream ends
+            self.history[self.history.count - 1].message = await chatService.allMessages().last?.content ?? ""
             self.isThinking = false
-            print("Something Wrong!!")
+        } else {
+            debugPrint("ConversationViewError:")
+            debugPrint("Server is not online")
+            serverStatus.updateServerStatusIndicatorTo(false)
+            self.modelList.removeAll()
+            self.isThinking = false
         }
     }
     
@@ -157,7 +139,7 @@ extension ConversationView {
                 self.serverStatus.updateServerStatusIndicatorTo(serverStatus)
                 modelList = try await OllamaNetworkService.getModels() ?? []
                 currentModel = modelList.first?.name ?? ""
-                await self.ollamaNetworkService?.changeModel(model: currentModel)
+                await self.ollamaNetworkService.changeModel(model: currentModel)
             }
         } catch {
             debugPrint("ConversationViewError:")

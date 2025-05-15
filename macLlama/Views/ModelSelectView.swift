@@ -11,9 +11,9 @@ struct ModelSelectView: View {
     @EnvironmentObject var serverStatus: ServerStatusIndicator
     @Binding var modelList: [OllamaModel]
     @Binding var currentModel: String
-    @Binding var ollamaNetworkService: OllamaNetworkService?
     @Binding var isModelLoading: Bool
     
+    let ollamaNetworkService: OllamaNetworkService
     let reloadButtonAction: () -> Void
     
     var body: some View {
@@ -33,7 +33,7 @@ struct ModelSelectView: View {
             .frame(width: Units.appFrameMinWidth * 0.5)
             .onChange(of: currentModel) { oldValue, newValue in
                 Task {
-                    await self.ollamaNetworkService?.changeModel(model: newValue)
+                    await self.ollamaNetworkService.changeModel(model: newValue)
                 }
             }
             

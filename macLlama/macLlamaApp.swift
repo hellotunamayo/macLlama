@@ -27,7 +27,7 @@ struct macLlamaApp: App {
     var body: some Scene {
         Window("macLlama", id: "main") {
             NavigationStack {
-                ConversationView(ollamaNetworkService: ollama)
+                ConversationView()
                     .navigationTitle("macLlama")
             }
             .environmentObject(ServerStatusIndicator())
