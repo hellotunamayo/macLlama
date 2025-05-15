@@ -14,3 +14,9 @@ struct Chat: Identifiable {
     let modelName: String
     let done: Bool
 }
+
+struct ChatMessage: Identifiable, Codable, Equatable {
+    var id: UUID = UUID()
+    let role: String
+    var content: String
+}

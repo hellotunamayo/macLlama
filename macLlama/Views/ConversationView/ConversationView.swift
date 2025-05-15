@@ -24,6 +24,10 @@ struct ConversationView: View, @preconcurrency OllamaNetworkServiceUser {
 
     let ollamaProfilePicture: NSImage? = NSImage(named: "llama_gray")
     
+    //experimental feature
+    @State private var conversationText: String = ""
+    let chatService = OllamaChatService()
+    
     var body: some View {
         ZStack {
             //MARK: Background View(Llama Image)
@@ -52,56 +56,9 @@ struct ConversationView: View, @preconcurrency OllamaNetworkServiceUser {
                     ScrollView {
                         ForEach(0..<self.chatHistory.count, id: \.self) { index in
                             
-                            if chatHistory[index].done {
-                                ChatBubbleView(chatData: chatHistory[index])
-                                    .padding()
-                                    .id(index)
-                            } else {
-                                VStack {
-                                    Text("⚠️ Please check your Ollama server is running.")
-                                        .multilineTextAlignment(.center)
-                                        .padding()
-                                        .background(
-                                            Capsule().fill(.yellow.opacity(0.15))
-                                        )
-                                }
+                            ChatBubbleView(chatData: chatHistory[index])
                                 .padding()
-                                
-                                ChatBubbleView(chatData: chatHistory[index])
-                                    .padding()
-                                    .id(index)
-                                    .background(
-                                        Rectangle().fill(.red.opacity(0.15))
-                                    )
-                                
-                                if !serverStatus.indicator {
-                                    Button {
-                                        Task {
-                                            guard let _ = await ShellService.runShellScript("ollama serve") else { return }
-                                            
-                                            try? await Task.sleep(for: .seconds(1))
-                                            
-                                            if let isServerOnline = try? await OllamaNetworkService.isServerOnline() {
-                                                switch isServerOnline {
-                                                    case true:
-                                                        debugPrint("Server is online")
-                                                        serverStatus.updateServerStatusIndicatorTo(true)
-                                                        try await self.initModelList()
-                                                    case false:
-                                                        return
-                                                }
-                                            }
-                                        }
-                                    } label: {
-                                        Label("Restart Server", systemImage: "power")
-                                    }
-                                    .padding()
-                                } else {
-                                    Text("Server is now online")
-                                        .foregroundStyle(Color(nsColor: .systemGray))
-                                        .padding()
-                                }
-                            }
+                                .id(index)
                             
                             Divider()
                                 .foregroundStyle(Color(nsColor: .systemGray))
@@ -143,6 +100,15 @@ struct ConversationView: View, @preconcurrency OllamaNetworkServiceUser {
 
 //MARK: Internal functions
 extension ConversationView {
+    
+    private func sendChat(prompt: String) async throws {
+        let stream = try await chatService.sendMessage(model: "gemma3:4b", userInput: prompt)
+        for await update in stream {
+            print("Streaming: \(update)")
+            self.conversationText = update
+        }
+        // Write your test here and use APIs like `#expect(...)` to check expected conditions.
+    }
     
     ///Send message to Ollama server
     private func sendMessage() async throws {
