@@ -59,26 +59,28 @@ struct ConversationView: View {
                 ScrollViewReader { proxy in
                     ScrollView {
                         ForEach(0..<self.history.count, id: \.self) { index in
-                            if history[index].message != "" {
+                            LazyVStack {
+                                if history[index].message != "" {
 
-                                ChatBubbleView(chatData: history[index])
-                                    .padding()
-                                    .id(index)
-                                
-                                Divider()
-                                    .foregroundStyle(Color(nsColor: .systemGray))
-                                    .opacity(self.colorScheme == .dark ? 1.0 : 0.9)
-                            } else {
-                                VStack {
-                                    ProgressView()
-                                        .frame(width: 14, height: 14)
-                                        .padding(.bottom)
+                                    ChatBubbleView(chatData: history[index])
+                                        .padding()
+                                        .id(index)
                                     
-                                    Text("Ollama is Thinking...")
-                                        .font(.title3)
-                                        .foregroundStyle(.secondary)
+                                    Divider()
+                                        .foregroundStyle(Color(nsColor: .systemGray))
+                                        .opacity(self.colorScheme == .dark ? 1.0 : 0.9)
+                                } else {
+                                    VStack {
+                                        ProgressView()
+                                            .frame(width: 14, height: 14)
+                                            .padding(.bottom)
+                                        
+                                        Text("Ollama is Thinking...")
+                                            .font(.title3)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    .padding()
                                 }
-                                .padding()
                             }
                         }
                     }
@@ -98,6 +100,14 @@ struct ConversationView: View {
                         }
                     }
                 }
+                
+                #if DEBUG
+                Button {
+                    self.history = []
+                } label: {
+                    Label("Clear View", systemImage: "trash")
+                }
+                #endif
                 
                 //MARK: Input Area
                 if !self.modelList.isEmpty {
