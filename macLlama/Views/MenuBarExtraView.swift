@@ -65,6 +65,7 @@ struct MenuBarExtraView: View {
             
             Divider()
             
+            Link("Search models from Ollama", destination: URL(string: "https://ollama.com/search")!)
             Link("Check for Update", destination: URL(string: "https://github.com/hellotunamayo/macLlama/releases")!)
             Link("macLlama on GitHub", destination: URL(string: "https://github.com/hellotunamayo/macLlama")!)
             
