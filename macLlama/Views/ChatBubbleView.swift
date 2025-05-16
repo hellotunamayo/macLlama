@@ -73,6 +73,7 @@ struct ChatBubbleView: View {
                 VStack {
                     Text(chatData.message)
                         .font(.title2)
+                        .lineSpacing(6)
                         .textSelection(.enabled)
                         .frame(alignment: chatData.isUser ? .trailing : .leading)
                     
