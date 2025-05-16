@@ -71,17 +71,23 @@ struct ChatBubbleView: View {
                 }
                 
                 VStack {
-                    Markdown {
-                        MarkdownContent(chatData.message)
-                    }
-                    .markdownTextStyle(\.code) {
-                        FontFamilyVariant(.monospaced)
-                    }
-                    .markdownTextStyle(\.text) {
-                        BackgroundColor(nil)
-                        FontSize(18)
-                    }
-                    .markdownTheme(.gitHub)
+                    Text(chatData.message)
+                        .font(.title2)
+                        .textSelection(.enabled)
+                        .frame(alignment: chatData.isUser ? .trailing : .leading)
+                    
+                    //Temporary disable MarkdownUI for rendering performance issue.
+//                    Markdown {
+//                        MarkdownContent(chatData.message)
+//                    }
+//                    .markdownTextStyle(\.code) {
+//                        FontFamilyVariant(.monospaced)
+//                    }
+//                    .markdownTextStyle(\.text) {
+//                        BackgroundColor(nil)
+//                        FontSize(18)
+//                    }
+//                    .markdownTheme(.gitHub)
                 }
                 .padding(.horizontal, chatData.isUser ? Units.normalGap * 1.3 : 0)
                 .padding(.vertical, chatData.isUser ? Units.normalGap / 1.5 : 0)
