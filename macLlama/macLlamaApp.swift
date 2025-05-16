@@ -21,23 +21,36 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
 @main
 struct macLlamaApp: App {
+    @Environment(\.scenePhase) var scenePhase
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    @State var ollama: OllamaNetworkService?
 
+    let serverStatusIndicator: ServerStatusIndicator = .init()
+    
     var body: some Scene {
         Window("macLlama", id: "main") {
             NavigationStack {
                 ConversationView()
                     .navigationTitle("macLlama")
             }
-            .environmentObject(ServerStatusIndicator())
+            .environmentObject(serverStatusIndicator)
             .frame(minWidth: Units.appFrameMinWidth, idealWidth: Units.appFrameMinWidth,
                    minHeight: Units.appFrameMinHeight, idealHeight: Units.appFrameMinHeight)
         }
         
         MenuBarExtra("macLlama", image: "macLlama-menuIcon") {
             MenuBarExtraView()
-                .environmentObject(ServerStatusIndicator())
+                .environmentObject(serverStatusIndicator)
+                .onChange(of: scenePhase) { _, newValue in
+                    if newValue == .active {
+                        Task {
+                            if try await OllamaNetworkService.isServerOnline() {
+                                serverStatusIndicator.updateServerStatusIndicatorTo(true)
+                            } else {
+                                serverStatusIndicator.updateServerStatusIndicatorTo(false)
+                            }
+                        }
+                    }
+                }
         }
     }
 }
