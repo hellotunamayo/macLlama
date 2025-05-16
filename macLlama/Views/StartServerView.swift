@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct StartServerView: View {
+    @EnvironmentObject var serverStatus: ServerStatusIndicator
     @State private var ollamaWarningBouncingYOffset: CGFloat = 0
-    @Binding var ollamaNetworkService: OllamaNetworkService?
     
+    let ollamaNetworkService: OllamaNetworkService = OllamaNetworkService()
     let startServerAction: () async throws -> Void
     
     var body: some View {
@@ -24,7 +25,7 @@ struct StartServerView: View {
             }
             .padding(.bottom, -5)
             
-            Image("ollama_profile")
+            Image("macLlama-profile")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(maxWidth: Units.appFrameMinWidth / 3,
@@ -49,10 +50,8 @@ struct StartServerView: View {
                 Task {
                     guard let _ = await ShellService.runShellScript("ollama serve") else { return }
                     
-                    //TODO: Replace this temporary solution!
-                    sleep(1)
+                    try? await Task.sleep(for: .seconds(1))
                     
-                    ollamaNetworkService = OllamaNetworkService(stream: false)
                     try await startServerAction()
                 }
             } label: {
@@ -73,9 +72,15 @@ struct StartServerView: View {
                 .multilineTextAlignment(.center)
                 .font(.subheadline)
             
-            Link("Bug report or feature request", destination: URL(string: "https://github.com/hellotunamayo/Ollama-UI-App/discussions")!)
+            Link("Bug report or feature request", destination: URL(string: "https://github.com/hellotunamayo/macLlama/discussions")!)
                 .font(.subheadline)
                 .padding(.top, Units.normalGap / 2)
         }
+        .padding(60)
+        .background(
+            RoundedRectangle(cornerRadius: 10)
+                .fill(Color(nsColor: NSColor.windowBackgroundColor))
+        )
+        .shadow(radius: 3)
     }
 }

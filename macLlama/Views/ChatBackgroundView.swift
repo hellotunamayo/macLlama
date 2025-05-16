@@ -12,7 +12,7 @@ struct ChatBackgroundView: View {
     
     var body: some View {
         VStack {
-            Image("llama_gray")
+            Image("macLlama-gray")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(maxWidth: Units.appFrameMinHeight / 2, maxHeight: Units.appFrameMinHeight / 2)
