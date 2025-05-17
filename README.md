@@ -78,7 +78,6 @@ Once the Ollama server is running and you have at least one model installed, you
 ## Contributing
 
 *   SwiftUI - For the user interface.
-*   MarkdownUI - For rendering Markdown content.
 
 ## 🚀 Getting Started
 
