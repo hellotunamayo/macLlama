@@ -9,7 +9,7 @@ import SwiftUI
 
 struct StartServerView: View {
     @EnvironmentObject var serverStatus: ServerStatus
-    @State private var ollamaWarningBouncingYOffset: CGFloat = 0
+//    @State private var ollamaWarningBouncingYOffset: CGFloat = 0
     
     let ollamaNetworkService: OllamaNetworkService = OllamaNetworkService()
     let startServerAction: () async throws -> Void
@@ -34,11 +34,11 @@ struct StartServerView: View {
                 .background(Color(nsColor: NSColor.windowBackgroundColor))
                 .clipShape(Circle())
                 .shadow(color:.black.opacity(0.2), radius: 3)
-                .offset(y: ollamaWarningBouncingYOffset)
-                .animation(.bouncy(duration: 1.5, extraBounce: 1), value: ollamaWarningBouncingYOffset)
-                .onAppear {
-                    self.ollamaWarningBouncingYOffset = 3
-                }
+//                .offset(y: ollamaWarningBouncingYOffset)
+//                .animation(.bouncy(duration: 1.5, extraBounce: 1), value: ollamaWarningBouncingYOffset)
+//                .onAppear {
+//                    self.ollamaWarningBouncingYOffset = 3
+//                }
             
             Text("Start your local AI engine\nwith Ollama")
                 .fontWeight(.regular)
