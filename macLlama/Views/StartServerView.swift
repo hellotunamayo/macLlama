@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct StartServerView: View {
-    @EnvironmentObject var serverStatus: ServerStatusIndicator
+    @EnvironmentObject var serverStatus: ServerStatus
     @State private var ollamaWarningBouncingYOffset: CGFloat = 0
     
     let ollamaNetworkService: OllamaNetworkService = OllamaNetworkService()

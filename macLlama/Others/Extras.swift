@@ -8,10 +8,16 @@
 import Foundation
 
 @MainActor
-final class ServerStatusIndicator: ObservableObject {
+final class ServerStatus: ObservableObject {
     @Published private(set) var indicator: Bool = false
     
-    func updateServerStatusIndicatorTo(_ status: Bool) {
+    ///Check server status using OllamaNetworkService.isServerOnline() and update Boolean value to ServerStatus's indicator property.
+    func updateServerStatus() async throws {
+        let serverStatus = try await OllamaNetworkService.isServerOnline()
+        self.updateServerStatusIndicatorTo(serverStatus)
+    }
+    
+    private func updateServerStatusIndicatorTo(_ status: Bool) {
         self.indicator = status
     }
 }
