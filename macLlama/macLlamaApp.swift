@@ -14,7 +14,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func applicationWillTerminate(_ notification: Notification) {
+        #if !DEBUG
         ShellService.killOllama()
+        #endif
         print("✅ applicationWillTerminate triggered")
     }
 }
