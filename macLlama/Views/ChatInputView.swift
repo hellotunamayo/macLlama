@@ -12,6 +12,9 @@ struct ChatInputView: View {
     @Binding var isThinking: Bool
     @Binding var prompt: String
     
+    @State private var isTargeted: Bool = false
+    @State private var image: NSImage?
+    
     let sendMessage: () async throws -> Void
     
     var body: some View {
@@ -62,5 +65,33 @@ struct ChatInputView: View {
         }
         .frame(height: 60)
         .padding()
+        .onDrop(of: [.image], isTargeted: $isTargeted) { providers in
+            guard let provider = providers.first else { return false }
+            setImage(provider: provider)
+            return true
+        }
+    }
+    
+    private func setImage(provider: NSItemProvider) {
+        _ = provider.loadDataRepresentation(for: .image) { data, error in
+            Task {
+                guard error == nil, let data else {
+                    print("Error loading data or no data available: \(error?.localizedDescription ?? "Unknown error")")
+                    return
+                }
+                
+                await MainActor.run {
+                    self.image = NSImage(data: data)
+                    
+                    // Optionally bind to `self.image` and print it if not nil.
+                    guard let image = self.image else {
+                        print("Failed to create image from the provided data.")
+                        return
+                    }
+                    
+                    print(image)
+                }
+            }
+        }
     }
 }
