@@ -50,6 +50,7 @@ struct StartServerView: View {
                     let shellCommand: String = "ollama serve > ~/macLlama-output.log 2>&1"
                     guard let _ = await ShellService.runShellScript(shellCommand) else { return }
                     try? await Task.sleep(for: .seconds(1))
+                    try await serverStatus.updateServerStatus()
                 }
             } label: {
                 Label("Start the server and go", systemImage: "power")

@@ -19,6 +19,7 @@ struct ConversationView: View {
                 .environmentObject(serverStatus)
         } else {
             StartServerView()
+                .environmentObject(serverStatus)
                 .padding(.top, Units.normalGap * -3)
         }
     }
