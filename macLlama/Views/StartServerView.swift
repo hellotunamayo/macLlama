@@ -12,7 +12,6 @@ struct StartServerView: View {
 //    @State private var ollamaWarningBouncingYOffset: CGFloat = 0
     
     let ollamaNetworkService: OllamaNetworkService = OllamaNetworkService()
-    let startServerAction: () async throws -> Void
     
     var body: some View {
         VStack {
@@ -51,7 +50,6 @@ struct StartServerView: View {
                     let shellCommand: String = "ollama serve > ~/macLlama-output.log 2>&1"
                     guard let _ = await ShellService.runShellScript(shellCommand) else { return }
                     try? await Task.sleep(for: .seconds(1))
-                    try await startServerAction()
                 }
             } label: {
                 Label("Start the server and go", systemImage: "power")

@@ -14,16 +14,12 @@ struct ConversationView: View {
     @EnvironmentObject var serverStatus: ServerStatus
     
     var body: some View {
-        if serverStatus.indicator == false {
-            StartServerView() {
-                let _ = await ShellService.runShellScript("ollama serve")
-                try await Task.sleep(for: .seconds(1))
-                try await self.serverStatus.updateServerStatus()
-            }
-            .padding(.top, Units.normalGap * -3)
-        } else {
+        if serverStatus.indicator {
             ConversationChatView()
                 .environmentObject(serverStatus)
+        } else {
+            StartServerView()
+                .padding(.top, Units.normalGap * -3)
         }
     }
 }
