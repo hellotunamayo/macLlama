@@ -29,7 +29,8 @@ struct MenuBarExtraView: View {
             
             Button {
                 Task {
-                    if let _ = await ShellService.runShellScript("ollama serve") {
+                    let startCommand = ShellCommand.startServer.rawValue
+                    if let _ = await ShellService.runShellScript(startCommand) {
                         
                         try? await Task.sleep(for: .seconds(1))
                         try? await serverStatus.updateServerStatus()
