@@ -53,6 +53,7 @@ struct MenuBarExtraView: View {
             Button {
                 Task {
                     let _ = await ShellService.runShellScript("killall ollama")
+                    try await Task.sleep(for: .seconds(1))
                     try? await serverStatus.updateServerStatus()
                 }
             } label: {
