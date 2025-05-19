@@ -61,11 +61,11 @@ actor ShellService {
         do {
             try process.run()
             process.waitUntilExit()
+            debugPrint("🟢ollama process is successfully killed.")
         } catch {
+            debugPrint("An error occured while killing ollama process: \(error)")
             return
         }
-        
-        print("🟢ollama process is successfully killed.")
     }
 }
 
