@@ -19,6 +19,7 @@ struct ConversationChatView: View {
     @State private var prompt: String = ""
     @State private var modelList: [OllamaModel] = []
     @State private var isThinking: Bool = false
+    @State private var promptImages: [NSImage] = []
     
     //Chat history state
     @State private var history: [(isUser: Bool, modelName: String, message: String)] = []
@@ -109,10 +110,10 @@ struct ConversationChatView: View {
                 
                 //MARK: Input Area
                 if !self.modelList.isEmpty {
-                    ChatInputView(isThinking: $isThinking, prompt: $prompt) {
+                    ChatInputView(isThinking: $isThinking, prompt: $prompt, images: $promptImages) {
                         self.history.append((isUser: true, modelName: self.currentModel, message: self.prompt))
                         self.isThinking = true
-                        try await self.sendChat(model: self.currentModel, prompt: self.prompt)
+                        try await self.sendChat(model: self.currentModel, prompt: self.prompt, images: self.promptImages)
                     }
                 }
             }
@@ -129,7 +130,7 @@ struct ConversationChatView: View {
 //MARK: Internal functions
 extension ConversationChatView {
     ///Send Chat to Ollama server
-    private func sendChat(model: String, prompt: String) async throws {
+    private func sendChat(model: String, prompt: String, images: [NSImage]) async throws {
         if try await OllamaNetworkService.isServerOnline() { //server online check
             //Reset user prompt
             self.prompt.removeAll()
@@ -140,18 +141,20 @@ extension ConversationChatView {
             self.history.append((isUser: false, modelName: self.currentModel, message: ""))
             
             //Start stream from model
-            let stream = try await chatService.sendMessage(model: model, userInput: prompt)
-            for await update in stream {
-                self.history[self.history.count - 1].message = update
+            Task {
+                let stream = try await chatService.sendMessage(model: model, userInput: prompt, images: images)
+                for await update in stream {
+                    self.history[self.history.count - 1].message = update
+                }
+                
+                //Save last response to history
+                self.history[self.history.count - 1].message = await chatService.allMessages().last?.content ?? ""
+                
+                //Reset state
+                self.isThinking = false
+                self.isAutoScrolling = false
+                self.autoScrollTask = nil
             }
-            
-            //Save last response to history
-            self.history[self.history.count - 1].message = await chatService.allMessages().last?.content ?? ""
-            
-            //Reset state
-            self.isThinking = false
-            self.isAutoScrolling = false
-            self.autoScrollTask = nil
         } else {
             debugPrint("ConversationViewError:")
             debugPrint("Server is not online")
