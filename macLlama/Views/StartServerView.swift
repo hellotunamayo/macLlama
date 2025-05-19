@@ -48,7 +48,11 @@ struct StartServerView: View {
             
             Button {
                 Task {
+#if DEBUG
+                    guard let _ = await ShellService.runShellScript("ollama serve > ~/Desktop/ollama-output.log 2>&1") else { return }
+#else
                     guard let _ = await ShellService.runShellScript("ollama serve") else { return }
+#endif
                     
                     try? await Task.sleep(for: .seconds(1))
                     
@@ -80,7 +84,7 @@ struct StartServerView: View {
         .background(
             RoundedRectangle(cornerRadius: 10)
                 .fill(Color(nsColor: NSColor.windowBackgroundColor))
+                .shadow(radius: 3)
         )
-        .shadow(radius: 3)
     }
 }
