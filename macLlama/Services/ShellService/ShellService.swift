@@ -39,7 +39,7 @@ actor ShellService {
         
         do {
             try process.run()
-            return "Ollama service is running"
+            return "Shell command run successfully!"
         } catch {
             return nil
         }
