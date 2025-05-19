@@ -47,7 +47,7 @@ struct StartServerView: View {
             
             Button {
                 Task {
-                    let shellCommand: String = "ollama serve > ~/macLlama-output.log 2>&1"
+                    let shellCommand: String = ShellCommand.startServer.rawValue
                     guard let _ = await ShellService.runShellScript(shellCommand) else { return }
                     try? await Task.sleep(for: .seconds(1))
                     try await serverStatus.updateServerStatus()

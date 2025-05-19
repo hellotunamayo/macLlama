@@ -8,6 +8,10 @@
 import Foundation
 import AppKit
 
+enum ShellCommand: String {
+    case startServer = "ollama serve > ~/macLlama-output.log 2>&1"
+}
+
 actor ShellService {
     
     ///Open Terminal.app
