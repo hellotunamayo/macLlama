@@ -90,13 +90,13 @@ struct ChatInputView: View {
                         return true
                     }
                     .onKeyPress { keypress in
-                        if keypress.modifiers.contains(.command) && keypress.key == .return {
-                            if prompt.isEmpty {
-                                return .ignored
-                            } else {
+                        if keypress.key == .return && keypress.modifiers.contains(.option) {
+                            if !prompt.isEmpty {
                                 Task {
                                     try await self.sendMessage()
                                 }
+                                return .handled
+                            } else {
                                 return .handled
                             }
                         } else {
