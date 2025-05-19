@@ -48,14 +48,9 @@ struct StartServerView: View {
             
             Button {
                 Task {
-#if DEBUG
-                    guard let _ = await ShellService.runShellScript("ollama serve > ~/Desktop/ollama-output.log 2>&1") else { return }
-#else
-                    guard let _ = await ShellService.runShellScript("ollama serve") else { return }
-#endif
-                    
+                    let shellCommand: String = "ollama serve > ~/macLlama-output.log 2>&1"
+                    guard let _ = await ShellService.runShellScript(shellCommand) else { return }
                     try? await Task.sleep(for: .seconds(1))
-                    
                     try await startServerAction()
                 }
             } label: {
