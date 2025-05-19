@@ -11,7 +11,7 @@ import Foundation
 final class ServerStatus: ObservableObject {
     @Published private(set) var indicator: Bool = false
     
-    private init() {
+    init() {
         Task {
             try await self.updateServerStatus()
         }
