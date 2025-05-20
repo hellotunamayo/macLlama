@@ -10,7 +10,7 @@ import Cocoa
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
-        return true //This causes the app to quit when the last window is closed.
+        return false //This causes the app not to quit when the last window is closed.
     }
     
     func applicationWillTerminate(_ notification: Notification) {
