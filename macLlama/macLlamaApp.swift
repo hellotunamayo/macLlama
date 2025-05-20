@@ -10,11 +10,13 @@ import Cocoa
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
-        return true //This causes the app to quit when the last window is closed.
+        return false //This causes the app not to quit when the last window is closed.
     }
     
     func applicationWillTerminate(_ notification: Notification) {
+        #if !DEBUG
         ShellService.killOllama()
+        #endif
         print("✅ applicationWillTerminate triggered")
     }
 }
@@ -24,30 +26,26 @@ struct macLlamaApp: App {
     @Environment(\.scenePhase) var scenePhase
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
-    let serverStatusIndicator: ServerStatusIndicator = .init()
+    @StateObject var serverStatus: ServerStatus = .init()
     
     var body: some Scene {
-        Window("macLlama", id: "main") {
+        WindowGroup {
             NavigationStack {
                 ConversationView()
                     .navigationTitle("macLlama")
             }
-            .environmentObject(serverStatusIndicator)
+            .environmentObject(serverStatus)
             .frame(minWidth: Units.appFrameMinWidth, idealWidth: Units.appFrameMinWidth,
                    minHeight: Units.appFrameMinHeight, idealHeight: Units.appFrameMinHeight)
         }
         
         MenuBarExtra("macLlama", image: "macLlama-menuIcon") {
             MenuBarExtraView()
-                .environmentObject(serverStatusIndicator)
+                .environmentObject(serverStatus)
                 .onChange(of: scenePhase) { _, newValue in
                     if newValue == .active {
                         Task {
-                            if try await OllamaNetworkService.isServerOnline() {
-                                serverStatusIndicator.updateServerStatusIndicatorTo(true)
-                            } else {
-                                serverStatusIndicator.updateServerStatusIndicatorTo(false)
-                            }
+                            try? await serverStatus.updateServerStatus()
                         }
                     }
                 }

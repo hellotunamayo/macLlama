@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ModelSelectView: View {
-    @EnvironmentObject var serverStatus: ServerStatusIndicator
+    @EnvironmentObject var serverStatus: ServerStatus
     @Binding var modelList: [OllamaModel]
     @Binding var currentModel: String
     @Binding var isModelLoading: Bool
@@ -33,7 +33,9 @@ struct ModelSelectView: View {
             .frame(width: Units.appFrameMinWidth * 0.5)
             .onChange(of: currentModel) { oldValue, newValue in
                 Task {
-                    await self.ollamaNetworkService.changeModel(model: newValue)
+                    if !currentModel.isEmpty {
+                        await self.ollamaNetworkService.changeModel(model: newValue)
+                    }
                 }
             }
             
@@ -45,14 +47,15 @@ struct ModelSelectView: View {
                 Task {
                     self.isModelLoading = true
                     
-                    if try await OllamaNetworkService.isServerOnline() {
+                    try? await serverStatus.updateServerStatus()
+                    
+                    if serverStatus.indicator {
                         reloadButtonAction()
-                        serverStatus.updateServerStatusIndicatorTo(true)
                     } else {
-                        serverStatus.updateServerStatusIndicatorTo(false)
                         modelList.removeAll()
                     }
                     
+                    try? await serverStatus.updateServerStatus()
                     self.isModelLoading = false
                 }
                 
@@ -73,8 +76,7 @@ struct ModelSelectView: View {
         }
         .padding()
         .task {
-            guard let isServerOnline = try? await OllamaNetworkService.isServerOnline() else { return }
-            serverStatus.updateServerStatusIndicatorTo(isServerOnline)
+            try? await serverStatus.updateServerStatus()
         }
     }
 }

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MenuBarExtraView: View {
-    @EnvironmentObject var serverStatus: ServerStatusIndicator
+    @EnvironmentObject var serverStatus: ServerStatus
     
     let versionString: Any = Bundle.main.infoDictionary?["CFBundleShortVersionString"] ?? ""
     let buildString: Any = Bundle.main.infoDictionary?["CFBundleVersion"] ?? ""
@@ -21,22 +21,21 @@ struct MenuBarExtraView: View {
                     .foregroundStyle(serverStatus.indicator ? .green : .red)
             }
             .task {
-                let status = try? await OllamaNetworkService.isServerOnline()
-                serverStatus.updateServerStatusIndicatorTo(status ?? false)
+//                let status = try? await OllamaNetworkService.isServerOnline()
+                try? await serverStatus.updateServerStatus()
             }
             
             Divider()
             
             Button {
                 Task {
-                    if let _ = await ShellService.runShellScript("ollama serve") {
+                    let startCommand = ShellCommand.startServer.rawValue
+                    if let _ = await ShellService.runShellScript(startCommand) {
                         
                         try? await Task.sleep(for: .seconds(1))
+                        try? await serverStatus.updateServerStatus()
                         
-                        let status = try await OllamaNetworkService.isServerOnline()
-                        serverStatus.updateServerStatusIndicatorTo(status)
                         debugPrint(serverStatus)
-                        
                     }
                 }
             } label: {
@@ -55,7 +54,8 @@ struct MenuBarExtraView: View {
             Button {
                 Task {
                     let _ = await ShellService.runShellScript("killall ollama")
-                    serverStatus.updateServerStatusIndicatorTo(false)
+                    try await Task.sleep(for: .seconds(1))
+                    try? await serverStatus.updateServerStatus()
                 }
             } label: {
                 Text("Kill Ollama server")

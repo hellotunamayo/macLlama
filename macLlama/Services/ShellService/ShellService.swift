@@ -8,6 +8,11 @@
 import Foundation
 import AppKit
 
+enum ShellCommand: String {
+//    case startServer = "ollama serve > ~Library/Caches/macLlama-output.log 2>&1" //Temporary solution!
+    case startServer = "ollama serve 2>&1 | logger"
+}
+
 actor ShellService {
     
     ///Open Terminal.app
@@ -34,7 +39,7 @@ actor ShellService {
         
         do {
             try process.run()
-            return "Ollama service is running"
+            return "Shell command run successfully!"
         } catch {
             return nil
         }
@@ -56,11 +61,11 @@ actor ShellService {
         do {
             try process.run()
             process.waitUntilExit()
+            debugPrint("🟢ollama process is successfully killed.")
         } catch {
+            debugPrint("An error occured while killing ollama process: \(error)")
             return
         }
-        
-        print("🟢ollama process is successfully killed.")
     }
 }
 

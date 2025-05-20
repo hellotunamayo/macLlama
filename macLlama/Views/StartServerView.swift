@@ -8,11 +8,10 @@
 import SwiftUI
 
 struct StartServerView: View {
-    @EnvironmentObject var serverStatus: ServerStatusIndicator
-    @State private var ollamaWarningBouncingYOffset: CGFloat = 0
+    @EnvironmentObject var serverStatus: ServerStatus
+//    @State private var ollamaWarningBouncingYOffset: CGFloat = 0
     
     let ollamaNetworkService: OllamaNetworkService = OllamaNetworkService()
-    let startServerAction: () async throws -> Void
     
     var body: some View {
         VStack {
@@ -34,11 +33,11 @@ struct StartServerView: View {
                 .background(Color(nsColor: NSColor.windowBackgroundColor))
                 .clipShape(Circle())
                 .shadow(color:.black.opacity(0.2), radius: 3)
-                .offset(y: ollamaWarningBouncingYOffset)
-                .animation(.bouncy(duration: 1.5, extraBounce: 1), value: ollamaWarningBouncingYOffset)
-                .onAppear {
-                    self.ollamaWarningBouncingYOffset = 3
-                }
+//                .offset(y: ollamaWarningBouncingYOffset)
+//                .animation(.bouncy(duration: 1.5, extraBounce: 1), value: ollamaWarningBouncingYOffset)
+//                .onAppear {
+//                    self.ollamaWarningBouncingYOffset = 3
+//                }
             
             Text("Start your local AI engine\nwith Ollama")
                 .fontWeight(.regular)
@@ -48,11 +47,10 @@ struct StartServerView: View {
             
             Button {
                 Task {
-                    guard let _ = await ShellService.runShellScript("ollama serve") else { return }
-                    
+                    let shellCommand: String = ShellCommand.startServer.rawValue
+                    guard let _ = await ShellService.runShellScript(shellCommand) else { return }
                     try? await Task.sleep(for: .seconds(1))
-                    
-                    try await startServerAction()
+                    try await serverStatus.updateServerStatus()
                 }
             } label: {
                 Label("Start the server and go", systemImage: "power")
@@ -80,7 +78,7 @@ struct StartServerView: View {
         .background(
             RoundedRectangle(cornerRadius: 10)
                 .fill(Color(nsColor: NSColor.windowBackgroundColor))
+                .shadow(radius: 3)
         )
-        .shadow(radius: 3)
     }
 }
