@@ -89,20 +89,6 @@ struct ChatInputView: View {
                         setImage(provider: provider)
                         return true
                     }
-                    .onKeyPress { keypress in
-                        if keypress.key == .return && keypress.modifiers.contains(.option) {
-                            if !prompt.isEmpty {
-                                Task {
-                                    try await self.sendMessage()
-                                }
-                                return .handled
-                            } else {
-                                return .handled
-                            }
-                        } else {
-                            return .ignored
-                        }
-                    }
                 
                 //MARK: Send button
                 Button {
@@ -128,6 +114,14 @@ struct ChatInputView: View {
                 }
                 .tint(self.isThinking ? .gray : .accent)
                 .buttonStyle(.borderedProminent)
+                .keyboardShortcut(.return)
+                .onSubmit {
+                    if !prompt.isEmpty {
+                        Task {
+                            try await self.sendMessage()
+                        }
+                    }
+                }
             }
             .frame(height: 60)
             .padding()
