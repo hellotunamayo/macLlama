@@ -114,7 +114,7 @@ struct ChatInputView: View {
                 }
                 .tint(self.isThinking ? .gray : .accent)
                 .buttonStyle(.borderedProminent)
-                .keyboardShortcut(.return)
+                .keyboardShortcut(.return) //WHY cmd+return???? ¯\(°_o)/¯
                 .onSubmit {
                     if !prompt.isEmpty {
                         Task {
