@@ -145,7 +145,7 @@ Distributed under the Apache 2.0 License. See `LICENSE.txt` for more information
 
 ## 📧 Contact
 
-Minyoung Yoo - yoo@minyoungyoo.com
+Project Discusstion: https://github.com/hellotunamayo/macLlama/discussions
 
 Project Link: https://github.com/hellotunamayo/macLlama
 
