@@ -14,6 +14,7 @@ struct ChatInputView: View {
     @Binding var images: [NSImage]
     
     @State private var isTargeted: Bool = false
+    @FocusState private var isPromptFocused: Bool
     
     let sendMessage: () async throws -> Void
     
@@ -73,14 +74,30 @@ struct ChatInputView: View {
             //MARK: Text input
             HStack(alignment: .bottom) {
                 //Input text field
-                TextEditor(text: $prompt)
-                    .font(.title2)
-                    .lineSpacing(Units.normalGap / 3)
-                    .frame(minHeight: 32, maxHeight: Units.appFrameMinHeight / 4)
-                    .dynamicTypeSize(.medium ... .xxLarge)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .clipShape(.rect(cornerRadius: Units.normalGap / 3))
-                    .padding(.top, Units.normalGap / 2)
+                ZStack {
+                    if !isPromptFocused || self.prompt.isEmpty {
+                        Text("Ask something")
+                            .font(.title3)
+                            .foregroundStyle(.secondary.opacity(0.6))
+                            .frame(maxWidth: .infinity, maxHeight: 40, alignment: .leading)
+                            .padding(.leading, Units.normalGap / 1.4)
+                    }
+                    
+                    TextEditor(text: $prompt)
+                        .focused($isPromptFocused)
+                        .font(.title2)
+                        .lineSpacing(Units.normalGap / 3)
+                        .frame(minHeight: 32, maxHeight: Units.appFrameMinHeight / 4)
+                        .dynamicTypeSize(.medium ... .xxLarge)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .clipShape(.rect(cornerRadius: Units.normalGap / 3))
+                        .padding(.top, Units.normalGap / 2)
+                        .padding(.leading, Units.normalGap / 2)
+                }
+                .scrollContentBackground(.hidden)
+                .background(Color.gray.opacity(0.1))
+                .cornerRadius(Units.normalGap / 3)
+                .padding(.top, Units.normalGap / 2)
                 
                 //MARK: Send button
                 Button {
@@ -106,6 +123,7 @@ struct ChatInputView: View {
                 }
                 .tint(self.isThinking ? .gray : .accent)
                 .buttonStyle(.borderedProminent)
+                .frame(height: 40)
                 .keyboardShortcut(.return) //WHY cmd+return???? ¯\(°_o)/¯
             }
             .padding()
