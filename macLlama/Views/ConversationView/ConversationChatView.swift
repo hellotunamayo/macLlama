@@ -54,7 +54,6 @@ struct ConversationChatView: View {
                         .opacity(self.colorScheme == .dark ? 1.0 : 0.9)
                 }
                 
-                //experimental
                 ScrollViewReader { proxy in
                     ScrollView {
                         ForEach(0..<self.history.count, id: \.self) { index in
@@ -84,16 +83,19 @@ struct ConversationChatView: View {
                         }
                     }
                     .onChange(of: history.count) { _, _ in
-                        autoScrollTask = Task {
-                            while !Task.isCancelled {
-                                try? await Task.sleep(nanoseconds: 1_500_000_000)
-                                
-                                withAnimation(.linear(duration: 2.0)) {
-                                    proxy.scrollTo(history.count - 1, anchor: .bottom)
-                                }
-                                
-                                if !isAutoScrolling {
-                                    break
+                        let isAutoScroll = UserDefaults.standard.bool(forKey: "isAutoScrollEnabled")
+                        if isAutoScroll {
+                            autoScrollTask = Task {
+                                while !Task.isCancelled {
+                                    try? await Task.sleep(nanoseconds: 1_500_000_000)
+                                    
+                                    withAnimation(.linear(duration: 2.0)) {
+                                        proxy.scrollTo(history.count - 1, anchor: .bottom)
+                                    }
+                                    
+                                    if !isAutoScrolling {
+                                        break
+                                    }
                                 }
                             }
                         }
@@ -113,7 +115,12 @@ struct ConversationChatView: View {
                     ChatInputView(isThinking: $isThinking, prompt: $prompt, images: $promptImages) {
                         self.history.append((isUser: true, modelName: self.currentModel, message: self.prompt))
                         self.isThinking = true
-                        try await self.sendChat(model: self.currentModel, prompt: self.prompt, images: self.promptImages)
+                        
+                        //Check if suffix exists
+                        guard let suffix = UserDefaults.standard.string(forKey: "promptSuffix") else { return }
+                        let promptWithSuffix: String = self.prompt + " \(suffix)"
+                        
+                        try await self.sendChat(model: self.currentModel, prompt: promptWithSuffix, images: self.promptImages)
                     }
                 }
             }
@@ -135,8 +142,13 @@ extension ConversationChatView {
             //Reset user prompt
             self.prompt.removeAll()
             
-            //Enable auto scrolling
-            self.isAutoScrolling = true
+            //Enable auto scrolling if setting is on
+            let isAutoScroll = UserDefaults.standard.bool(forKey: "isAutoScrollEnabled")
+            if isAutoScroll {
+                self.isAutoScrolling = true
+            } else {
+                self.isAutoScrolling = false
+            }
             
             self.history.append((isUser: false, modelName: self.currentModel, message: ""))
             
