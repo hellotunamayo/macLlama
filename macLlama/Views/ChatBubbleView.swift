@@ -10,6 +10,7 @@ import MarkdownUI
 
 struct ChatBubbleView: View {
     @Environment(\.colorScheme) var colorScheme
+    @AppStorage("chatFontSize") var chatFontSize: Int = AppSettings.chatFontSize
     @State private var messageAnimationFactor: CGFloat = 0.0
     @State private var messageAnimated: Bool = false
     
@@ -72,8 +73,8 @@ struct ChatBubbleView: View {
                 
                 VStack {
                     Text(chatData.message)
-                        .font(.title2)
-                        .lineSpacing(6)
+                        .font(.system(size: CGFloat(chatFontSize)))
+                        .lineSpacing(CGFloat(chatFontSize / 3))
                         .textSelection(.enabled)
                         .frame(alignment: chatData.isUser ? .trailing : .leading)
                     
