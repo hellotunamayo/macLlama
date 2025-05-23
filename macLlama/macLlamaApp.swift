@@ -50,5 +50,9 @@ struct macLlamaApp: App {
                     }
                 }
         }
+        
+        Settings {
+            PreferencePaneView()
+        }
     }
 }
