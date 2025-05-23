@@ -9,8 +9,8 @@ import Foundation
 import AppKit
 
 enum ShellCommand: String {
-//    case startServer = "ollama serve > ~Library/Caches/macLlama-output.log 2>&1" //Temporary solution!
-    case startServer = "ollama serve 2>&1 | logger"
+    case startServer = "ollama serve > ~/macLlama-output.log 2>&1" //Temporary solution!
+//    case startServer = "ollama serve 2>&1 | logger"
 }
 
 actor ShellService {
