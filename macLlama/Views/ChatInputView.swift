@@ -86,8 +86,7 @@ struct ChatInputView: View {
                         .frame(minHeight: 32, maxHeight: Units.appFrameMinHeight / 4)
                         .dynamicTypeSize(.medium ... .xxLarge)
                         .fixedSize(horizontal: false, vertical: true)
-                        .clipShape(.rect(cornerRadius: Units.normalGap / 3))
-                        .padding(.top, Units.normalGap / 2)
+                        .padding(.top, Units.normalGap * 0.6)
                         .padding(.leading, Units.normalGap / 2)
                 }
                 .scrollContentBackground(.hidden)
