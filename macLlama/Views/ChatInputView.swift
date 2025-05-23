@@ -17,6 +17,7 @@ struct ChatInputView: View {
     @FocusState private var isPromptFocused: Bool
     
     let sendMessage: () async throws -> Void
+    let uploadedImageGridRows: [GridItem] = [GridItem(.fixed(30))]
     
     var body: some View {
         VStack {
@@ -39,29 +40,24 @@ struct ChatInputView: View {
             .overlay {
                 if !self.images.isEmpty {
                     ScrollView (.horizontal) {
-                        HStack {
+                        LazyHGrid(rows: uploadedImageGridRows) {
                             ForEach(0..<self.images.count, id: \.self) { index in
                                 ZStack {
-                                    GeometryReader { proxy in
-                                        Image(nsImage: images[index])
-                                            .resizable()
-                                            .frame(width: Units.normalGap * 3,
-                                                   height: Units.normalGap * 3)
-                                            .padding(.horizontal, Units.normalGap / 8)
-                                            .position(x: Units.normalGap * 2,
-                                                      y: proxy.frame(in: .local).midY)
-                                        
-                                        Button {
-                                            self.images.remove(at: index)
-                                        } label: {
-                                            Image(systemName: "xmark")
-                                        }
-                                        .background(Color.black)
-                                        .buttonBorderShape(.circle)
-                                        .clipShape(.circle)
-                                        .position(x: 55, y: 13)
+                                    Image(nsImage: images[index])
+                                        .resizable()
+                                        .frame(width: Units.normalGap * 3,
+                                               height: Units.normalGap * 3)
+                                        .padding(.horizontal, Units.normalGap / 8)
+                                    
+                                    Button {
+                                        self.images.remove(at: index)
+                                    } label: {
+                                        Image(systemName: "xmark")
                                     }
-                                    .frame(width: 70, height: 70)
+                                    .background(Color.black)
+                                    .buttonBorderShape(.circle)
+                                    .clipShape(.circle)
+                                    .position(x: 48, y: 3)
                                 }
                             }
                         }
