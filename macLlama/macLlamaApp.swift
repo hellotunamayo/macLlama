@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import Cocoa
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
@@ -14,9 +13,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func applicationWillTerminate(_ notification: Notification) {
-        #if !DEBUG
-        ShellService.killOllama()
-        #endif
+        let preferences = UserDefaults.standard
+        
+        if let quitServerOnAppQuit = preferences.dictionary(forKey: "serverKillWithApp") {
+            UserDefaults.standard.set(quitServerOnAppQuit, forKey: "serverKillWithApp")
+        }
+        
+        if preferences.bool(forKey: "serverKillWithApp") {
+            ShellService.killOllama()
+        }
+        
         print("✅ applicationWillTerminate triggered")
     }
 }
