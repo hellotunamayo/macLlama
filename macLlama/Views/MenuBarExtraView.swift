@@ -21,7 +21,6 @@ struct MenuBarExtraView: View {
                     .foregroundStyle(serverStatus.indicator ? .green : .red)
             }
             .task {
-//                let status = try? await OllamaNetworkService.isServerOnline()
                 try? await serverStatus.updateServerStatus()
             }
             
@@ -30,7 +29,7 @@ struct MenuBarExtraView: View {
             Button {
                 Task {
                     let startCommand = ShellCommand.startServer.rawValue
-                    if let _ = await ShellService.runShellScript(startCommand) {
+                    if let _ = try await ShellService.runShellScript(startCommand) {
                         
                         try? await Task.sleep(for: .seconds(1))
                         try? await serverStatus.updateServerStatus()
@@ -53,7 +52,7 @@ struct MenuBarExtraView: View {
             #if DEBUG
             Button {
                 Task {
-                    let _ = await ShellService.runShellScript("killall ollama")
+                    let _ = try await ShellService.runShellScript("killall ollama")
                     try await Task.sleep(for: .seconds(1))
                     try? await serverStatus.updateServerStatus()
                 }

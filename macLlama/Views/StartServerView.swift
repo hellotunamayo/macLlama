@@ -48,7 +48,7 @@ struct StartServerView: View {
             Button {
                 Task {
                     let shellCommand: String = ShellCommand.startServer.rawValue
-                    guard let _ = await ShellService.runShellScript(shellCommand) else { return }
+                    guard let _ = try await ShellService.runShellScript(shellCommand) else { return }
                     try? await Task.sleep(for: .seconds(1))
                     try await serverStatus.updateServerStatus()
                 }
