@@ -38,6 +38,43 @@ struct macLlamaApp: App {
             .frame(minWidth: Units.appFrameMinWidth, idealWidth: Units.appFrameMinWidth,
                    minHeight: Units.appFrameMinHeight, idealHeight: Units.appFrameMinHeight)
         }
+        .commands {
+            CommandMenu("Utility") {
+                HStack {
+                    Text("Ollama server is \(serverStatus.indicator ? "on" : "off")")
+                        .foregroundStyle(serverStatus.indicator ? .green : .red)
+                }
+                .task {
+                    try? await serverStatus.updateServerStatus()
+                }
+                
+                Divider()
+                
+                Button {
+                    Task {
+                        let _ = try await ShellService.runShellScript(ShellCommand.startServer.rawValue)
+                    }
+                } label: {
+                    Text("Start Ollama Server")
+                }
+                
+                Button {
+                    Task {
+                        try await ShellService.openTerminal()
+                    }
+                } label: {
+                    Text("Open Terminal.app")
+                }
+            }
+            
+            CommandGroup(after: .help) {
+                Link("Search models from Ollama.com", destination: URL(string: "https://ollama.com/search")!)
+            }
+            
+            CommandGroup(after: .help) {
+                Link("Check for updates", destination: URL(string: "https://github.com/hellotunamayo/macLlama/releases")!)
+            }
+        }
         
         MenuBarExtra("macLlama", image: "macLlama-menuIcon") {
             MenuBarExtraView()
