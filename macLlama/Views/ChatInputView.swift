@@ -71,24 +71,16 @@ struct ChatInputView: View {
             }
             
             //MARK: Text input
-            HStack {
+            HStack(alignment: .bottom) {
                 //Input text field
                 TextEditor(text: $prompt)
                     .font(.title2)
-                    .padding(.horizontal, 8)
-                    .padding(.top, 4)
-                    .textFieldStyle(.plain)
-                    .frame(height: 30)
-                    .scrollContentBackground(.hidden)
-                    .background(
-                        RoundedRectangle(cornerRadius: Units.normalGap / 3)
-                            .fill(Color.black.opacity(colorScheme == .dark ? 0.3 : 0.1))
-                    )
-                    .onDrop(of: [.image], isTargeted: $isTargeted) { providers in
-                        guard let provider = providers.first else { return false }
-                        setImage(provider: provider)
-                        return true
-                    }
+                    .lineSpacing(Units.normalGap / 3)
+                    .frame(minHeight: 32, maxHeight: Units.appFrameMinHeight / 4)
+                    .dynamicTypeSize(.medium ... .xxLarge)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .clipShape(.rect(cornerRadius: Units.normalGap / 3))
+                    .padding(.top, Units.normalGap / 2)
                 
                 //MARK: Send button
                 Button {
@@ -116,7 +108,6 @@ struct ChatInputView: View {
                 .buttonStyle(.borderedProminent)
                 .keyboardShortcut(.return) //WHY cmd+return???? ¯\(°_o)/¯
             }
-            .frame(height: 60)
             .padding()
             .padding(.top, Units.normalGap * -1.5)
         }
