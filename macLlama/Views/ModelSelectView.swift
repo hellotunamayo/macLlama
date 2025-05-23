@@ -35,7 +35,16 @@ struct ModelSelectView: View {
                 Task {
                     if !currentModel.isEmpty {
                         await self.ollamaNetworkService.changeModel(model: newValue)
+                        UserDefaults.standard.set(newValue, forKey: "currentModel")
                     }
+                }
+            }
+            .task {
+                guard let lastModelUsed = UserDefaults.standard.string(forKey: "currentModel") else { return }
+                if !lastModelUsed.isEmpty,
+                   !currentModel.isEmpty {
+                    await self.ollamaNetworkService.changeModel(model: lastModelUsed)
+                    self.currentModel = lastModelUsed
                 }
             }
             
