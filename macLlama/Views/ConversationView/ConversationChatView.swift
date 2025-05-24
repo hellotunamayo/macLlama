@@ -52,6 +52,9 @@ struct ConversationChatView: View {
                     Divider()
                         .foregroundStyle(Color(nsColor: .systemGray))
                         .opacity(self.colorScheme == .dark ? 1.0 : 0.9)
+                } else {
+                    //If model is not exists on Ollama server
+                    Text("You haven't added any Ollama models yet.\nPlease open the Preference pane to add one.")
                 }
                 
                 ScrollViewReader { proxy in
