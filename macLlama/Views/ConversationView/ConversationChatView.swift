@@ -116,10 +116,12 @@ struct ConversationChatView: View {
                         self.isThinking = true
                         
                         //Check if suffix exists
-                        guard let suffix = UserDefaults.standard.string(forKey: "promptSuffix") else { return }
-                        let promptWithSuffix: String = self.prompt + " \(suffix)"
-                        
-                        try await self.sendChat(model: self.currentModel, prompt: promptWithSuffix, images: self.promptImages)
+                        if let suffix = UserDefaults.standard.string(forKey: "promptSuffix") {
+                            let promptWithSuffix: String = self.prompt + " \(suffix)"
+                            try await self.sendChat(model: self.currentModel, prompt: promptWithSuffix, images: self.promptImages)
+                        } else {
+                            try await self.sendChat(model: self.currentModel, prompt: self.prompt, images: self.promptImages)
+                        }
                     }
                 }
             }
