@@ -72,12 +72,20 @@ struct ChatBubbleView: View {
                 }
                 
                 VStack {
+                    #if DEBUG
+                    Text(.init(convertCodeBlock(chatData.message)))
+                        .font(.system(size: CGFloat(chatFontSize)))
+                        .lineSpacing(CGFloat(chatFontSize / 3))
+                        .textSelection(.enabled)
+                        .frame(alignment: chatData.isUser ? .trailing : .leading)
+                    #else
                     Text(chatData.message)
                         .font(.system(size: CGFloat(chatFontSize)))
                         .lineSpacing(CGFloat(chatFontSize / 3))
                         .textSelection(.enabled)
                         .frame(alignment: chatData.isUser ? .trailing : .leading)
-                    
+                    #endif
+                        
                     //Temporary disable MarkdownUI for rendering performance issue.
 //                    Markdown {
 //                        MarkdownContent(chatData.message)
@@ -111,7 +119,9 @@ struct ChatBubbleView: View {
 //            }
         }
     }
-    
+}
+
+extension ChatBubbleView {
     private func copyChatToClipboard() {
         let pasteboard = NSPasteboard.general
         pasteboard.clearContents()
@@ -131,5 +141,19 @@ struct ChatBubbleView: View {
                 messageAnimationFactor = 0.0
             }
         }
+    }
+    
+    ///EXPREIMENTAL : Convert string to LocalizedString for rendering Markdown
+    private func convertCodeBlock(_ input: String) -> String {
+        let regex = /```(?<name>([0-9A-Za-z ]*))(\r|\n)(?<content>(([^```])*))```/
+        var resultString = input
+        
+        for match in input.matches(of: regex).reversed() {
+            let content = String(match.content)
+            let newCodeBlock = content.split(separator: "\n").map({"`\($0)`"}).joined(separator: "\n")
+            resultString.replaceSubrange(match.range, with: newCodeBlock)
+        }
+        
+        return resultString
     }
 }
