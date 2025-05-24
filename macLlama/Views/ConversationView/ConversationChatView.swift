@@ -59,8 +59,7 @@ struct ConversationChatView: View {
                         ForEach(0..<self.history.count, id: \.self) { index in
                             LazyVStack {
                                 if history[index].message != "" {
-                                    
-                                    ChatBubbleView(chatData: history[index])
+                                    ChatBubbleView(isThinking: self.$isThinking, chatData: history[index])
                                         .padding()
                                         .id(index)
                                     

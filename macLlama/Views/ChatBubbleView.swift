@@ -11,6 +11,7 @@ import MarkdownUI
 struct ChatBubbleView: View {
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("chatFontSize") var chatFontSize: Int = AppSettings.chatFontSize
+    @Binding var isThinking: Bool
     @State private var messageAnimationFactor: CGFloat = 0.0
     @State private var messageAnimated: Bool = false
     
@@ -73,11 +74,26 @@ struct ChatBubbleView: View {
                 
                 VStack {
                     #if DEBUG
-                    Text(.init(convertCodeBlock(chatData.message)))
-                        .font(.system(size: CGFloat(chatFontSize)))
-                        .lineSpacing(CGFloat(chatFontSize / 3))
+                    if isThinking {
+                        Text(chatData.message)
+                            .font(.system(size: CGFloat(chatFontSize)))
+                            .lineSpacing(CGFloat(chatFontSize / 3))
+                            .textSelection(.enabled)
+                            .frame(alignment: chatData.isUser ? .trailing : .leading)
+                    } else {
+                        Markdown {
+                            MarkdownContent(chatData.message)
+                        }
+                        .markdownTextStyle(\.code) {
+                            FontFamilyVariant(.monospaced)
+                        }
+                        .markdownTextStyle(\.text) {
+                            BackgroundColor(nil)
+                            FontSize(CGFloat(chatFontSize))
+                        }
                         .textSelection(.enabled)
-                        .frame(alignment: chatData.isUser ? .trailing : .leading)
+                        .markdownTheme(.gitHub)
+                    }
                     #else
                     Text(chatData.message)
                         .font(.system(size: CGFloat(chatFontSize)))
@@ -85,19 +101,6 @@ struct ChatBubbleView: View {
                         .textSelection(.enabled)
                         .frame(alignment: chatData.isUser ? .trailing : .leading)
                     #endif
-                        
-                    //Temporary disable MarkdownUI for rendering performance issue.
-//                    Markdown {
-//                        MarkdownContent(chatData.message)
-//                    }
-//                    .markdownTextStyle(\.code) {
-//                        FontFamilyVariant(.monospaced)
-//                    }
-//                    .markdownTextStyle(\.text) {
-//                        BackgroundColor(nil)
-//                        FontSize(18)
-//                    }
-//                    .markdownTheme(.gitHub)
                 }
                 .padding(.horizontal, chatData.isUser ? Units.normalGap * 1.3 : 0)
                 .padding(.vertical, chatData.isUser ? Units.normalGap / 1.5 : 0)
