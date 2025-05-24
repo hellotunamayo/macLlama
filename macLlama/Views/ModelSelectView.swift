@@ -63,16 +63,20 @@ struct ModelSelectView: View {
                 VStack {
                     if self.isModelLoading {
                         Label("Loading...", systemImage: "rays")
+                            .padding(.horizontal, 4)
                     } else {
                         Label("Reload", systemImage: "arrow.clockwise")
+                            .padding(.horizontal, 4)
                     }
                 }
-                .padding(.vertical, Units.normalGap / 8)
-                .frame(width: 80)
+                
+//                .padding(.vertical, Units.normalGap / 8)
+//                .frame(width: 80)
+                .labelStyle(.titleAndIcon)
             }
             .tint(.primary)
-            .controlSize(.regular)
-            .buttonStyle(.bordered)
+//            .controlSize(.regular)
+//            .buttonStyle(.)
         }
         .padding()
         .task {

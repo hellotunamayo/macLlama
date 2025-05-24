@@ -71,11 +71,17 @@ struct ChatBubbleView: View {
                 }
                 
                 VStack {
-                    Text(chatData.message)
+                    Text(.init(chatData.message))
                         .font(.title2)
                         .lineSpacing(6)
                         .textSelection(.enabled)
                         .frame(alignment: chatData.isUser ? .trailing : .leading)
+                    
+//                    Text(chatData.message)
+//                        .font(.title2)
+//                        .lineSpacing(6)
+//                        .textSelection(.enabled)
+//                        .frame(alignment: chatData.isUser ? .trailing : .leading)
                     
                     //Temporary disable MarkdownUI for rendering performance issue.
 //                    Markdown {

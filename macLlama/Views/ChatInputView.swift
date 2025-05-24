@@ -15,6 +15,10 @@ struct ChatInputView: View {
     
     @State private var isTargeted: Bool = false
     
+    //---
+    @State private var editorViewHeight: CGFloat = 30
+    //---
+    
     let sendMessage: () async throws -> Void
     
     var body: some View {
@@ -71,24 +75,43 @@ struct ChatInputView: View {
             }
             
             //MARK: Text input
+//            Spacer()
             HStack {
                 //Input text field
-                TextEditor(text: $prompt)
-                    .font(.title2)
-                    .padding(.horizontal, 8)
-                    .padding(.top, 4)
-                    .textFieldStyle(.plain)
-                    .frame(height: 30)
-                    .scrollContentBackground(.hidden)
-                    .background(
-                        RoundedRectangle(cornerRadius: Units.normalGap / 3)
-                            .fill(Color.black.opacity(colorScheme == .dark ? 0.3 : 0.1))
-                    )
-                    .onDrop(of: [.image], isTargeted: $isTargeted) { providers in
-                        guard let provider = providers.first else { return false }
-                        setImage(provider: provider)
-                        return true
-                    }
+                ZStack {
+                    TextEditor(text: $prompt)
+                        .font(.title2)
+                        .padding(4)
+                    //                    .padding(.horizontal, 8)
+                    //                    .padding(.top, 4)
+                        .textFieldStyle(.plain)
+                        .frame(height: 30)
+                        .scrollContentBackground(.hidden)
+//                        .overlay {
+//                            
+//                        }
+                        .background(
+                            RoundedRectangle(cornerRadius: Units.normalGap / 3)
+                                .foregroundStyle(.quaternary)
+                            //                            .fill(Color.black.opacity(colorScheme == .dark ? 0.3 : 0.1))
+                        )
+                        .overlay {
+                            if prompt.isEmpty {
+                                HStack {
+                                    Text("   Type your message here. Press command + return to send.")
+                                        .foregroundStyle(.tertiary)
+                                        .fontWeight(.semibold)
+//                                        .fontWeight(.semibold)
+                                    Spacer()
+                                }
+                            }
+                        }
+                        .onDrop(of: [.image], isTargeted: $isTargeted) { providers in
+                            guard let provider = providers.first else { return false }
+                            setImage(provider: provider)
+                            return true
+                        }
+                }
                 
                 //MARK: Send button
                 Button {
@@ -112,6 +135,7 @@ struct ChatInputView: View {
                             .frame(minWidth: 100)
                     }
                 }
+                .disabled(prompt.isEmpty)
                 .tint(self.isThinking ? .gray : .accent)
                 .buttonStyle(.borderedProminent)
                 .keyboardShortcut(.return) //WHY cmd+return???? ¯\(°_o)/¯

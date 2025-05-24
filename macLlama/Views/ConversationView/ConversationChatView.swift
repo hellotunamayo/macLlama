@@ -41,18 +41,18 @@ struct ConversationChatView: View {
             
             //MARK: Conversation view
             VStack {
-                if !self.modelList.isEmpty {
-                    ModelSelectView(modelList: $modelList, currentModel: $currentModel,
-                                    isModelLoading: $isModelLoading, ollamaNetworkService: self.ollamaNetworkService) {
-                        Task {
-                            try? await self.initModelList()
-                        }
-                    }
-                    
-                    Divider()
-                        .foregroundStyle(Color(nsColor: .systemGray))
-                        .opacity(self.colorScheme == .dark ? 1.0 : 0.9)
-                }
+//                if !self.modelList.isEmpty {
+//                    ModelSelectView(modelList: $modelList, currentModel: $currentModel,
+//                                    isModelLoading: $isModelLoading, ollamaNetworkService: self.ollamaNetworkService) {
+//                        Task {
+//                            try? await self.initModelList()
+//                        }
+//                    }
+//                    
+//                    Divider()
+//                        .foregroundStyle(Color(nsColor: .systemGray))
+//                        .opacity(self.colorScheme == .dark ? 1.0 : 0.9)
+//                }
                 
                 //experimental
                 ScrollViewReader { proxy in
@@ -121,6 +121,22 @@ struct ConversationChatView: View {
             .opacity(modelList.isEmpty ? 0.1 : 1)
             .task {
                 try? await self.initModelList()
+            }
+        }
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                if !self.modelList.isEmpty {
+                    ModelSelectView(modelList: $modelList, currentModel: $currentModel,
+                                    isModelLoading: $isModelLoading, ollamaNetworkService: self.ollamaNetworkService) {
+                        Task {
+                            try? await self.initModelList()
+                        }
+                    }
+                    
+                    Divider()
+                        .foregroundStyle(Color(nsColor: .systemGray))
+                        .opacity(self.colorScheme == .dark ? 1.0 : 0.9)
+                }
             }
         }
     }
