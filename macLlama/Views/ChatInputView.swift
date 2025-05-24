@@ -72,7 +72,7 @@ struct ChatInputView: View {
                 //Input text field
                 ZStack {
                     if !isPromptFocused || self.prompt.isEmpty {
-                        Text("Ask something")
+                        Text("Ask something (⌘ + return to send)")
                             .font(.title3)
                             .foregroundStyle(.secondary.opacity(0.6))
                             .frame(maxWidth: .infinity, maxHeight: 40, alignment: .leading)
