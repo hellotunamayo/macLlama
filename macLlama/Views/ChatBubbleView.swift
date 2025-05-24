@@ -73,7 +73,7 @@ struct ChatBubbleView: View {
                 }
                 
                 VStack {
-                    #if DEBUG
+                    #if !DEBUG
                     if isThinking {
                         Text(chatData.message)
                             .font(.system(size: CGFloat(chatFontSize)))
