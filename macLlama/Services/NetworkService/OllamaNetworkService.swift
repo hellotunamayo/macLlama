@@ -15,6 +15,30 @@ actor OllamaNetworkService {
         }
     }
     
+    ///Checks availability of Ollama server'
+    static func isAvailable() async throws -> Bool {
+        do {
+            guard let shellResponse = try await ShellService.runShellScript("ollama") else { return false }
+            
+            let data = shellResponse.0.fileHandleForReading.availableData
+            let output = String(data: data, encoding: .utf8) ?? ""
+            if output.contains("command not found") {
+#if DEBUG
+                debugPrint("Ollama is not available")
+#endif
+                
+                return false
+            } else {
+                return true
+            }
+        } catch {
+#if DEBUG
+            debugPrint("Ollama is not available")
+#endif
+            return false
+        }
+    }
+    
     ///Checks Ollama server is online.
     static func isServerOnline() async throws -> Bool {
         do {
