@@ -14,6 +14,7 @@ struct ChatBubbleView: View {
     @Binding var isThinking: Bool
     @State private var messageAnimationFactor: CGFloat = 0.0
     @State private var messageAnimated: Bool = false
+    @State private var isMarkdownEnabled: Bool = false
     
     let chatData: (isUser: Bool, modelName: String, message: String)
     
@@ -40,9 +41,35 @@ struct ChatBubbleView: View {
                             Text(chatData.modelName)
                                 .padding(.horizontal, Units.normalGap / 1.5)
                                 .padding(.vertical, Units.normalGap / 3)
+                                .lineLimit(1)
                                 .foregroundStyle(.white)
                         }
                         .background(Color(nsColor: .black).opacity(0.7))
+                        .clipShape(Capsule())
+                        
+                        Button {
+                            isMarkdownEnabled.toggle()
+                        } label: {
+                            HStack {
+                                Group {
+                                    Image("markdown-symbol")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(height: 15)
+                                    
+                                    Image(systemName: isMarkdownEnabled ? "circle" : "xmark")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 13, height: 13)
+                                }
+                            }
+                            .padding(.horizontal, Units.normalGap / 1.5)
+                            .padding(.vertical, Units.normalGap / 3)
+                            .foregroundStyle(.white)
+                        }
+                        .controlSize(.small)
+                        .buttonStyle(.borderless)
+                        .background(isMarkdownEnabled ? Color("maridownIndicateGreen").opacity(0.7) : Color.black.opacity(0.7))
                         .clipShape(Capsule())
                         
                         Spacer()
@@ -55,6 +82,7 @@ struct ChatBubbleView: View {
                             .padding(.vertical, Units.normalGap / 4)
                             .background(.green.opacity(colorScheme == .dark ? 0.5 : 0.3))
                             .clipShape(Capsule())
+                            .lineLimit(1)
                             .opacity(messageAnimationFactor)
                             .offset(x: messageAnimated ? 0 : messageAnimationFactor + 5)
                     }
@@ -73,14 +101,7 @@ struct ChatBubbleView: View {
                 }
                 
                 VStack {
-                    #if !DEBUG
-                    if isThinking {
-                        Text(chatData.message)
-                            .font(.system(size: CGFloat(chatFontSize)))
-                            .lineSpacing(CGFloat(chatFontSize / 3))
-                            .textSelection(.enabled)
-                            .frame(alignment: chatData.isUser ? .trailing : .leading)
-                    } else {
+                    if isMarkdownEnabled {
                         Markdown {
                             MarkdownContent(chatData.message)
                         }
@@ -90,17 +111,17 @@ struct ChatBubbleView: View {
                         .markdownTextStyle(\.text) {
                             BackgroundColor(nil)
                             FontSize(CGFloat(chatFontSize))
+                            
                         }
                         .textSelection(.enabled)
                         .markdownTheme(.gitHub)
+                    } else {
+                        Text(chatData.message)
+                            .font(.system(size: CGFloat(chatFontSize)))
+                            .lineSpacing(CGFloat(chatFontSize / 3))
+                            .textSelection(.enabled)
+                            .frame(alignment: chatData.isUser ? .trailing : .leading)
                     }
-                    #else
-                    Text(chatData.message)
-                        .font(.system(size: CGFloat(chatFontSize)))
-                        .lineSpacing(CGFloat(chatFontSize / 3))
-                        .textSelection(.enabled)
-                        .frame(alignment: chatData.isUser ? .trailing : .leading)
-                    #endif
                 }
                 .padding(.horizontal, chatData.isUser ? Units.normalGap * 1.3 : 0)
                 .padding(.vertical, chatData.isUser ? Units.normalGap / 1.5 : 0)
