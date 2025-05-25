@@ -111,7 +111,6 @@ struct ChatBubbleView: View {
                         .markdownTextStyle(\.text) {
                             BackgroundColor(nil)
                             FontSize(CGFloat(chatFontSize))
-                            
                         }
                         .textSelection(.enabled)
                         .markdownTheme(.gitHub)
