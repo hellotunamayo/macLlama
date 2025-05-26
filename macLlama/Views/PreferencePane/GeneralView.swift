@@ -17,13 +17,13 @@ struct GeneralView: View {
             Section("General") {
                 List {
                     Toggle(isOn: $serverKillWithApp) {
-                        Text("Stop Ollama Server Automatically on App Exit")
+                        Text("Automatically stop Ollama server on exit")
                             .padding(.leading, 3)
                     }
                     .padding(.vertical, 5)
                     
                     Toggle(isOn: $isAutoScrollEnabled) {
-                        Text("Auto scroll while generating answer")
+                        Text("Auto-scroll to bottom on answer completion")
                             .padding(.leading, 3)
                     }
                     .padding(.vertical, 5)
