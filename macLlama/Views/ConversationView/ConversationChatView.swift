@@ -26,7 +26,7 @@ struct ConversationChatView: View {
     
     //Auto scrolling state
     @State private var isAutoScrolling: Bool = false
-    @State private var autoScrollTask: Task<Void, Never>?
+//    @State private var autoScrollTask: Task<Void, Never>?
     
     let chatService: OllamaChatService = OllamaChatService()
     let ollamaNetworkService: OllamaNetworkService = OllamaNetworkService()
@@ -84,24 +84,30 @@ struct ConversationChatView: View {
                             }
                         }
                     }
-                    .onChange(of: history.count) { _, _ in
+                    .onChange(of: isThinking) { _, newValue in
                         let isAutoScroll = UserDefaults.standard.bool(forKey: "isAutoScrollEnabled")
-                        if isAutoScroll {
-                            autoScrollTask = Task {
-                                while !Task.isCancelled {
-                                    try? await Task.sleep(nanoseconds: 1_500_000_000)
-                                    
-                                    withAnimation(.linear(duration: 2.0)) {
-                                        proxy.scrollTo(history.count - 1, anchor: .bottom)
-                                    }
-                                    
-                                    if !isAutoScrolling {
-                                        break
-                                    }
-                                }
+                        if isAutoScroll && newValue == false {
+                            withAnimation(.linear(duration: 2.0)) {
+                                proxy.scrollTo(history.count - 1, anchor: .bottom)
                             }
                         }
                     }
+//                    .onChange(of: history.count) { _, _ in
+//                        let isAutoScroll = UserDefaults.standard.bool(forKey: "isAutoScrollEnabled")
+//                        if isAutoScroll {
+//                            autoScrollTask = Task {
+//                                while !Task.isCancelled {
+//                                    try? await Task.sleep(nanoseconds: 1_500_000_000)
+//                                    
+//                                    
+//                                    
+//                                    if !isAutoScrolling {
+//                                        break
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
                 }
                 
 #if DEBUG
@@ -169,7 +175,7 @@ extension ConversationChatView {
                 //Reset state
                 self.isThinking = false
                 self.isAutoScrolling = false
-                self.autoScrollTask = nil
+//                self.autoScrollTask = nil
             }
         } else {
             debugPrint("ConversationViewError:")
@@ -180,7 +186,7 @@ extension ConversationChatView {
             //Reset state
             self.isThinking = false
             self.isAutoScrolling = false
-            self.autoScrollTask = nil
+//            self.autoScrollTask = nil
         }
     }
     
