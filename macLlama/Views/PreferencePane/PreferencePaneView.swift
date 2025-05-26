@@ -13,6 +13,9 @@ enum AppSettings {
     static let isAutoScrollEnabled: Bool = false
     static let chatFontSize: Int = 16
     static let promptSuffix: String = ""
+    static let currentVersionNumber: String? = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String //version number
+    static let currentBuildNumber: String? = Bundle.main.infoDictionary?["CFBundleVersion"] as? String //bundle version
+    static let lastUpdateCheckDate: Double = Date().timeIntervalSince1970
 }
 
 enum PreferenceTab {
