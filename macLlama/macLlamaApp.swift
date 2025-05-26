@@ -99,10 +99,17 @@ struct macLlamaApp: App {
             
             CommandGroup(after: .help) {
                 Link("Search models from Ollama.com", destination: URL(string: "https://ollama.com/search")!)
-            }
-            
-            CommandGroup(after: .help) {
-                Link("Check for updates", destination: URL(string: "https://github.com/hellotunamayo/macLlama/releases")!)
+                
+                Button {
+                    openWindow(id: "updateWindow")
+                } label: {
+                    Text("Check for update")
+                }
+                
+                Divider()
+                
+                Link("Discuss macLlama on GitHub", destination: URL(string: "https://github.com/hellotunamayo/macLlama/discussions")!)
+                Link("macLlama on GitHub", destination: URL(string: "https://github.com/hellotunamayo/macLlama")!)
             }
         }
         
