@@ -31,6 +31,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 @main
 struct macLlamaApp: App {
     @AppStorage("lastUpdateCheckDate") var lastUpdateCheckDate: Double = AppSettings.lastUpdateCheckDate
+    @AppStorage("isAutoUpdateEnabled") var isAutoUpdateEnabled: Bool = AppSettings.isAutoUpdateEnabled
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.openWindow) var openWindow
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
@@ -48,24 +49,22 @@ struct macLlamaApp: App {
             .frame(minWidth: Units.appFrameMinWidth, idealWidth: Units.appFrameMinWidth,
                    minHeight: Units.appFrameMinHeight, idealHeight: Units.appFrameMinHeight)
             .task {
-                //check for updates
-                let lastUpdateCheckDate = UserDefaults.standard.integer(forKey: "lastUpdateCheckDate")
+                //auto check for updates
                 let intervalSinceLastCheck: TimeInterval = Date().timeIntervalSince1970 - TimeInterval(lastUpdateCheckDate)
-                
-                do {
-                    if intervalSinceLastCheck < 60 * 60 * 24 {
+                if isAutoUpdateEnabled && intervalSinceLastCheck > 60 * 60 * 24 { //Check update every 1 day
+                    do {
                         let githubService = GithubService()
                         guard let checkVersionResult = try await githubService.checkForUpdates() else { return }
                         self.updateData = checkVersionResult
                         openWindow(id: "updateWindow")
                         self.lastUpdateCheckDate = Date().timeIntervalSince1970
                         
-                        #if DEBUG
-                        debugPrint("updated checked in : \(UserDefaults.standard.integer(forKey: "lastUpdateCheckDate"))")
-                        #endif
+#if DEBUG
+                        debugPrint("updated checked in : \(lastUpdateCheckDate)")
+#endif
+                    } catch {
+                        
                     }
-                } catch {
-                    
                 }
             }
         }

@@ -11,6 +11,7 @@ struct GeneralView: View {
     @Binding var serverKillWithApp: Bool
     @Binding var isAutoScrollEnabled: Bool
     @Binding var promptSuffix: String
+    @Binding var isAutoUpdateEnabled: Bool
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -24,6 +25,12 @@ struct GeneralView: View {
                     
                     Toggle(isOn: $isAutoScrollEnabled) {
                         Text("Auto-scroll to bottom on answer completion")
+                            .padding(.leading, 3)
+                    }
+                    .padding(.vertical, 5)
+                    
+                    Toggle(isOn: $isAutoUpdateEnabled) {
+                        Text("Automatic check for Updates")
                             .padding(.leading, 3)
                     }
                     .padding(.vertical, 5)
@@ -43,7 +50,6 @@ struct GeneralView: View {
                 }
                 .clipShape(.rect(cornerRadius: Units.normalGap / 2))
             }
-            
             Spacer()
         }
         .padding()
