@@ -122,7 +122,6 @@ struct ModelManagementView: View {
             
             Spacer()
         }
-        .frame(height: 600)
         .padding()
     }
 }

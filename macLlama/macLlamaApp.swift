@@ -129,6 +129,7 @@ struct macLlamaApp: App {
         Settings {
             PreferencePaneView()
         }
+        .windowResizability(.contentSize)
         
         //MARK: New version available
         Window("macLlama update", id: "updateWindow") {

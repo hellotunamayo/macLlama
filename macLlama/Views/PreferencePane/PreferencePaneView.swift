@@ -40,20 +40,44 @@ struct PreferencePaneView: View {
                     GeneralView(serverKillWithApp: $serverKillWithApp,
                                 isAutoScrollEnabled: $isAutoScrollEnabled,
                                 promptSuffix: $promptSuffix, isAutoUpdateEnabled: $isAutoUpdateEnabled)
+                    .frame(width: 600, height: 400)
                 }
                 
                 Tab("Typography", systemImage: "textformat") {
                     TypographyView(chatFontSize: $chatFontSize)
+                        .frame(width: 600, height: 200)
                 }
                 
                 Tab("Model Management", systemImage: "apple.intelligence") {
                     ModelManagementView()
+                        .frame(width: 600, height: 700)
                 }
             }
             .navigationTitle("macLlamas Preferences")
-            .frame(maxWidth: 600)
         } else {
-            Text("Tempoarily not supported on older macOS(under 14.x) version")
+            TabView {
+                GeneralView(serverKillWithApp: $serverKillWithApp, isAutoScrollEnabled: $isAutoScrollEnabled,
+                            promptSuffix: $promptSuffix, isAutoUpdateEnabled: $isAutoUpdateEnabled)
+                    .tabItem {
+                        Label("General", systemImage: "gear")
+                    }
+                    .tag(1)
+                
+                TypographyView(chatFontSize: $chatFontSize)
+                    .tabItem {
+                        Label("Typography", systemImage: "textformat")
+                    }
+                    .tag(2)
+                
+                ModelManagementView()
+                    .tabItem {
+                        Label("Model Management", systemImage: "apple.intelligence")
+                    }
+                    .frame(height: 500)
+                    .tag(3)
+            }
+            .tabViewStyle(.automatic)
+            .frame(maxWidth: 600)
         }
     }
 }
