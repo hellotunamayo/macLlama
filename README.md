@@ -62,14 +62,17 @@ The macLlama can now help you start the Ollama server. Alternatively, you can st
 
 Before you can chat, you need to download models for Ollama to use. You can do this via the Terminal.
 
-```bash
-ollama pull <model_name>
-```
-For example, to download the Llama 3 8B instruct model, you would run:
-```bash
-ollama pull llama3:8b-instruct
-```
-You can find a list of available models on the [Ollama Library](https://ollama.com/library).
+*   **Via Terminal:**
+    ```bash
+    ollama pull <model_name>
+    ```
+    For example, to download the Llama 3 8B instruct model, you would run:
+    ```bash
+    ollama pull llama3:8b-instruct
+    ```
+    You can find a list of available models on the Ollama Library.
+
+*   **Install via macLlama's Preference panel:** Go to "Model Management" tab -> input model name you want -> push "Pull" button.
 
 ## Using the macLlama
 
