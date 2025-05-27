@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
    LastUpgradeVersion = "1600"
-   version = "2.2">
+   version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES"
@@ -18,43 +18,6 @@
                BlueprintIdentifier = "E1D4DA812DCB2661002407FD"
                BuildableName = "macLlama.app"
                BlueprintName = "macLlama"
-               ReferencedContainer = "container:OllamaUIApp.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "NO"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "NO">
-            <AutocreatedTestPlanReference>
-            </AutocreatedTestPlanReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "NO"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E1D4DA812DCB2661002407FD"
-               BuildableName = "macLlama.app"
-               BlueprintName = "macLlama"
-               ReferencedContainer = "container:macLlama.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "NO"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E13451632DD0B58A00377907"
-               BuildableName = "macLlamaTest.xctest"
-               BlueprintName = "macLlamaTest"
                ReferencedContainer = "container:macLlama.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -66,19 +29,6 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
       shouldAutocreateTestPlan = "YES">
-      <Testables>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E13451632DD0B58A00377907"
-               BuildableName = "OllamaUIAppTest.xctest"
-               BlueprintName = "OllamaUIAppTest"
-               ReferencedContainer = "container:OllamaUIApp.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-      </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -100,15 +50,6 @@
             ReferencedContainer = "container:macLlama.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E1D4DA812DCB2661002407FD"
-            BuildableName = "macLlama.app"
-            BlueprintName = "macLlama"
-            ReferencedContainer = "container:OllamaUIApp.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -123,18 +64,9 @@
             BlueprintIdentifier = "E1D4DA812DCB2661002407FD"
             BuildableName = "macLlama.app"
             BlueprintName = "macLlama"
-            ReferencedContainer = "container:OllamaUIApp.xcodeproj">
+            ReferencedContainer = "container:macLlama.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E1D4DA812DCB2661002407FD"
-            BuildableName = "macLlama.app"
-            BlueprintName = "macLlama"
-            ReferencedContainer = "container:OllamaUIApp.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

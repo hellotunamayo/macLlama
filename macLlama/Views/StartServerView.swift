@@ -9,7 +9,8 @@ import SwiftUI
 
 struct StartServerView: View {
     @EnvironmentObject var serverStatus: ServerStatus
-//    @State private var ollamaWarningBouncingYOffset: CGFloat = 0
+    @State private var ollamaWarningBouncingYOffset: CGFloat = 0
+    @State private var isOllamaServerError: Bool = false
     
     let ollamaNetworkService: OllamaNetworkService = OllamaNetworkService()
     
@@ -33,11 +34,12 @@ struct StartServerView: View {
                 .background(Color(nsColor: NSColor.windowBackgroundColor))
                 .clipShape(Circle())
                 .shadow(color:.black.opacity(0.2), radius: 3)
-//                .offset(y: ollamaWarningBouncingYOffset)
-//                .animation(.bouncy(duration: 1.5, extraBounce: 1), value: ollamaWarningBouncingYOffset)
-//                .onAppear {
-//                    self.ollamaWarningBouncingYOffset = 3
-//                }
+                .offset(y: ollamaWarningBouncingYOffset)
+                .onAppear {
+                    withAnimation(.bouncy(duration: 1.5, extraBounce: 1).repeatForever()){
+                        self.ollamaWarningBouncingYOffset = 3
+                    }
+                }
             
             Text("Start your local AI engine\nwith Ollama")
                 .fontWeight(.regular)
@@ -45,12 +47,22 @@ struct StartServerView: View {
                 .multilineTextAlignment(.center)
                 .padding(.top, Units.normalGap)
             
+            if isOllamaServerError {
+                Text("Ollama server is not available. Install Ollama first.")
+                    .foregroundStyle(.red)
+                    .padding()
+            }
+            
             Button {
                 Task {
-                    let shellCommand: String = ShellCommand.startServer.rawValue
-                    guard let _ = await ShellService.runShellScript(shellCommand) else { return }
-                    try? await Task.sleep(for: .seconds(1))
-                    try await serverStatus.updateServerStatus()
+                    if try await OllamaNetworkService.isAvailable() {
+                        let shellCommand: String = ShellCommand.startServer.rawValue
+                        guard let _ = try await ShellService.runShellScript(shellCommand) else { return }
+                        try? await Task.sleep(for: .seconds(1))
+                        try await serverStatus.updateServerStatus()
+                    } else {
+                        isOllamaServerError = true
+                    }
                 }
             } label: {
                 Label("Start the server and go", systemImage: "power")

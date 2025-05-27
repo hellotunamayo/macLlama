@@ -15,6 +15,33 @@ actor OllamaNetworkService {
         }
     }
     
+    ///Checks availability of Ollama server
+    static func isAvailable() async throws -> Bool {
+        do {
+            guard let shellResponse = try await ShellService.runShellScript("command -v ollama; echo $?") else {
+                throw NSError(domain: "", code: 0, userInfo: nil)
+            }
+            
+            let data = shellResponse.0.fileHandleForReading.availableData
+            guard let output = String(data: data, encoding: .utf8) else {
+                throw NSError(domain: "", code: 0, userInfo: nil)
+            }
+            
+            let inputText = output.replacing("\n", with: "")
+            
+            if inputText == "1" {
+                return false
+            } else {
+                return true
+            }
+        } catch {
+#if DEBUG
+            debugPrint("Ollama is not available: \(error.localizedDescription)")
+#endif
+            return false
+        }
+    }
+    
     ///Checks Ollama server is online.
     static func isServerOnline() async throws -> Bool {
         do {

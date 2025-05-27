@@ -7,7 +7,6 @@
 
 import SwiftUI
 import SwiftData
-import MarkdownUI
 
 struct ConversationView: View {
     @Environment(\.colorScheme) var colorScheme

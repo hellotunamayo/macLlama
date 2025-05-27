@@ -9,8 +9,8 @@ import Foundation
 import AppKit
 
 enum ShellCommand: String {
-//    case startServer = "ollama serve > ~Library/Caches/macLlama-output.log 2>&1" //Temporary solution!
-    case startServer = "ollama serve 2>&1 | logger"
+    case startServer = "ollama serve > ~/macLlama-output.log 2>&1" //Temporary solution!
+//    case startServer = "ollama serve 2>&1 | logger"
 }
 
 actor ShellService {
@@ -25,7 +25,7 @@ actor ShellService {
     }
     
     ///Run shell script
-    static func runShellScript(_ command: String) async -> String? {
+    static func runShellScript(_ command: String) async throws -> (Pipe, Process)? {
         let customPath = "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
         let fullCommand = "\(customPath) \(command)"
         let process = Process()
@@ -39,8 +39,11 @@ actor ShellService {
         
         do {
             try process.run()
-            return "Shell command run successfully!"
+            return (pipe, process)
         } catch {
+#if DEBUG
+            debugPrint("🔴Failed to run shell script.")
+#endif
             return nil
         }
     }

@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import Cocoa
+import MarkdownUI
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
@@ -14,19 +14,30 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func applicationWillTerminate(_ notification: Notification) {
-        #if !DEBUG
-        ShellService.killOllama()
-        #endif
+        let preferences = UserDefaults.standard
+        
+        if let quitServerOnAppQuit = preferences.dictionary(forKey: "serverKillWithApp") {
+            UserDefaults.standard.set(quitServerOnAppQuit, forKey: "serverKillWithApp")
+        }
+        
+        if preferences.bool(forKey: "serverKillWithApp") {
+            ShellService.killOllama()
+        }
+        
         print("✅ applicationWillTerminate triggered")
     }
 }
 
 @main
 struct macLlamaApp: App {
+    @AppStorage("lastUpdateCheckDate") var lastUpdateCheckDate: Double = AppSettings.lastUpdateCheckDate
+    @AppStorage("isAutoUpdateEnabled") var isAutoUpdateEnabled: Bool = AppSettings.isAutoUpdateEnabled
     @Environment(\.scenePhase) var scenePhase
+    @Environment(\.openWindow) var openWindow
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     @StateObject var serverStatus: ServerStatus = .init()
+    @State private var updateData: (version: String, htmlURL: String, body: String) = ("","","")
     
     var body: some Scene {
         WindowGroup {
@@ -37,8 +48,72 @@ struct macLlamaApp: App {
             .environmentObject(serverStatus)
             .frame(minWidth: Units.appFrameMinWidth, idealWidth: Units.appFrameMinWidth,
                    minHeight: Units.appFrameMinHeight, idealHeight: Units.appFrameMinHeight)
+            .task {
+                //auto check for updates
+                let intervalSinceLastCheck: TimeInterval = Date().timeIntervalSince1970 - TimeInterval(lastUpdateCheckDate)
+                if isAutoUpdateEnabled && intervalSinceLastCheck > 60 * 60 * 24 { //Check update every 1 day
+                    do {
+                        let githubService = GithubService()
+                        guard let checkVersionResult = try await githubService.checkForUpdates() else { return }
+                        self.updateData = checkVersionResult
+                        openWindow(id: "updateWindow")
+                        self.lastUpdateCheckDate = Date().timeIntervalSince1970
+                        
+#if DEBUG
+                        debugPrint("updated checked in : \(lastUpdateCheckDate)")
+#endif
+                    } catch {
+                        
+                    }
+                }
+            }
+        }
+        .commands {
+            CommandMenu("Utility") {
+                HStack {
+                    Text("Ollama server is \(serverStatus.indicator ? "on" : "off")")
+                        .foregroundStyle(serverStatus.indicator ? .green : .red)
+                }
+                .task {
+                    try? await serverStatus.updateServerStatus()
+                }
+                
+                Divider()
+                
+                Button {
+                    Task {
+                        let _ = try await ShellService.runShellScript(ShellCommand.startServer.rawValue)
+                    }
+                } label: {
+                    Text("Start Ollama Server")
+                }
+                
+                Button {
+                    Task {
+                        try await ShellService.openTerminal()
+                    }
+                } label: {
+                    Text("Open Terminal.app")
+                }
+            }
+            
+            CommandGroup(after: .help) {
+                Link("Search models from Ollama.com", destination: URL(string: "https://ollama.com/search")!)
+                
+                Button {
+                    openWindow(id: "updateWindow")
+                } label: {
+                    Text("Check for update")
+                }
+                
+                Divider()
+                
+                Link("Discuss macLlama on GitHub", destination: URL(string: "https://github.com/hellotunamayo/macLlama/discussions")!)
+                Link("macLlama on GitHub", destination: URL(string: "https://github.com/hellotunamayo/macLlama")!)
+            }
         }
         
+        //MARK: Menu bar extra
         MenuBarExtra("macLlama", image: "macLlama-menuIcon") {
             MenuBarExtraView()
                 .environmentObject(serverStatus)
@@ -50,5 +125,16 @@ struct macLlamaApp: App {
                     }
                 }
         }
+        
+        Settings {
+            PreferencePaneView()
+        }
+        .windowResizability(.contentSize)
+        
+        //MARK: New version available
+        Window("macLlama update", id: "updateWindow") {
+            UpdatePanelView(updateData: $updateData)
+        }
+        .windowResizability(.contentSize)
     }
 }
