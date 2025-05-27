@@ -60,7 +60,7 @@ The macLlama can now help you start the Ollama server. Alternatively, you can st
 
 ### 2. Installing Ollama Models
 
-Before you can chat, you need to download models for Ollama to use. You can do this via the Terminal.
+Before you can chat, you need to download models for Ollama to use. You can do this in a couple of ways:
 
 *   **Via Terminal:**
     ```bash
