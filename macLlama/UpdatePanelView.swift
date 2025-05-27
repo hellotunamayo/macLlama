@@ -81,7 +81,16 @@ struct UpdatePanelView: View {
             }
         }
         .task {
-            self.isLatestVersion = try? await self.githubService.checkForUpdates() == nil
+            do {
+                if let checkUpdateResult = try await self.githubService.checkForUpdates() {
+                    self.isLatestVersion = false
+                    self.updateData = checkUpdateResult
+                } else {
+                    self.isLatestVersion = true
+                }
+            } catch {
+                self.isLatestVersion = true
+            }
         }
         
     }

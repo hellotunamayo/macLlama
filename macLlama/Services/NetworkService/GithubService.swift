@@ -45,16 +45,19 @@ actor GithubService {
                     let characterSetToRemove = CharacterSet(charactersIn: "v")
                     let appVersion = try JSONDecoder().decode(AppVersion.self, from: data)
                     let appVersionNumber = appVersion.tagName.trimmingCharacters(in: characterSetToRemove)
+//                    let appVersionNumber = "1.0.4(5)" //for debug
                     guard let currentVersion = self.currentVersion else {
                         throw NSError(domain: "", code: -1,
                                       userInfo: [NSLocalizedDescriptionKey: "Failed to retrieve app version"])
                     }
+                    let currentFullVersion = currentVersion + ("(\(currentBuildNumber ?? "0"))")
                     
                     //If the app is up to date, this is false
-                    let isOutdated = appVersionNumber.compare(self.currentVersion!, options: .numeric) == .orderedDescending
+                    let isOutdated = appVersionNumber.compare(currentFullVersion, options: .numeric) == .orderedDescending
                     
                     #if DEBUG
-                    debugPrint("isOutdated?: \(isOutdated) / remoteVersion: \(appVersionNumber): / currentVersion: \(currentVersion)")
+                    debugPrint(appVersion.body)
+                    debugPrint("isOutdated?: \(isOutdated) / remoteVersion: \(appVersionNumber): / currentVersion: \(currentFullVersion)")
                     #endif
                     
                     if isOutdated {
@@ -69,5 +72,19 @@ actor GithubService {
             debugPrint("Error while checking for updates: \(error.localizedDescription)")
             return nil
         }
+    }
+    
+    private func getBuildNumberFromTag(_ versionString: String) -> String? {
+        // Remove "v" at the beginning
+        var result = versionString.replacingOccurrences(of: "v", with: "", options: .caseInsensitive)
+        
+        // Remove version number (e.g., "1.0.0") - assumes it's digits and dots
+        result = result.replacingOccurrences(of: "[0-9]+\\.[0-9]+\\.[0-9]+", with: "", options: .regularExpression)
+        
+        // Remove "(" and ")"
+        result = result.replacingOccurrences(of: "\\(", with: "", options: .regularExpression)
+        result = result.replacingOccurrences(of: "\\)", with: "", options: .regularExpression)
+        
+        return result
     }
 }
