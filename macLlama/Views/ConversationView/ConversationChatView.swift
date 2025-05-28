@@ -29,6 +29,9 @@ struct ConversationChatView: View {
     @State private var isAutoScrolling: Bool = false
     @State private var autoScrollTask: Task<Void, Never>?
     
+    //Extra state
+    @State private var hoveredTopButtonTag: Int? = nil
+    
     //For debouncing (Save for later version)
 //    @State private var cancellableSet = Set<AnyCancellable>()
 //    @State private var timerPublisher: Timer.TimerPublisher? = nil
@@ -65,12 +68,47 @@ struct ConversationChatView: View {
                 ScrollViewReader { proxy in
                     ScrollView {
                         ForEach(0..<self.history.count, id: \.self) { index in
-                            LazyVStack {
+                            VStack {
                                 if history[index].message != "" {
                                     ChatBubbleView(isThinking: self.$isThinking, chatData: $history[index])
                                         .padding()
                                         .id(index)
                                     
+                                    if !history[index].isUser {
+                                        Button {
+                                            if index > 0 && !isThinking {
+                                                withAnimation {
+                                                    proxy.scrollTo(index - 1, anchor: .bottom)
+                                                }
+                                            }
+                                        } label: {
+//                                            Image(systemName: "chevron.up")
+                                            if let hovered = self.hoveredTopButtonTag, hovered == index {
+                                                Text("Scroll to Top")
+                                                    .padding(.horizontal)
+                                            } else {
+                                                Image(systemName: "arrow.up")
+                                                    .padding(.horizontal)
+                                            }
+                                        }
+                                        .disabled(isThinking ? true : false)
+                                        .buttonStyle(.bordered)
+                                        .opacity(isThinking ? 0 : 0.7)
+                                        .clipShape(.capsule)
+                                        .padding()
+                                        .onHover { enter in
+                                            if enter {
+                                                withAnimation(.easeOut(duration: 0.3)) {
+                                                    self.hoveredTopButtonTag = index
+                                                }
+                                            } else {
+                                                withAnimation(.easeOut(duration: 0.3)) {
+                                                    self.hoveredTopButtonTag = nil
+                                                }
+                                            }
+                                        }
+                                    }
+                                        
                                     Divider()
                                         .foregroundStyle(Color(nsColor: .systemGray))
                                         .opacity(self.colorScheme == .dark ? 1.0 : 0.9)
