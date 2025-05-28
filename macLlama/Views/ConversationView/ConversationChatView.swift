@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 struct ConversationChatView: View {
     @Environment(\.colorScheme) var colorScheme
@@ -62,7 +63,7 @@ struct ConversationChatView: View {
                         ForEach(0..<self.history.count, id: \.self) { index in
                             LazyVStack {
                                 if history[index].message != "" {
-                                    ChatBubbleView(isThinking: self.$isThinking, chatData: history[index])
+                                    ChatBubbleView(isThinking: self.$isThinking, chatData: $history[index])
                                         .padding()
                                         .id(index)
                                     
@@ -164,9 +165,19 @@ extension ConversationChatView {
             
             //Start stream from model
             Task {
+                var cancellable: Set<AnyCancellable> = []
+                let timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
+                var count: Int = 0
+                timer.sink { _ in
+                    count += 1
+                }.store(in: &cancellable)
+                
                 let stream = try await chatService.sendMessage(model: model, userInput: prompt, images: images)
                 for await update in stream {
-                    self.history[self.history.count - 1].message = update
+                    let outputText = update
+                    if count % 2 == 0 { //update stream in every 2 seconds
+                        self.history[self.history.count - 1].message = outputText
+                    }
                 }
                 
                 //Save last response to history
