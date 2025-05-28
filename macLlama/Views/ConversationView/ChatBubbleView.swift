@@ -72,6 +72,9 @@ struct ChatBubbleView: View {
                         .buttonStyle(.borderless)
                         .background(isMarkdownEnabled ? Color("maridownIndicateGreen").opacity(0.7) : Color.black.opacity(0.7))
                         .clipShape(Capsule())
+                        .opacity(isThinking ? 0.3 : 1)
+                        .disabled(isThinking ? true : false)
+                        .help("Enable Markdown rendering")
                         
                         Spacer()
                     }
