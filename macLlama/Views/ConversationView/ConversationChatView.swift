@@ -128,39 +128,46 @@ struct ConversationChatView: View {
                         }
                     }
                     .onChange(of: isThinking) { _, newValue in
-                        let isAutoScroll = UserDefaults.standard.bool(forKey: "isAutoScrollEnabled")
-                        if isAutoScroll && newValue == false {
+                        //Automatically scroll to the bottom when the answer is complete,
+                        //if auto-scrolling is enabled.
+                        if !newValue && UserDefaults.standard.bool(forKey: "isAutoScrollEnabled") {
                             withAnimation(.linear(duration: 2.0)) {
                                 proxy.scrollTo(history.count - 1, anchor: .bottom)
                             }
                         }
                     }
-//                    .onChange(of: history.count) { _, _ in
-//                        let isAutoScroll = UserDefaults.standard.bool(forKey: "isAutoScrollEnabled")
-//                        if isAutoScroll {
-//                            autoScrollTask = Task {
-//                                while !Task.isCancelled {
-//                                    try? await Task.sleep(nanoseconds: 1_500_000_000)
-//                                    
-//                                    
-//                                    
-//                                    if !isAutoScrolling {
-//                                        break
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
+                    .onChange(of: history.count) { _, _ in
+                        if UserDefaults.standard.bool(forKey: "isAutoScrollEnabled") {
+                            autoScrollTask = Task {
+                                while !Task.isCancelled {
+                                    if self.isAutoScrolling == true {
+                                        proxy.scrollTo(history.count - 1, anchor: .bottom)
+                                        
+                                        try? await Task.sleep(nanoseconds: 1_000_000_000)
+                                        
+                                        if self.isAutoScrolling == false {
+                                            break
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            autoScrollTask = nil
+                        }
+                    }
+                    .onAppear {
+                        NSEvent.addLocalMonitorForEvents(matching: .scrollWheel) { event in
+                            if isThinking {
+                                self.isAutoScrolling = false
+                                guard let autoScrollTask = self.autoScrollTask else { return event }
+                                autoScrollTask.cancel()
+                                self.autoScrollTask = nil
+                            }
+                            return event
+                        }
+                    }
                 }
-                
-#if DEBUG
-                Button {
-                    self.history = []
-                } label: {
-                    Label("Clear View", systemImage: "trash")
-                }
-#endif
-                
+    
                 //MARK: Input Area
                 if !self.modelList.isEmpty {
                     ChatInputView(isThinking: $isThinking, prompt: $prompt, images: $promptImages) {
