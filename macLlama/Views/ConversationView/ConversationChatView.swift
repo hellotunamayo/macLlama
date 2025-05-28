@@ -226,15 +226,6 @@ extension ConversationChatView {
         }
     }
     
-    ///Check server status
-    private func checkServerStatus() async throws -> Bool {
-        if let serverStatus = try? await OllamaNetworkService.isServerOnline() {
-            return serverStatus
-        } else {
-            return false
-        }
-    }
-    
     ///Initialize Model List
     private func initModelList() async throws {
         do {
