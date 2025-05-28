@@ -191,9 +191,9 @@ extension ConversationChatView {
 //                    }
                 }
                 
-                //Cancel timer
-                self.timerPublisher?.connect().cancel()
-                self.timerPublisher = nil
+                //Cancel timer (Saving for later update)
+//                self.timerPublisher?.connect().cancel()
+//                self.timerPublisher = nil
                 
                 #if DEBUG
                 debugPrint("Generation finished")
