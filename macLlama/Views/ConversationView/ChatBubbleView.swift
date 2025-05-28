@@ -15,8 +15,9 @@ struct ChatBubbleView: View {
     @State private var messageAnimationFactor: CGFloat = 0.0
     @State private var messageAnimated: Bool = false
     @State private var isMarkdownEnabled: Bool = false
+    @State private var chatMessage: String = ""
     
-    let chatData: (isUser: Bool, modelName: String, message: String)
+    @Binding var chatData: (isUser: Bool, modelName: String, message: String)
     
     var body: some View {
         HStack(alignment: .top) {
@@ -103,7 +104,7 @@ struct ChatBubbleView: View {
                 VStack {
                     if isMarkdownEnabled {
                         Markdown {
-                            MarkdownContent(chatData.message)
+                            MarkdownContent(chatMessage)
                         }
                         .markdownTextStyle(\.code) {
                             FontFamilyVariant(.monospaced)
@@ -115,11 +116,21 @@ struct ChatBubbleView: View {
                         .textSelection(.enabled)
                         .markdownTheme(.gitHub)
                     } else {
-                        Text(chatData.message)
-                            .font(.system(size: CGFloat(chatFontSize)))
-                            .lineSpacing(CGFloat(chatFontSize / 3))
-                            .textSelection(.enabled)
-                            .frame(alignment: chatData.isUser ? .trailing : .leading)
+                        if !chatData.isUser {
+                            TextEditor(text: $chatMessage)
+                                .font(.system(size: CGFloat(chatFontSize)))
+                                .lineSpacing(CGFloat(chatFontSize / 3))
+                                .scrollDisabled(true)
+                                .textSelection(.enabled)
+                                .scrollContentBackground(.hidden)
+                                .frame(minHeight: 50, alignment: .leading)
+                        } else {
+                            Text(chatData.message)
+                                .font(.system(size: CGFloat(chatFontSize)))
+                                .lineSpacing(CGFloat(chatFontSize / 3))
+                                .textSelection(.enabled)
+                                .frame(alignment: .trailing)
+                        }
                     }
                 }
                 .padding(.horizontal, chatData.isUser ? Units.normalGap * 1.3 : 0)
@@ -127,6 +138,9 @@ struct ChatBubbleView: View {
                 .background(chatData.isUser ? .black.opacity(0.15) : .clear)
                 .clipShape(chatData.isUser ? RoundedRectangle(cornerRadius: 8) : RoundedRectangle(cornerRadius: 0))
                 .frame(maxWidth: .infinity, alignment: chatData.isUser ? .trailing : .leading)
+                .onChange(of: self.chatData.message) { _, newValue in
+                    self.chatMessage = newValue
+                }
             }
             
             //Remains for future features (User's chat avatar)
