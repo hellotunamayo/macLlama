@@ -27,7 +27,11 @@ struct ConversationChatView: View {
     
     //Auto scrolling state
     @State private var isAutoScrolling: Bool = false
-//    @State private var autoScrollTask: Task<Void, Never>?
+    @State private var autoScrollTask: Task<Void, Never>?
+    
+    //For debouncing (Save for later version)
+//    @State private var cancellableSet = Set<AnyCancellable>()
+//    @State private var timerPublisher: Timer.TimerPublisher? = nil
     
     let chatService: OllamaChatService = OllamaChatService()
     let ollamaNetworkService: OllamaNetworkService = OllamaNetworkService()
@@ -165,28 +169,49 @@ extension ConversationChatView {
             
             //Start stream from model
             Task {
-                var cancellable: Set<AnyCancellable> = []
-                let timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
-                var count: Int = 0
-                timer.sink { _ in
-                    count += 1
-                }.store(in: &cancellable)
+                #if DEBUG
+                debugPrint("Generation Started")
+                #endif
+                
+                //Prepare resource for debouncing (Saving for later update)
+//                var count: Int = 0
+//                self.timerPublisher = Timer.publish(every: 0.3, on: .main, in: .common)
+//                self.timerPublisher?.autoconnect().sink { _ in
+//                    count += 1
+//                }.store(in: &self.cancellableSet)
                 
                 let stream = try await chatService.sendMessage(model: model, userInput: prompt, images: images)
                 for await update in stream {
                     let outputText = update
-                    if count % 2 == 0 { //update stream in every 2 seconds
-                        self.history[self.history.count - 1].message = outputText
-                    }
+                    self.history[self.history.count - 1].message = outputText
+                    //Debouncing stream (Saving for later update)
+//                    if count % 2 == 0 {
+//                        let outputText = update
+//                        self.history[self.history.count - 1].message = outputText
+//                    }
                 }
                 
+                //Cancel timer
+                self.timerPublisher?.connect().cancel()
+                self.timerPublisher = nil
+                
+                #if DEBUG
+                debugPrint("Generation finished")
+                #endif
+                
                 //Save last response to history
-                self.history[self.history.count - 1].message = await chatService.allMessages().last?.content ?? ""
+                if let content = await chatService.allMessages().last?.content {
+                    self.history[self.history.count - 1].message = content
+                } else {
+                    self.history[self.history.count - 1].message = "Oops! Something went wrong. Please try again."
+                }
                 
                 //Reset state
-                self.isThinking = false
-                self.isAutoScrolling = false
-//                self.autoScrollTask = nil
+                await MainActor.run {
+                    self.isThinking = false
+                    self.isAutoScrolling = false
+                    self.autoScrollTask = nil
+                }
             }
         } else {
             debugPrint("ConversationViewError:")
@@ -197,7 +222,7 @@ extension ConversationChatView {
             //Reset state
             self.isThinking = false
             self.isAutoScrolling = false
-//            self.autoScrollTask = nil
+            self.autoScrollTask = nil
         }
     }
     
