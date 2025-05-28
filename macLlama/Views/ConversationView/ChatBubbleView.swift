@@ -102,6 +102,7 @@ struct ChatBubbleView: View {
                     .tint(.gray)
                     .controlSize(.small)
                     .buttonStyle(.bordered)
+                    .help("Copy this text to clipboard")
                 }
                 
                 VStack {
