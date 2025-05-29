@@ -10,11 +10,16 @@ import SwiftUI
 actor OllamaChatService {
     private(set) var messages: [ChatMessage] = []
     
-    func sendMessage(model: String, userInput: String, images: [NSImage]?) async throws -> AsyncStream<String> {
+    func sendMessage(model: String, userInput: String, images: [NSImage]?,
+                     predict: Double? = nil, temperature: Double? = nil) async throws -> AsyncStream<String> {
         //Convert NSImage to base64
         let imageStrings = await nsImageArrayToBase64Array(images)
+        let options = [
+            ChatOption(key: "num_predict", value: predict ?? 512.0),
+            ChatOption(key: "temperature", value: temperature ?? 0.8)
+        ]
         
-        messages.append(ChatMessage(role: "user", content: userInput, images: imageStrings))
+        messages.append(ChatMessage(role: "user", content: userInput, images: imageStrings, options: options))
         
         guard let url = URL(string: "http://localhost:11434/api/chat") else {
             throw URLError(.badURL)
@@ -58,8 +63,13 @@ actor OllamaChatService {
                         continuation.yield(assistantContent)
                     }
                     
-                    let finalMessage = ChatMessage(role: "assistant", content: assistantContent, images: nil)
+                    let finalMessage = ChatMessage(role: "assistant", content: assistantContent, images: nil, options: nil)
                     messages.append(finalMessage)
+                    
+                    #if DEBUG
+                    debugPrint("Request options: \(options)")
+                    #endif
+                    
                     
                     continuation.finish()
                 } catch {

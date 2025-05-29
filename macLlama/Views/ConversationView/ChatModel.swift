@@ -15,9 +15,15 @@ struct Chat: Identifiable {
     let done: Bool
 }
 
-struct ChatMessage: Identifiable, Codable, Equatable {
+struct ChatMessage: Identifiable, Codable {
     var id: UUID = UUID()
     let role: String
     var content: String
     let images: [String]?
+    let options: [ChatOption]?
+}
+
+struct ChatOption: Codable {
+    let key: String
+    let value: Double
 }
