@@ -70,7 +70,6 @@ actor OllamaChatService {
                     debugPrint("Request options: \(options)")
                     #endif
                     
-                    
                     continuation.finish()
                 } catch {
                     continuation.finish()
