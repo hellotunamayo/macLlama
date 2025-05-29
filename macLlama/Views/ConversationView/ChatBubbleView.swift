@@ -17,7 +17,7 @@ struct ChatBubbleView: View {
     @State private var isMarkdownEnabled: Bool = false
     @State private var chatMessage: String = ""
     
-    @Binding var chatData: (isUser: Bool, modelName: String, message: String)
+    @Binding var chatData: LocalChatHistory
     
     var body: some View {
         HStack(alignment: .top) {

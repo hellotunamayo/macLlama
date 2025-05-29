@@ -11,3 +11,10 @@ struct OllamaChatMessage: Codable {
     let role: String
     let content: String
 }
+
+struct LocalChatHistory: Identifiable, Hashable {
+    let id: UUID = .init()
+    let isUser: Bool
+    let modelName: String
+    var message: String
+}

@@ -23,13 +23,15 @@ struct ConversationChatView: View {
     @State private var promptImages: [NSImage] = []
     
     //Chat history state
-    @State private var history: [(isUser: Bool, modelName: String, message: String)] = []
+    @State private var history: [LocalChatHistory] = []
     
     //Auto scrolling state
     @State private var isAutoScrolling: Bool = false
     @State private var autoScrollTask: Task<Void, Never>?
     
     //Extra state
+    @State private var conversationId: UUID = UUID()
+    @State private var conversationDate: Date = Date()
     @State private var hoveredTopButtonTag: Int? = nil
     
     //For debouncing (Save for later version)
@@ -170,7 +172,7 @@ struct ConversationChatView: View {
                 //MARK: Input Area
                 if !self.modelList.isEmpty {
                     ChatInputView(isThinking: $isThinking, prompt: $prompt, images: $promptImages) {
-                        self.history.append((isUser: true, modelName: self.currentModel, message: self.prompt))
+                        self.history.append(.init(isUser: true, modelName: self.currentModel, message: self.prompt))
                         self.isThinking = true
                         
                         //Check if suffix exists
@@ -209,7 +211,7 @@ extension ConversationChatView {
                 self.isAutoScrolling = false
             }
             
-            self.history.append((isUser: false, modelName: self.currentModel, message: ""))
+            self.history.append(.init(isUser: false, modelName: self.currentModel, message: ""))
             
             //Start stream from model
             Task {
