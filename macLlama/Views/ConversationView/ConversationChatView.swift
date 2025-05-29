@@ -78,11 +78,10 @@ struct ConversationChatView: View {
                                         Button {
                                             if index > 0 && !isThinking {
                                                 withAnimation {
-                                                    proxy.scrollTo(index - 1, anchor: .bottom)
+                                                    proxy.scrollTo(index, anchor: .top)
                                                 }
                                             }
                                         } label: {
-//                                            Image(systemName: "chevron.up")
                                             if let hovered = self.hoveredTopButtonTag, hovered == index {
                                                 Text("Scroll to Top")
                                                     .padding(.horizontal)
