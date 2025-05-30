@@ -139,7 +139,7 @@ struct ChatBubbleView: View {
                 }
                 .padding(.horizontal, chatData.isUser ? Units.normalGap * 1.3 : 0)
                 .padding(.vertical, chatData.isUser ? Units.normalGap / 1.5 : 0)
-                .background(chatData.isUser ? .black.opacity(0.15) : .clear)
+                .background(chatData.isUser ? Color("UserChatBubbleColor") : .clear)
                 .clipShape(chatData.isUser ? RoundedRectangle(cornerRadius: 8) : RoundedRectangle(cornerRadius: 0))
                 .frame(maxWidth: .infinity, alignment: chatData.isUser ? .trailing : .leading)
                 .onChange(of: self.chatData.message) { _, newValue in
