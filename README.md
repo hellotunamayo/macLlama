@@ -78,9 +78,27 @@ Before you can chat, you need to download models for Ollama to use. You can do t
 
 Once the Ollama server is running and you have at least one model installed, you can launch and use the macLlama to interact with your local large language models.
 
-## Contributing
+## Chat History
 
-*   SwiftUI - For the user interface.
+macLlama securely stores your chat conversations locally using SwiftData. You can access and manage your chat history through the following methods:
+
+**Viewing / Managing Chat History:**
+
+*   **Menu:**  Go to Menu > Window > Chat History. This will display your conversation history.
+
+**Resetting Chat History (Advanced - Use with Caution):**
+
+If you encounter issues with macLlama's GUI regarding chat history, you can manually manage the SwiftData storage. *However, this is an advanced operation and should only be attempted if you understand the potential consequences.*
+
+**To reset your chat history:**
+
+1.  Navigate to your local destination: `~/Library/Application Support/`
+2.  Locate and delete the following files:
+    *   `default.store`
+    *   `default.store-shm`
+    *   `default.store-wal`
+
+**WARNING:** These files are the default SwiftData storage files.  **Deleting them will remove *all* SwiftData storage for macLlama, as well as potentially impacting other applications that utilize SwiftData.**  Proceed with extreme caution and only if you are comfortable with the implications.  Backing up your local storage is *highly* recommended before attempting this.
 
 ## 🚀 Getting Started
 
@@ -145,6 +163,14 @@ Don't forget to give the project a star! Thanks again!
 ## 📜 License
 
 Distributed under the Apache 2.0 License. See `LICENSE.txt` for more information.
+
+## ⚒️ Frameworks & Libraries
+
+macLlama utilizes the following frameworks and libraries to provide a rich and interactive experience:
+
+*   **SwiftUI:**  macLlama is built using SwiftUI, Apple’s declarative UI framework, for creating a modern and responsive user interface.
+*   **MarkdownUI:**  We leverage the [MarkdownUI](https://github.com/gonzalezreal/swift-markdown-ui) library to render your chat messages in a clean and easily readable Markdown format. This allows for rich formatting within your conversations.
+
 
 ## 📧 Contact
 
