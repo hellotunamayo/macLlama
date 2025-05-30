@@ -78,7 +78,7 @@ Before you can chat, you need to download models for Ollama to use. You can do t
 
 Once the Ollama server is running and you have at least one model installed, you can launch and use the macLlama to interact with your local large language models.
 
-## Chat History
+## Chat History (v1.0.5 - Build 2)
 
 macLlama securely stores your chat conversations locally using SwiftData. You can access and manage your chat history through the following methods:
 
