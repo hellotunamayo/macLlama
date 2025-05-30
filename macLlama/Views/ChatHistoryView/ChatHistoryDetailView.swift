@@ -13,65 +13,88 @@ struct ChatHistoryDetailView: View {
     @AppStorage("chatFontSize") var chatFontSize: Int = AppSettings.chatFontSize
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.modelContext) var modelContext
-    @Query(sort: \ChatHistory.createdDate, order: .forward) private var history: [ChatHistory] = []
     @Query(sort: \SwiftDataChatHistory.createdDate, order: .forward) private var history: [SwiftDataChatHistory] = []
     
     let conversationId: String
-    private var conversations: [ChatHistory] {
     private var conversations: [SwiftDataChatHistory] {
         let filteredHistory = history.filter { $0.conversationId.uuidString == self.conversationId }
         return filteredHistory
     }
-    private var isUserChat: (ChatHistory) -> Bool {
     private var isUserChat: (SwiftDataChatHistory) -> Bool {
         { history in
             return history.chatData.role == "user"
         }
     }
-    private var conversationDate: String {
-        if let date = history.first?.createdDate {
+    private var conversationDate: (Date) -> String {
+        { date in
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "MMMM d, yyyy, hh:mm:ss a"
             let formattedString = dateFormatter.string(from: date)
             return formattedString
-        } else {
-            return "Unknown Date"
         }
     }
-    
+            
     var body: some View {
         ScrollView {
+            
             ForEach(conversations) { conversation in
                 VStack {
+                    Text(conversationDate(conversation.conversationDate))
+                        .font(.footnote)
+                        .padding(.top, Units.normalGap / 2)
+                        .opacity(0.5)
+                    
                     if isUserChat(conversation) {
-                        Text(conversation.chatData.content)
-                            .font(.system(size: CGFloat(chatFontSize)))
-                            .frame(maxWidth: .infinity, alignment: .trailing)
-                            .textSelection(.enabled)
-                            .padding()
-                        .clipShape(RoundedRectangle(cornerRadius: Units.normalGap / 2))
-                        .padding()
+                        HStack(alignment: .top) {
+                            Text(conversation.chatData.content)
+                                .font(.system(size: CGFloat(chatFontSize)))
+                                .lineSpacing(Units.normalGap / 3)
+                                .frame(maxWidth: .infinity, alignment: .trailing)
+                                .textSelection(.enabled)
+                                .padding()
+                                .clipShape(RoundedRectangle(cornerRadius: Units.normalGap / 2))
+                            
+                            Circle()
+                                .fill(Color.gray.opacity(0.3))
+                                .frame(width: Units.normalGap * 3, height: Units.normalGap * 3)
+                                .overlay {
+                                    Text("You")
+                                        .foregroundStyle(Color.primary)
+                                }
+                                .padding(.trailing)
+                                .padding(.bottom)
+                        }
+                        .padding(.vertical)
                     } else {
-                        Markdown {
-                            MarkdownContent(conversation.chatData.content)
+                        HStack(alignment: .top) {
+                            Image("ollama_profile")
+                                .resizable()
+                                .frame(width: Units.normalGap * 3, height: Units.normalGap * 3)
+                                .clipShape(Circle())
+                                .padding(.top)
+                                .padding(.leading)
+                            
+                            Markdown {
+                                MarkdownContent(conversation.chatData.content)
+                            }
+                            .markdownTextStyle(\.code) {
+                                FontFamilyVariant(.monospaced)
+                            }
+                            .markdownTextStyle(\.text) {
+                                BackgroundColor(nil)
+                                FontSize(CGFloat(chatFontSize))
+                            }
+                            .textSelection(.enabled)
+                            .markdownTheme(.docC)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding()
                         }
-                        .markdownTextStyle(\.code) {
-                            FontFamilyVariant(.monospaced)
-                        }
-                        .markdownTextStyle(\.text) {
-                            BackgroundColor(nil)
-                            FontSize(CGFloat(chatFontSize))
-                        }
-                        .textSelection(.enabled)
-                        .markdownTheme(.docC)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding()
+                        .padding(.vertical)
                     }
                 }
                 .background(isUserChat(conversation) ? Color("UserChatBubbleColor") : .clear)
             }
         }
-        .navigationTitle("Chat in \(conversationDate)(\(conversationId))")
         .listStyle(.plain)
         .listSectionSeparator(.hidden)
     }
