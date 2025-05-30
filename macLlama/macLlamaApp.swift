@@ -145,6 +145,7 @@ struct macLlamaApp: App {
                     .frame(minWidth: 400, minHeight: 400)
             }
         }
+        .keyboardShortcut("h", modifiers: [.command, .shift], localization: .automatic)
         .modelContainer(for: SwiftDataChatHistory.self)
         .windowResizability(.contentSize)
     }
