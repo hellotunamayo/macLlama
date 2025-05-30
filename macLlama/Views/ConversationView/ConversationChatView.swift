@@ -174,12 +174,16 @@ struct ConversationChatView: View {
                 //MARK: Input Area
                 if !self.modelList.isEmpty {
                     ChatInputView(isThinking: $isThinking, prompt: $prompt, images: $promptImages) {
-                        let userQuestion: LocalChatHistory = LocalChatHistory(isUser: true, modelName: self.currentModel, message: self.prompt)
-                        let userChatMessage: ChatMessage = ChatMessage(role: "user", content: self.prompt, images: nil, options: nil)
-                        let chatHistory: ChatHistory = ChatHistory(conversationId: self.conversationId,
-                                                                   conversationDate: self.conversationDate,
-                                                                   chatData: userChatMessage)
-                        modelContext.insert(chatHistory)
+                        //Save user question to SwiftData
+                        Task {
+                            let userChatMessage: APIChatMessage = APIChatMessage(role: "user", content: self.prompt,
+                                                                                 images: nil, options: nil)
+                            await self.saveSwiftDataHistory(history: userChatMessage)
+                        }
+                        
+                        //Append local chat history
+                        let userQuestion: LocalChatHistory = LocalChatHistory(isUser: true, modelName: self.currentModel,
+                                                                              message: self.prompt)
                         self.history.append(userQuestion)
                         self.isThinking = true
                         
@@ -254,13 +258,7 @@ extension ConversationChatView {
                 #endif
                 
                 if let lastMessage = await chatService.messages.last {
-                    let chatHistory: ChatHistory = ChatHistory(conversationId: self.conversationId,
-                                                               conversationDate: self.conversationDate,
-                                                               chatData: lastMessage)
-                    modelContext.insert(chatHistory)
-                    #if DEBUG
-                    debugPrint("Chat History Saved by conversation id: \(self.conversationId.uuidString)")
-                    #endif
+                    await self.saveSwiftDataHistory(history: lastMessage)
                 }
                 
                 //Save last response to history
@@ -305,5 +303,18 @@ extension ConversationChatView {
             debugPrint("ConversationChatViewError:")
             debugPrint("Error: \(error.localizedDescription)")
         }
+    }
+    
+    ///Save SwiftData history
+    func saveSwiftDataHistory(history: APIChatMessage) async {
+        let chatHistory: SwiftDataChatHistory = SwiftDataChatHistory(conversationId: self.conversationId,
+                                                                     conversationDate: Date(),
+                                                                     chatData: history)
+        modelContext.insert(chatHistory)
+        
+        #if DEBUG
+        debugPrint("Chat History Saved in id: \(Date().description(with: .current))")
+        debugPrint("Chat History Saved by conversation id: \(self.conversationId.uuidString)")
+        #endif
     }
 }
