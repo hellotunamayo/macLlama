@@ -119,6 +119,7 @@ struct ChatBubbleView: View {
                         }
                         .textSelection(.enabled)
                         .markdownTheme(.gitHub)
+                        .padding(.top, Units.normalGap / 4)
                     } else {
                         if !chatData.isUser {
                             TextEditor(text: $chatMessage)
@@ -128,6 +129,7 @@ struct ChatBubbleView: View {
                                 .textSelection(.enabled)
                                 .scrollContentBackground(.hidden)
                                 .frame(minHeight: 50, alignment: .leading)
+                                .padding(.top, Units.normalGap / 4)
                         } else {
                             Text(chatData.message)
                                 .font(.system(size: CGFloat(chatFontSize)))
