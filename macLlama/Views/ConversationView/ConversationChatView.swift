@@ -33,7 +33,6 @@ struct ConversationChatView: View {
     
     //Extra state
     @State private var conversationId: UUID = UUID()
-    @State private var conversationDate: Date = Date()
     @State private var hoveredTopButtonTag: Int? = nil
     
     //For debouncing (Save for later version)
