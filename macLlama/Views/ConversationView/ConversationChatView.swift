@@ -7,9 +7,11 @@
 
 import SwiftUI
 import Combine
+import SwiftData
 
 struct ConversationChatView: View {
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.modelContext) var modelContext
     @EnvironmentObject var serverStatus: ServerStatus
     
     //Model selector state
@@ -172,7 +174,13 @@ struct ConversationChatView: View {
                 //MARK: Input Area
                 if !self.modelList.isEmpty {
                     ChatInputView(isThinking: $isThinking, prompt: $prompt, images: $promptImages) {
-                        self.history.append(.init(isUser: true, modelName: self.currentModel, message: self.prompt))
+                        let userQuestion: LocalChatHistory = LocalChatHistory(isUser: true, modelName: self.currentModel, message: self.prompt)
+                        let userChatMessage: ChatMessage = ChatMessage(role: "user", content: self.prompt, images: nil, options: nil)
+                        let chatHistory: ChatHistory = ChatHistory(conversationId: self.conversationId,
+                                                                   conversationDate: self.conversationDate,
+                                                                   chatData: userChatMessage)
+                        modelContext.insert(chatHistory)
+                        self.history.append(userQuestion)
                         self.isThinking = true
                         
                         //Check if suffix exists
@@ -244,6 +252,16 @@ extension ConversationChatView {
                 #if DEBUG
                 debugPrint("Generation finished")
                 #endif
+                
+                if let lastMessage = await chatService.messages.last {
+                    let chatHistory: ChatHistory = ChatHistory(conversationId: self.conversationId,
+                                                               conversationDate: self.conversationDate,
+                                                               chatData: lastMessage)
+                    modelContext.insert(chatHistory)
+                    #if DEBUG
+                    debugPrint("Chat History Saved by conversation id: \(self.conversationId.uuidString)")
+                    #endif
+                }
                 
                 //Save last response to history
                 if let content = await chatService.allMessages().last?.content {
