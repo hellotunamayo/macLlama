@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Chat: Identifiable {
+struct APIChat: Identifiable {
     var id: UUID = UUID()
     let message: String
     let isUser: Bool
@@ -15,15 +15,15 @@ struct Chat: Identifiable {
     let done: Bool
 }
 
-struct ChatMessage: Identifiable, Codable {
+struct APIChatMessage: Identifiable, Codable {
     var id: UUID = UUID()
     let role: String
     var content: String
     let images: [String]?
-    let options: [ChatOption]?
+    let options: [APIChatOption]?
 }
 
-struct ChatOption: Codable {
+struct APIChatOption: Codable {
     let key: String
     let value: Double
 }

@@ -69,7 +69,7 @@ struct macLlamaApp: App {
                 }
             }
         }
-        .modelContainer(for: ChatHistory.self)
+        .modelContainer(for: SwiftDataChatHistory.self)
         .commands {
             CommandMenu("Utility") {
                 HStack {
@@ -145,7 +145,7 @@ struct macLlamaApp: App {
                     .frame(minWidth: 400, minHeight: 400)
             }
         }
-        .modelContainer(for: ChatHistory.self)
+        .modelContainer(for: SwiftDataChatHistory.self)
         .windowResizability(.contentSize)
     }
 }

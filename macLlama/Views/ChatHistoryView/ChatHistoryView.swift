@@ -11,6 +11,7 @@ import SwiftData
 struct ChatHistoryView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \ChatHistory.createdDate, order: .reverse) private var chatHistory: [ChatHistory]
+    @Query(sort: \SwiftDataChatHistory.createdDate, order: .reverse) private var chatHistory: [SwiftDataChatHistory]
     
     @State private var selectedId: String = ""
     @State private var isAlertPresented: Bool = false
@@ -71,6 +72,7 @@ struct ChatHistoryView: View {
         do {
             guard let uuid = UUID(uuidString: id) else { throw NSError(domain: "", code: 0, userInfo: nil) }
             try modelContext.delete(model: ChatHistory.self, where: #Predicate{ $0.conversationId == uuid })
+            try modelContext.delete(model: SwiftDataChatHistory.self, where: #Predicate{ $0.conversationId == uuid })
         } catch {
             debugPrint("Error deleting chat history: \(error)")
         }

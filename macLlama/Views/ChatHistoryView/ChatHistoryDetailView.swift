@@ -14,13 +14,16 @@ struct ChatHistoryDetailView: View {
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.modelContext) var modelContext
     @Query(sort: \ChatHistory.createdDate, order: .forward) private var history: [ChatHistory] = []
+    @Query(sort: \SwiftDataChatHistory.createdDate, order: .forward) private var history: [SwiftDataChatHistory] = []
     
     let conversationId: String
     private var conversations: [ChatHistory] {
+    private var conversations: [SwiftDataChatHistory] {
         let filteredHistory = history.filter { $0.conversationId.uuidString == self.conversationId }
         return filteredHistory
     }
     private var isUserChat: (ChatHistory) -> Bool {
+    private var isUserChat: (SwiftDataChatHistory) -> Bool {
         { history in
             return history.chatData.role == "user"
         }
