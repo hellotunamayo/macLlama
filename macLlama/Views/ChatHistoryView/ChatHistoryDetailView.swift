@@ -14,17 +14,12 @@ struct ChatHistoryDetailView: View {
     @AppStorage("markdownTheme") var markdownTheme: String = AppSettings.markdownTheme
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.modelContext) var modelContext
-    @Query private var conversations: [SwiftDataChatHistory] = []
+    @Query(sort: \SwiftDataChatHistory.createdDate, order: .forward) private var history: [SwiftDataChatHistory] = []
     
-    init (conversationId: String) {
-        let conversationId = UUID(uuidString: conversationId) ?? UUID()
-        _conversations = Query(filter: #Predicate<SwiftDataChatHistory> {
-            $0.conversationId == conversationId
-        },
-         sort: \SwiftDataChatHistory.createdDate, order: .forward
-        )
-    }
-
+    @State private var conversations: [SwiftDataChatHistory] = []
+    
+    let conversationId: String
+    
     private var isUserChat: (SwiftDataChatHistory) -> Bool {
         { history in
             return history.chatData.role == "user"
@@ -41,7 +36,6 @@ struct ChatHistoryDetailView: View {
             
     var body: some View {
         ScrollView {
-            
             ForEach(conversations) { conversation in
                 VStack {
                     Text(conversationDate(conversation.conversationDate))
@@ -104,5 +98,19 @@ struct ChatHistoryDetailView: View {
         }
         .listStyle(.plain)
         .listSectionSeparator(.hidden)
+        .task {
+            await fetchFilteredHistory()
+        }
+        .onChange(of: self.conversationId) { _, _ in
+            Task {
+                await fetchFilteredHistory()
+            }
+        }
+    }
+    
+    func fetchFilteredHistory() async {
+        self.conversations = []
+        let filteredHistory = self.history.filter { $0.conversationId.uuidString == self.conversationId }
+        self.conversations = filteredHistory
     }
 }
