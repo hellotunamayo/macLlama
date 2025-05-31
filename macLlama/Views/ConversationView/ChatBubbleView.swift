@@ -11,13 +11,14 @@ import MarkdownUI
 struct ChatBubbleView: View {
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("chatFontSize") var chatFontSize: Int = AppSettings.chatFontSize
+    @AppStorage("markdownTheme") var markdownTheme: String = AppSettings.markdownTheme
     @Binding var isThinking: Bool
     @State private var messageAnimationFactor: CGFloat = 0.0
     @State private var messageAnimated: Bool = false
     @State private var isMarkdownEnabled: Bool = false
     @State private var chatMessage: String = ""
     
-    @Binding var chatData: (isUser: Bool, modelName: String, message: String)
+    @Binding var chatData: LocalChatHistory
     
     var body: some View {
         HStack(alignment: .top) {
@@ -72,6 +73,9 @@ struct ChatBubbleView: View {
                         .buttonStyle(.borderless)
                         .background(isMarkdownEnabled ? Color("maridownIndicateGreen").opacity(0.7) : Color.black.opacity(0.7))
                         .clipShape(Capsule())
+                        .opacity(isThinking ? 0.3 : 1)
+                        .disabled(isThinking ? true : false)
+                        .help("Enable Markdown rendering")
                         
                         Spacer()
                     }
@@ -99,6 +103,7 @@ struct ChatBubbleView: View {
                     .tint(.gray)
                     .controlSize(.small)
                     .buttonStyle(.bordered)
+                    .help("Copy this text to clipboard")
                 }
                 
                 VStack {
@@ -114,7 +119,10 @@ struct ChatBubbleView: View {
                             FontSize(CGFloat(chatFontSize))
                         }
                         .textSelection(.enabled)
-                        .markdownTheme(.gitHub)
+                        .markdownTheme(
+                            MarkdownTheme.getTheme(themeName: markdownTheme)
+                        )
+                        .padding(.top, Units.normalGap / 4)
                     } else {
                         if !chatData.isUser {
                             TextEditor(text: $chatMessage)
@@ -124,6 +132,7 @@ struct ChatBubbleView: View {
                                 .textSelection(.enabled)
                                 .scrollContentBackground(.hidden)
                                 .frame(minHeight: 50, alignment: .leading)
+                                .padding(.top, Units.normalGap / 4)
                         } else {
                             Text(chatData.message)
                                 .font(.system(size: CGFloat(chatFontSize)))
@@ -135,7 +144,7 @@ struct ChatBubbleView: View {
                 }
                 .padding(.horizontal, chatData.isUser ? Units.normalGap * 1.3 : 0)
                 .padding(.vertical, chatData.isUser ? Units.normalGap / 1.5 : 0)
-                .background(chatData.isUser ? .black.opacity(0.15) : .clear)
+                .background(chatData.isUser ? Color("UserChatBubbleColor") : .clear)
                 .clipShape(chatData.isUser ? RoundedRectangle(cornerRadius: 8) : RoundedRectangle(cornerRadius: 0))
                 .frame(maxWidth: .infinity, alignment: chatData.isUser ? .trailing : .leading)
                 .onChange(of: self.chatData.message) { _, newValue in

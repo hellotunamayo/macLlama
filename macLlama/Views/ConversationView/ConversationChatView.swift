@@ -7,9 +7,11 @@
 
 import SwiftUI
 import Combine
+import SwiftData
 
 struct ConversationChatView: View {
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.modelContext) var modelContext
     @EnvironmentObject var serverStatus: ServerStatus
     
     //Model selector state
@@ -23,11 +25,19 @@ struct ConversationChatView: View {
     @State private var promptImages: [NSImage] = []
     
     //Chat history state
-    @State private var history: [(isUser: Bool, modelName: String, message: String)] = []
+    @State private var history: [LocalChatHistory] = []
     
     //Auto scrolling state
     @State private var isAutoScrolling: Bool = false
-//    @State private var autoScrollTask: Task<Void, Never>?
+    @State private var autoScrollTask: Task<Void, Never>?
+    
+    //Extra state
+    @State private var conversationId: UUID = UUID()
+    @State private var hoveredTopButtonTag: Int? = nil
+    
+    //For debouncing (Save for later version)
+//    @State private var cancellableSet = Set<AnyCancellable>()
+//    @State private var timerPublisher: Timer.TimerPublisher? = nil
     
     let chatService: OllamaChatService = OllamaChatService()
     let ollamaNetworkService: OllamaNetworkService = OllamaNetworkService()
@@ -61,12 +71,46 @@ struct ConversationChatView: View {
                 ScrollViewReader { proxy in
                     ScrollView {
                         ForEach(0..<self.history.count, id: \.self) { index in
-                            LazyVStack {
+                            VStack {
                                 if history[index].message != "" {
                                     ChatBubbleView(isThinking: self.$isThinking, chatData: $history[index])
                                         .padding()
                                         .id(index)
                                     
+                                    if !history[index].isUser {
+                                        Button {
+                                            if index > 0 && !isThinking {
+                                                withAnimation {
+                                                    proxy.scrollTo(index, anchor: .top)
+                                                }
+                                            }
+                                        } label: {
+                                            if let hovered = self.hoveredTopButtonTag, hovered == index {
+                                                Text("Scroll to Top")
+                                                    .padding(.horizontal)
+                                            } else {
+                                                Image(systemName: "arrow.up")
+                                                    .padding(.horizontal)
+                                            }
+                                        }
+                                        .disabled(isThinking ? true : false)
+                                        .buttonStyle(.bordered)
+                                        .opacity(isThinking ? 0 : 0.7)
+                                        .clipShape(.capsule)
+                                        .padding()
+                                        .onHover { enter in
+                                            if enter {
+                                                withAnimation(.easeOut(duration: 0.3)) {
+                                                    self.hoveredTopButtonTag = index
+                                                }
+                                            } else {
+                                                withAnimation(.easeOut(duration: 0.3)) {
+                                                    self.hoveredTopButtonTag = nil
+                                                }
+                                            }
+                                        }
+                                    }
+                                        
                                     Divider()
                                         .foregroundStyle(Color(nsColor: .systemGray))
                                         .opacity(self.colorScheme == .dark ? 1.0 : 0.9)
@@ -86,43 +130,60 @@ struct ConversationChatView: View {
                         }
                     }
                     .onChange(of: isThinking) { _, newValue in
-                        let isAutoScroll = UserDefaults.standard.bool(forKey: "isAutoScrollEnabled")
-                        if isAutoScroll && newValue == false {
+                        //Automatically scroll to the bottom when the answer is complete,
+                        //if auto-scrolling is enabled.
+                        if !newValue && UserDefaults.standard.bool(forKey: "isAutoScrollEnabled") {
                             withAnimation(.linear(duration: 2.0)) {
                                 proxy.scrollTo(history.count - 1, anchor: .bottom)
                             }
                         }
                     }
-//                    .onChange(of: history.count) { _, _ in
-//                        let isAutoScroll = UserDefaults.standard.bool(forKey: "isAutoScrollEnabled")
-//                        if isAutoScroll {
-//                            autoScrollTask = Task {
-//                                while !Task.isCancelled {
-//                                    try? await Task.sleep(nanoseconds: 1_500_000_000)
-//                                    
-//                                    
-//                                    
-//                                    if !isAutoScrolling {
-//                                        break
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
+                    .onChange(of: history.count) { _, _ in
+                        if UserDefaults.standard.bool(forKey: "isAutoScrollEnabled") {
+                            autoScrollTask = Task {
+                                while !Task.isCancelled {
+                                    if self.isAutoScrolling == true {
+                                        proxy.scrollTo(history.count - 1, anchor: .bottom)
+                                        
+                                        try? await Task.sleep(nanoseconds: 1_000_000_000)
+                                        
+                                        if self.isAutoScrolling == false {
+                                            break
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            autoScrollTask = nil
+                        }
+                    }
+                    .onAppear {
+                        NSEvent.addLocalMonitorForEvents(matching: .scrollWheel) { event in
+                            if isThinking {
+                                self.isAutoScrolling = false
+                                guard let autoScrollTask = self.autoScrollTask else { return event }
+                                autoScrollTask.cancel()
+                                self.autoScrollTask = nil
+                            }
+                            return event
+                        }
+                    }
                 }
-                
-#if DEBUG
-                Button {
-                    self.history = []
-                } label: {
-                    Label("Clear View", systemImage: "trash")
-                }
-#endif
-                
+    
                 //MARK: Input Area
                 if !self.modelList.isEmpty {
                     ChatInputView(isThinking: $isThinking, prompt: $prompt, images: $promptImages) {
-                        self.history.append((isUser: true, modelName: self.currentModel, message: self.prompt))
+                        //Save user question to SwiftData
+                        Task {
+                            let userChatMessage: APIChatMessage = APIChatMessage(role: "user", content: self.prompt,
+                                                                                 images: nil, options: nil)
+                            await self.saveSwiftDataHistory(history: userChatMessage)
+                        }
+                        
+                        //Append local chat history
+                        let userQuestion: LocalChatHistory = LocalChatHistory(isUser: true, modelName: self.currentModel,
+                                                                              message: self.prompt)
+                        self.history.append(userQuestion)
                         self.isThinking = true
                         
                         //Check if suffix exists
@@ -161,32 +222,57 @@ extension ConversationChatView {
                 self.isAutoScrolling = false
             }
             
-            self.history.append((isUser: false, modelName: self.currentModel, message: ""))
+            self.history.append(.init(isUser: false, modelName: self.currentModel, message: ""))
             
             //Start stream from model
             Task {
-                var cancellable: Set<AnyCancellable> = []
-                let timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
-                var count: Int = 0
-                timer.sink { _ in
-                    count += 1
-                }.store(in: &cancellable)
+                #if DEBUG
+                debugPrint("Generation Started")
+                #endif
+                
+                //Prepare resource for debouncing (Saving for later update)
+//                var count: Int = 0
+//                self.timerPublisher = Timer.publish(every: 0.3, on: .main, in: .common)
+//                self.timerPublisher?.autoconnect().sink { _ in
+//                    count += 1
+//                }.store(in: &self.cancellableSet)
                 
                 let stream = try await chatService.sendMessage(model: model, userInput: prompt, images: images)
                 for await update in stream {
                     let outputText = update
-                    if count % 2 == 0 { //update stream in every 2 seconds
-                        self.history[self.history.count - 1].message = outputText
-                    }
+                    self.history[self.history.count - 1].message = outputText
+                    //Debouncing stream (Saving for later update)
+//                    if count % 2 == 0 {
+//                        let outputText = update
+//                        self.history[self.history.count - 1].message = outputText
+//                    }
+                }
+                
+                //Cancel timer (Saving for later update)
+//                self.timerPublisher?.connect().cancel()
+//                self.timerPublisher = nil
+                
+                #if DEBUG
+                debugPrint("Generation finished")
+                #endif
+                
+                if let lastMessage = await chatService.messages.last {
+                    await self.saveSwiftDataHistory(history: lastMessage)
                 }
                 
                 //Save last response to history
-                self.history[self.history.count - 1].message = await chatService.allMessages().last?.content ?? ""
+                if let content = await chatService.allMessages().last?.content {
+                    self.history[self.history.count - 1].message = content
+                } else {
+                    self.history[self.history.count - 1].message = "Oops! Something went wrong. Please try again."
+                }
                 
                 //Reset state
-                self.isThinking = false
-                self.isAutoScrolling = false
-//                self.autoScrollTask = nil
+                await MainActor.run {
+                    self.isThinking = false
+                    self.isAutoScrolling = false
+                    self.autoScrollTask = nil
+                }
             }
         } else {
             debugPrint("ConversationViewError:")
@@ -197,16 +283,7 @@ extension ConversationChatView {
             //Reset state
             self.isThinking = false
             self.isAutoScrolling = false
-//            self.autoScrollTask = nil
-        }
-    }
-    
-    ///Check server status
-    private func checkServerStatus() async throws -> Bool {
-        if let serverStatus = try? await OllamaNetworkService.isServerOnline() {
-            return serverStatus
-        } else {
-            return false
+            self.autoScrollTask = nil
         }
     }
     
@@ -225,5 +302,18 @@ extension ConversationChatView {
             debugPrint("ConversationChatViewError:")
             debugPrint("Error: \(error.localizedDescription)")
         }
+    }
+    
+    ///Save SwiftData history
+    func saveSwiftDataHistory(history: APIChatMessage) async {
+        let chatHistory: SwiftDataChatHistory = SwiftDataChatHistory(conversationId: self.conversationId,
+                                                                     conversationDate: Date(),
+                                                                     chatData: history)
+        modelContext.insert(chatHistory)
+        
+        #if DEBUG
+        debugPrint("Chat History Saved in id: \(Date().description(with: .current))")
+        debugPrint("Chat History Saved by conversation id: \(self.conversationId.uuidString)")
+        #endif
     }
 }

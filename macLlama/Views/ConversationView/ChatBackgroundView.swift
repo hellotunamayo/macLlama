@@ -17,7 +17,7 @@ struct ChatBackgroundView: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(maxWidth: Units.appFrameMinHeight / 2, maxHeight: Units.appFrameMinHeight / 2)
                 .offset(y: Units.appFrameMinHeight / 20 * -1)
-                .opacity(self.colorScheme == .dark ? 0.06 : 0.07)
+                .opacity(self.colorScheme == .dark ? 0.03 : 0.04)
         }
     }
 }

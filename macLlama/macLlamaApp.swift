@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 import MarkdownUI
 
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -68,6 +69,7 @@ struct macLlamaApp: App {
                 }
             }
         }
+        .modelContainer(for: SwiftDataChatHistory.self)
         .commands {
             CommandMenu("Utility") {
                 HStack {
@@ -135,6 +137,16 @@ struct macLlamaApp: App {
         Window("macLlama update", id: "updateWindow") {
             UpdatePanelView(updateData: $updateData)
         }
+        .windowResizability(.contentSize)
+        
+        Window("Chat History", id: "chatHistory") {
+            NavigationStack {
+                ChatHistoryView()
+                    .frame(minWidth: 400, minHeight: 400)
+            }
+        }
+        .keyboardShortcut("h", modifiers: [.command, .shift], localization: .automatic)
+        .modelContainer(for: SwiftDataChatHistory.self)
         .windowResizability(.contentSize)
     }
 }

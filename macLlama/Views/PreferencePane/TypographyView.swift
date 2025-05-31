@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
+import MarkdownUI
 
 struct TypographyView: View {
     @Binding var chatFontSize: Int
+    @Binding var selectedMarkdownFormat: String
     
     private var chatFontSizeProxy: Binding<Double> {
         Binding<Double>(
@@ -48,6 +50,18 @@ struct TypographyView: View {
                         .padding(.top, Units.normalGap * -0.8)
                 }
                 .clipShape(.rect(cornerRadius: Units.normalGap / 2))
+            }
+            
+            Section("Markdown Settings") {
+                List {
+                    HStack {
+                        Picker("Markdown Theme", selection: $selectedMarkdownFormat) {
+                            ForEach(MarkdownTheme.allCases, id: \.self) { theme in
+                                Text(theme.rawValue).tag(theme.rawValue)
+                            }
+                        }
+                    }
+                }
             }
         }
         .padding()
