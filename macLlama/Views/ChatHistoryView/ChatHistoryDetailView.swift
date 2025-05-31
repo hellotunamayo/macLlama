@@ -16,11 +16,10 @@ struct ChatHistoryDetailView: View {
     @Environment(\.modelContext) var modelContext
     @Query(sort: \SwiftDataChatHistory.createdDate, order: .forward) private var history: [SwiftDataChatHistory] = []
     
+    @State private var conversations: [SwiftDataChatHistory] = []
+    
     let conversationId: String
-    private var conversations: [SwiftDataChatHistory] {
-        let filteredHistory = history.filter { $0.conversationId.uuidString == self.conversationId }
-        return filteredHistory
-    }
+    
     private var isUserChat: (SwiftDataChatHistory) -> Bool {
         { history in
             return history.chatData.role == "user"
@@ -37,7 +36,6 @@ struct ChatHistoryDetailView: View {
             
     var body: some View {
         ScrollView {
-            
             ForEach(conversations) { conversation in
                 VStack {
                     Text(conversationDate(conversation.conversationDate))
@@ -100,5 +98,19 @@ struct ChatHistoryDetailView: View {
         }
         .listStyle(.plain)
         .listSectionSeparator(.hidden)
+        .task {
+            await fetchFilteredHistory()
+        }
+        .onChange(of: self.conversationId) { _, _ in
+            Task {
+                await fetchFilteredHistory()
+            }
+        }
+    }
+    
+    func fetchFilteredHistory() async {
+        self.conversations = []
+        let filteredHistory = self.history.filter { $0.conversationId.uuidString == self.conversationId }
+        self.conversations = filteredHistory
     }
 }
