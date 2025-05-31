@@ -11,6 +11,7 @@ import MarkdownUI
 struct ChatBubbleView: View {
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("chatFontSize") var chatFontSize: Int = AppSettings.chatFontSize
+    @AppStorage("markdownTheme") var markdownTheme: String = AppSettings.markdownTheme
     @Binding var isThinking: Bool
     @State private var messageAnimationFactor: CGFloat = 0.0
     @State private var messageAnimated: Bool = false
@@ -118,7 +119,9 @@ struct ChatBubbleView: View {
                             FontSize(CGFloat(chatFontSize))
                         }
                         .textSelection(.enabled)
-                        .markdownTheme(.gitHub)
+                        .markdownTheme(
+                            MarkdownTheme.getTheme(themeName: markdownTheme)
+                        )
                         .padding(.top, Units.normalGap / 4)
                     } else {
                         if !chatData.isUser {

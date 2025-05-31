@@ -11,6 +11,7 @@ import MarkdownUI
 
 struct ChatHistoryDetailView: View {
     @AppStorage("chatFontSize") var chatFontSize: Int = AppSettings.chatFontSize
+    @AppStorage("markdownTheme") var markdownTheme: String = AppSettings.markdownTheme
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.modelContext) var modelContext
     @Query(sort: \SwiftDataChatHistory.createdDate, order: .forward) private var history: [SwiftDataChatHistory] = []
@@ -85,7 +86,9 @@ struct ChatHistoryDetailView: View {
                                 FontSize(CGFloat(chatFontSize))
                             }
                             .textSelection(.enabled)
-                            .markdownTheme(.docC)
+                            .markdownTheme(
+                                MarkdownTheme.getTheme(themeName: markdownTheme)
+                            )
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding()
                         }

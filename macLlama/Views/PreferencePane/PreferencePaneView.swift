@@ -17,6 +17,7 @@ enum AppSettings {
     static let currentVersionNumber: String? = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String //version number
     static let currentBuildNumber: String? = Bundle.main.infoDictionary?["CFBundleVersion"] as? String //bundle version
     static let lastUpdateCheckDate: Double = Date().timeIntervalSince1970
+    static let markdownTheme: String = MarkdownTheme.basic.rawValue
 }
 
 enum PreferenceTab {
@@ -29,6 +30,7 @@ struct PreferencePaneView: View {
     @AppStorage("promptSuffix") var promptSuffix: String = AppSettings.promptSuffix
     @AppStorage("isAutoScrollEnabled") var isAutoScrollEnabled: Bool = AppSettings.isAutoScrollEnabled
     @AppStorage("isAutoUpdateEnabled") var isAutoUpdateEnabled: Bool = AppSettings.isAutoUpdateEnabled
+    @AppStorage("markdownTheme") var markdownTheme: String = AppSettings.markdownTheme
 
     //For older version of macOS
     @State private var selectedTab: PreferenceTab = .general
@@ -44,8 +46,8 @@ struct PreferencePaneView: View {
                 }
                 
                 Tab("Typography", systemImage: "textformat") {
-                    TypographyView(chatFontSize: $chatFontSize)
-                        .frame(width: 600, height: 200)
+                    TypographyView(chatFontSize: $chatFontSize, selectedMarkdownFormat: $markdownTheme)
+                        .frame(width: 600, height: 400)
                 }
                 
                 Tab("Model Management", systemImage: "apple.intelligence") {
@@ -63,7 +65,7 @@ struct PreferencePaneView: View {
                     }
                     .tag(1)
                 
-                TypographyView(chatFontSize: $chatFontSize)
+                TypographyView(chatFontSize: $chatFontSize, selectedMarkdownFormat: $markdownTheme)
                     .tabItem {
                         Label("Typography", systemImage: "textformat")
                     }
