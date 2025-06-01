@@ -13,7 +13,7 @@ struct ConversationView: View {
     @EnvironmentObject var serverStatus: ServerStatus
     
     var body: some View {
-        if serverStatus.indicator {
+        if serverStatus.isOnline {
             ConversationChatView()
                 .environmentObject(serverStatus)
         } else {

@@ -17,8 +17,8 @@ struct MenuBarExtraView: View {
         VStack {
             Text("macLlama v\(versionString) (\(buildString))")
             HStack {
-                Text("Ollama server is \(serverStatus.indicator ? "on" : "off")")
-                    .foregroundStyle(serverStatus.indicator ? .green : .red)
+                Text("Ollama server is \(serverStatus.isOnline ? "on" : "off")")
+                    .foregroundStyle(serverStatus.isOnline ? .green : .red)
             }
             .task {
                 try? await serverStatus.updateServerStatus()
