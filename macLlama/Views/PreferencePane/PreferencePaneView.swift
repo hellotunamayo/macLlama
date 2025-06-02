@@ -55,7 +55,7 @@ struct PreferencePaneView: View {
                         .frame(width: 600, height: 700)
                 }
             }
-            .navigationTitle("macLlamas Preferences")
+            .navigationTitle("macLlama Preferences")
         } else {
             TabView {
                 GeneralView(serverKillWithApp: $serverKillWithApp, isAutoScrollEnabled: $isAutoScrollEnabled,

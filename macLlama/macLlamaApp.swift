@@ -105,13 +105,21 @@ struct macLlamaApp: App {
                 Button {
                     openWindow(id: "updateWindow")
                 } label: {
-                    Text("Check for update")
+                    Text("Check for Update")
                 }
                 
                 Divider()
                 
                 Link("Discuss macLlama on GitHub", destination: URL(string: "https://github.com/hellotunamayo/macLlama/discussions")!)
                 Link("macLlama on GitHub", destination: URL(string: "https://github.com/hellotunamayo/macLlama")!)
+            }
+            
+            CommandGroup(after: .appInfo) {
+                Button {
+                    openWindow(id: "updateWindow")
+                } label: {
+                    Text("Check for Update")
+                }
             }
         }
         
@@ -134,7 +142,7 @@ struct macLlamaApp: App {
         .windowResizability(.contentSize)
         
         //MARK: New version available
-        Window("macLlama update", id: "updateWindow") {
+        Window("Check for Update", id: "updateWindow") {
             UpdatePanelView(updateData: $updateData)
         }
         .windowResizability(.contentSize)
