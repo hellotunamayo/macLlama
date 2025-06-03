@@ -12,26 +12,36 @@ struct GeneralView: View {
     @Binding var isAutoScrollEnabled: Bool
     @Binding var promptSuffix: String
     @Binding var isAutoUpdateEnabled: Bool
+    @Binding var hostAddress: String
+    @Binding var hostPort: Int
+    @Binding var hostProtocol: String
+    
+    let httpProtocol: [String] = ["http://", "https://"]
     
     var body: some View {
         VStack(alignment: .leading) {
             Section("General") {
-                List {
-                    Toggle(isOn: $serverKillWithApp) {
-                        Text("Automatically stop Ollama server on exit")
-                            .padding(.leading, 3)
-                    }
-                    .padding(.vertical, 5)
-                    
-                    Toggle(isOn: $isAutoScrollEnabled) {
-                        Text("Auto-scroll to bottom on answer completion")
-                            .padding(.leading, 3)
-                    }
-                    .padding(.vertical, 5)
-                    
-                    Toggle(isOn: $isAutoUpdateEnabled) {
-                        Text("Automatic check for Updates")
-                            .padding(.leading, 3)
+                Toggle(isOn: $serverKillWithApp) {
+                    Text("Automatically stop Ollama server on exit")
+                        .padding(.leading, 3)
+                }
+                .padding(.vertical, 5)
+                
+                Toggle(isOn: $isAutoScrollEnabled) {
+                    Text("Auto-scroll to bottom on answer completion")
+                        .padding(.leading, 3)
+                }
+                .padding(.vertical, 5)
+                
+                Toggle(isOn: $isAutoUpdateEnabled) {
+                    Text("Automatic check for Updates")
+                        .padding(.leading, 3)
+                }
+                .padding(.vertical, 5)
+            }
+            
+            Divider().padding(.vertical)
+            
             Section("Network") {
                 HStack {
                     Picker(selection: $hostProtocol) {
@@ -49,17 +59,16 @@ struct GeneralView: View {
                 }
             }
             
+            Divider().padding(.vertical)
+            
             Section("Prompt") {
-                List {
-                    HStack {
-                        Text("Prompt Suffix:")
-                        TextField("Prompt suffix", text: $promptSuffix)
-                            .textFieldStyle(.roundedBorder)
-                            .padding(.leading, 3)
-                    }
-                    .padding(.vertical, 5)
+                HStack {
+                    Text("Prompt Suffix:")
+                    TextField("Prompt suffix", text: $promptSuffix)
+                        .textFieldStyle(.roundedBorder)
+                        .padding(.leading, 3)
                 }
-                .clipShape(.rect(cornerRadius: Units.normalGap / 2))
+                .padding(.vertical, 5)
             }
             Spacer()
         }

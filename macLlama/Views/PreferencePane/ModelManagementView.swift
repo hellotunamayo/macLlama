@@ -82,8 +82,7 @@ struct ModelManagementView: View {
                 .padding(.top, 3)
             }
 
-            Divider()
-                .padding(.vertical)
+            Divider().padding(.vertical)
             
             Section("Add Model from Ollama.com") {
                 HStack {
