@@ -62,6 +62,7 @@ struct ModelSelectView: View {
                         reloadButtonAction()
                     } else {
                         modelList.removeAll()
+                        self.isModelLoading = false
                     }
                     
                     try? await serverStatus.updateServerStatus()
@@ -77,7 +78,7 @@ struct ModelSelectView: View {
                     }
                 }
                 .padding(.vertical, Units.normalGap / 8)
-                .frame(width: 80)
+                .frame(idealWidth: 100)
             }
             .tint(.primary)
             .controlSize(.regular)
