@@ -22,7 +22,7 @@ actor OllamaNetworkService {
         let fullAddress = "\(hostProtocol)\(hostAddress):\(hostPort)"
         
         #if DEBUG
-        debugPrint(fullAddress)
+        debugPrint("Called API: \(fullAddress)")
         #endif
         
         return fullAddress
