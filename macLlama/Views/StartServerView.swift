@@ -11,6 +11,9 @@ struct StartServerView: View {
     @EnvironmentObject var serverStatus: ServerStatus
     @State private var ollamaWarningBouncingYOffset: CGFloat = 0
     @State private var isOllamaServerError: Bool = false
+    @State private var ollamaServerErrorMessage: String = ""
+    @State private var isConnecting: Bool = false
+    @State private var raysRotationAngle: Double = 0.0
     
     let ollamaNetworkService: OllamaNetworkService = OllamaNetworkService()
     
@@ -48,25 +51,54 @@ struct StartServerView: View {
                 .padding(.top, Units.normalGap)
             
             if isOllamaServerError {
-                Text("Ollama server is not available. Install Ollama first.")
+                Text(ollamaServerErrorMessage)
                     .foregroundStyle(.red)
+                    .frame(maxWidth: 200)
+                    .multilineTextAlignment(.center)
                     .padding()
             }
             
             Button {
+                self.isConnecting = true
+                
                 Task {
-                    if try await OllamaNetworkService.isAvailable() {
-                        let shellCommand: String = ShellCommand.startServer.rawValue
-                        guard let _ = try await ShellService.runShellScript(shellCommand) else { return }
-                        try? await Task.sleep(for: .seconds(1))
-                        try await serverStatus.updateServerStatus()
+                    let ollamaAvailability: Bool = try await OllamaNetworkService.isAvailable()
+                    let ollamaServerAvailability: Bool = try await OllamaNetworkService.isServerOnline()
+                    
+                    if ollamaAvailability {
+                        if ollamaServerAvailability {
+                            let shellCommand: String = ShellCommand.startServer.rawValue
+                            guard let _ = try await ShellService.runShellScript(shellCommand) else { return }
+                            try? await Task.sleep(for: .seconds(1))
+                            try await serverStatus.updateServerStatus()
+                        } else {
+                            isOllamaServerError = true
+                            self.isConnecting = false
+                            ollamaServerErrorMessage = "Please check the server address settings in the preferences."
+                        }
                     } else {
                         isOllamaServerError = true
+                        self.isConnecting = false
+                        ollamaServerErrorMessage = "Please ensure you have installed Ollama."
                     }
                 }
             } label: {
-                Label("Start the server and go", systemImage: "power")
-                    .padding(.trailing, Units.normalGap / 4)
+                if isConnecting {
+                    HStack {
+                        Image(systemName: "rays")
+                            .rotationEffect(.degrees(raysRotationAngle))
+                            .onAppear {
+                                withAnimation(.linear(duration: 1.5).repeatForever(autoreverses: false)) {
+                                    raysRotationAngle = 360
+                                }
+                            }
+                        Text("Connecting to server...")
+                    }
+                } else {
+                    Label("Start the server and go", systemImage: "power")
+                        .padding(.trailing, Units.normalGap / 4)
+                }
+                
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
@@ -76,11 +108,12 @@ struct StartServerView: View {
                 .frame(maxWidth: 30)
                 .padding(.vertical, Units.normalGap)
             
-            Text("If the service fails to start, please check\nthat the Ollama server is installed on your system")
+            Text("If service failed to start. Verify that the Ollama server is installed and the network host is configured correctly in your preferences.")
                 .foregroundStyle(Color.gray)
                 .lineSpacing(Units.normalGap / 5)
                 .multilineTextAlignment(.center)
                 .font(.subheadline)
+                .frame(maxWidth: 300)
             
             Link("Bug report or feature request", destination: URL(string: "https://github.com/hellotunamayo/macLlama/discussions")!)
                 .font(.subheadline)

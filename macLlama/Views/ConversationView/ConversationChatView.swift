@@ -173,25 +173,29 @@ struct ConversationChatView: View {
                 //MARK: Input Area
                 if !self.modelList.isEmpty {
                     ChatInputView(isThinking: $isThinking, prompt: $prompt, images: $promptImages) {
-                        //Save user question to SwiftData
-                        Task {
-                            let userChatMessage: APIChatMessage = APIChatMessage(role: "user", content: self.prompt,
-                                                                                 images: nil, options: nil)
-                            await self.saveSwiftDataHistory(history: userChatMessage)
-                        }
-                        
-                        //Append local chat history
-                        let userQuestion: LocalChatHistory = LocalChatHistory(isUser: true, modelName: self.currentModel,
-                                                                              message: self.prompt)
-                        self.history.append(userQuestion)
-                        self.isThinking = true
-                        
-                        //Check if suffix exists
-                        if let suffix = UserDefaults.standard.string(forKey: "promptSuffix") {
-                            let promptWithSuffix: String = self.prompt + " \(suffix)"
-                            try await self.sendChat(model: self.currentModel, prompt: promptWithSuffix, images: self.promptImages)
+                        if try await OllamaNetworkService.isServerOnline() {
+                            Task {
+                                //Save user question to SwiftData
+                                let userChatMessage: APIChatMessage = APIChatMessage(role: "user", content: self.prompt,
+                                                                                     images: nil, options: nil)
+                                await self.saveSwiftDataHistory(history: userChatMessage)
+                            }
+                            
+                            //Append local chat history
+                            let userQuestion: LocalChatHistory = LocalChatHistory(isUser: true, modelName: self.currentModel,
+                                                                                  message: self.prompt)
+                            self.history.append(userQuestion)
+                            self.isThinking = true
+                            
+                            //Check if suffix exists
+                            if let suffix = UserDefaults.standard.string(forKey: "promptSuffix") {
+                                let promptWithSuffix: String = self.prompt + " \(suffix)"
+                                try await self.sendChat(model: self.currentModel, prompt: promptWithSuffix, images: self.promptImages)
+                            } else {
+                                try await self.sendChat(model: self.currentModel, prompt: self.prompt, images: self.promptImages)
+                            }
                         } else {
-                            try await self.sendChat(model: self.currentModel, prompt: self.prompt, images: self.promptImages)
+                            debugPrint("❌ Unable to connect to the API server. Please verify the server address in Settings.")
                         }
                     }
                 }
