@@ -213,6 +213,22 @@
         }
       }
     },
+    "Connecting to server..." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サーバーへ接続中です..."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "서버에 연결 중..."
+          }
+        }
+      }
+    },
     "Copied to clipboard" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -411,18 +427,18 @@
         }
       }
     },
-    "Host (Default: 127.0.0.1)" : {
+    "Host" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Host (Default: 127.0.0.1)"
+            "value" : "ホスト"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "호스트 (기본값 127.0.0.1)"
+            "value" : "호스트"
           }
         }
       }
@@ -443,18 +459,18 @@
         }
       }
     },
-    "If the service fails to start, please check\nthat the Ollama server is installed on your system" : {
+    "If service failed to start. Verify that the Ollama server is installed and the network host is configured correctly in your preferences." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "サービスが起動しない場合は、Ollama サーバーがシステムにインストールされているか確認してください。"
+            "value" : "もしサービスが起動しない場合は、Ollamaのサーバーがインストールされているか、設定アプリでネットワークの設定が正しいか確認してください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "서비스가 시작되지 않으면 Ollama 서버가 설치되어 있는지 체크해 보세요"
+            "value" : "서비스가 실행되지 않는다면 Ollama 서버가 설치되었는지 확인하세요. Ollama 서버가 설치되어 있다면 macLlama 환경설정에서 서버 주소가 올바르게 설정되었는지 확인해 주세요."
           }
         }
       }
@@ -465,7 +481,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ollama サーバーをキル "
+            "value" : "Ollama サーバーを停止する"
           }
         },
         "ko" : {
@@ -719,22 +735,6 @@
         }
       }
     },
-    "Ollama server is not available. Install Ollama first." : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ollamaのサーバーが利用できません。まずOllamaをインストールしてください。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ollama 서버가 설치되어 있지 않습니다. 먼저 Ollama 서버를 설치해 주세요."
-          }
-        }
-      }
-    },
     "Open Terminal.app" : {
       "localizations" : {
         "ja" : {
@@ -751,18 +751,18 @@
         }
       }
     },
-    "Port (Default: 11434)" : {
+    "Port" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Port (Default: 11434)"
+            "value" : "ポート"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "포트 (기본값 11434)"
+            "value" : "포트"
           }
         }
       }
@@ -920,7 +920,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ollamaからモデルを検索してください。"
+            "value" : "Ollamaからモデルを検索"
           }
         },
         "ko" : {
@@ -1056,6 +1056,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이 동작은 되돌릴 수 없습니다."
+          }
+        }
+      }
+    },
+    "This option is for experienced users. If you're unsure, leave it at the standard setting.\nBy default, the host is localhost and the port is 11434." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このオプションは、経験者向けのものです。もしよくわからない場合は、標準設定のままにしておいてください。デフォルトでは、ホストはlocalhostで、ポートは11434です。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 옵션은 고급 사용자용 옵션입니다. 확실하지 않다면 기본 설정으로 놓아 두세요. 기본 설정은 호스트 localhost 와 포트 11434입니다."
           }
         }
       }
