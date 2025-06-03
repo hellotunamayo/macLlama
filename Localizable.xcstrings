@@ -460,6 +460,7 @@
       }
     },
     "Kill Ollama server" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ja" : {
           "stringUnit" : {
