@@ -32,10 +32,21 @@ struct GeneralView: View {
                     Toggle(isOn: $isAutoUpdateEnabled) {
                         Text("Automatic check for Updates")
                             .padding(.leading, 3)
+            Section("Network") {
+                HStack {
+                    Picker(selection: $hostProtocol) {
+                        ForEach(httpProtocol, id: \.self) { item in
+                            Text(item)
+                        }
+                    } label: {
+                        Text("Host info: ")
                     }
-                    .padding(.vertical, 5)
+                    TextField("Host (Default: 127.0.0.1)", text: $hostAddress)
+                        .textFieldStyle(.roundedBorder)
+                    Text(":")
+                    TextField("Port (Default: 11434)", value: $hostPort, formatter: NumberFormatter())
+                        .textFieldStyle(.roundedBorder)
                 }
-                .clipShape(.rect(cornerRadius: Units.normalGap / 2))
             }
             
             Section("Prompt") {
