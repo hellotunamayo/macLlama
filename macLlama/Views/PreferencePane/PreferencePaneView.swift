@@ -19,7 +19,7 @@ enum AppSettings {
     static let lastUpdateCheckDate: Double = Date().timeIntervalSince1970
     static let markdownTheme: String = MarkdownTheme.basic.rawValue
     static let hostProtocol: String = "http://"
-    static let hostAddress: String = "127.0.0.1"
+    static let hostAddress: String = "localhost"
     static let hostPort: Int = 11434
     
     func getHostURL() -> String {

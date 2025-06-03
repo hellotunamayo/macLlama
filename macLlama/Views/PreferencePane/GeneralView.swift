@@ -51,12 +51,20 @@ struct GeneralView: View {
                     } label: {
                         Text("Host info: ")
                     }
-                    TextField("Host (Default: 127.0.0.1)", text: $hostAddress)
+                    
+                    TextField("Host", text: hostAddress.isEmpty ? .constant("localhost") : $hostAddress)
                         .textFieldStyle(.roundedBorder)
                     Text(":")
-                    TextField("Port (Default: 11434)", value: $hostPort, formatter: NumberFormatter())
+                    TextField("Port", value: $hostPort, formatter: NumberFormatter())
                         .textFieldStyle(.roundedBorder)
+                        .frame(maxWidth: 80)
                 }
+                
+                Text("This option is for experienced users. If you're unsure, leave it at the standard setting.\nBy default, the host is localhost and the port is 11434.")
+                    .font(.caption)
+                    .lineSpacing(4)
+                    .padding(.top, Units.normalGap / 2)
+                    .foregroundStyle(.secondary)
             }
             
             Divider().padding(.vertical)
