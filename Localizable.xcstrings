@@ -735,6 +735,22 @@
         }
       }
     },
+    "Open Preference" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定パネルを開く"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "환경설정 열기"
+          }
+        }
+      }
+    },
     "Open Terminal.app" : {
       "localizations" : {
         "ja" : {
@@ -895,6 +911,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "새로고침"
+          }
+        }
+      }
+    },
+    "Reload models" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "モデルリストを更新"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "모델 다시 불러오기"
           }
         }
       }

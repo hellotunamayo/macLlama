@@ -12,6 +12,7 @@ import SwiftData
 struct ConversationChatView: View {
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.modelContext) var modelContext
+    @Environment(\.openWindow) var openWindow
     @EnvironmentObject var serverStatus: ServerStatus
     
     //Model selector state
@@ -66,6 +67,23 @@ struct ConversationChatView: View {
                 } else {
                     //If model is not exists on Ollama server
                     Text("You haven't added any Ollama models yet.\nPlease open the Preference pane to add one.")
+                        .padding()
+                    
+                    HStack {
+                        SettingsLink {
+                            Label("Open Preference", systemImage: "gear")
+                        }
+                        .buttonStyle(.borderedProminent)
+                        
+                        Button {
+                            Task {
+                                try? await self.initModelList()
+                            }
+                        } label: {
+                            Label("Reload models", systemImage: "arrow.trianglehead.clockwise")
+                        }
+
+                    }
                 }
                 
                 ScrollViewReader { proxy in
@@ -201,7 +219,6 @@ struct ConversationChatView: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .opacity(modelList.isEmpty ? 0.1 : 1)
             .task {
                 try? await self.initModelList()
             }
