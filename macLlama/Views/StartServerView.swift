@@ -65,21 +65,21 @@ struct StartServerView: View {
                     let ollamaAvailability: Bool = try await OllamaNetworkService.isAvailable()
                     let ollamaServerAvailability: Bool = try await OllamaNetworkService.isServerOnline()
                     
-                    if ollamaAvailability {
-                        if ollamaServerAvailability {
-                            let shellCommand: String = ShellCommand.startServer.rawValue
-                            guard let _ = try await ShellService.runShellScript(shellCommand) else { return }
-                            try? await Task.sleep(for: .seconds(1))
-                            try await serverStatus.updateServerStatus()
+                    if !ollamaServerAvailability {
+                        if !ollamaAvailability {
+                            isOllamaServerError = true
+                            self.isConnecting = false
+                            ollamaServerErrorMessage = "Please ensure you have installed Ollama."
                         } else {
                             isOllamaServerError = true
                             self.isConnecting = false
                             ollamaServerErrorMessage = "Please check the server address settings in the preferences."
                         }
                     } else {
-                        isOllamaServerError = true
-                        self.isConnecting = false
-                        ollamaServerErrorMessage = "Please ensure you have installed Ollama."
+                        let shellCommand: String = ShellCommand.startServer.rawValue
+                        guard let _ = try await ShellService.runShellScript(shellCommand) else { return }
+                        try? await Task.sleep(for: .seconds(1))
+                        try await serverStatus.updateServerStatus()
                     }
                 }
             } label: {
