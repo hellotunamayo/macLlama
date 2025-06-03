@@ -1,6 +1,22 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    ":" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ":"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ":"
+          }
+        }
+      }
+    },
     "%lld models available" : {
       "localizations" : {
         "ja" : {
@@ -395,6 +411,38 @@
         }
       }
     },
+    "Host (Default: 127.0.0.1)" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Host (Default: 127.0.0.1)"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "호스트 (기본값 127.0.0.1)"
+          }
+        }
+      }
+    },
+    "Host info: " : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Host info: "
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "호스트 정보: "
+          }
+        }
+      }
+    },
     "If the service fails to start, please check\nthat the Ollama server is installed on your system" : {
       "localizations" : {
         "ja" : {
@@ -590,6 +638,22 @@
         }
       }
     },
+    "Network" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ネットワーク"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "네트워크"
+          }
+        }
+      }
+    },
     "New macLlama is available!" : {
       "localizations" : {
         "ja" : {
@@ -682,6 +746,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "터미널 앱 실행하기"
+          }
+        }
+      }
+    },
+    "Port (Default: 11434)" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Port (Default: 11434)"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "포트 (기본값 11434)"
           }
         }
       }
