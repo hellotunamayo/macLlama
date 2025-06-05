@@ -84,10 +84,19 @@ struct macLlamaApp: App {
                 
                 Button {
                     Task {
-                        let _ = try await ShellService.runShellScript(ShellCommand.startServer.rawValue)
+                        let startCommand = ShellCommand.startServer.rawValue
+                        if let _ = try await ShellService.runShellScript(startCommand) {
+                            
+                            try? await Task.sleep(for: .seconds(1))
+                            try? await serverStatus.updateServerStatus()
+                            
+                            #if DEBUG
+                            debugPrint(serverStatus)
+                            #endif
+                        }
                     }
                 } label: {
-                    Text("Start Ollama Server")
+                    Text("Start Local Ollama Server")
                 }
                 
                 Button {
@@ -96,6 +105,16 @@ struct macLlamaApp: App {
                     }
                 } label: {
                     Text("Open Terminal.app")
+                }
+                
+                Divider()
+                
+                Button("Stop Local Ollama server", role: .destructive) {
+                    Task {
+                        let _ = ShellService.killOllama()
+                        try await Task.sleep(for: .seconds(1))
+                        try? await serverStatus.updateServerStatus()
+                    }
                 }
             }
             
