@@ -34,11 +34,13 @@ struct MenuBarExtraView: View {
                         try? await Task.sleep(for: .seconds(1))
                         try? await serverStatus.updateServerStatus()
                         
+                        #if DEBUG
                         debugPrint(serverStatus)
+                        #endif
                     }
                 }
             } label: {
-                Text("Start Ollama Server")
+                Text("Start Local Ollama Server")
             }
             
             Button {
@@ -49,19 +51,14 @@ struct MenuBarExtraView: View {
                 Text("Open Terminal.app")
             }
             
-            #if DEBUG
-            Button {
+            Button("Stop Local Ollama server", role: .destructive) {
                 Task {
-                    let _ = try await ShellService.runShellScript("killall ollama")
+                    let _ = ShellService.killOllama()
                     try await Task.sleep(for: .seconds(1))
                     try? await serverStatus.updateServerStatus()
                 }
-            } label: {
-                Text("Kill Ollama server")
-                    .foregroundStyle(.red)
             }
-            #endif
-            
+
             Divider()
             
             Link("Search models from Ollama", destination: URL(string: "https://ollama.com/search")!)
