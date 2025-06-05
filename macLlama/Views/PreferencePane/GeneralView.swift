@@ -52,7 +52,7 @@ struct GeneralView: View {
                         Text("Host info: ")
                     }
                     
-                    TextField("Host", text: hostAddress.isEmpty ? .constant("localhost") : $hostAddress)
+                    TextField("Host", text: $hostAddress)
                         .textFieldStyle(.roundedBorder)
                     Text(":")
                     TextField("Port", value: $hostPort, formatter: NumberFormatter())
