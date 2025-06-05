@@ -996,18 +996,18 @@
         }
       }
     },
-    "Start Ollama Server" : {
+    "Start Local Ollama Server" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ollama サーバーを開始"
+            "value" : "ローカルOllamaサーバーを起動"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ollama 서버 시작하기"
+            "value" : "로컬 Ollama 서버를 시작"
           }
         }
       }
@@ -1040,6 +1040,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ollama 와 함께 로컬 AI 엔진을 시작하세요"
+          }
+        }
+      }
+    },
+    "Stop Local Ollama server" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ローカルOllamaサーバーを停止"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로컬 Ollama 서버를 종료"
           }
         }
       }
