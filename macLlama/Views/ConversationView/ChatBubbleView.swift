@@ -107,7 +107,7 @@ struct ChatBubbleView: View {
                 }
                 
                 VStack {
-                    if isMarkdownEnabled {
+                    if isMarkdownEnabled && !isThinking {
                         Markdown {
                             MarkdownContent(chatMessage)
                         }
