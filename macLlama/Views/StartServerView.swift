@@ -71,15 +71,10 @@ struct StartServerView: View {
                             self.isConnecting = false
                             ollamaServerErrorMessage = "Please ensure you have installed Ollama."
                         } else {
-                            isOllamaServerError = true
-                            self.isConnecting = false
-                            ollamaServerErrorMessage = "Please check the server address settings in the preferences."
+                            try await self.startServer()
                         }
                     } else {
-                        let shellCommand: String = ShellCommand.startServer.rawValue
-                        guard let _ = try await ShellService.runShellScript(shellCommand) else { return }
-                        try? await Task.sleep(for: .seconds(1))
-                        try await serverStatus.updateServerStatus()
+                        try await self.startServer()
                     }
                 }
             } label: {
@@ -125,5 +120,12 @@ struct StartServerView: View {
                 .fill(Color(nsColor: NSColor.windowBackgroundColor))
                 .shadow(radius: 3)
         )
+    }
+    
+    func startServer() async throws {
+        let shellCommand: String = ShellCommand.startServer.rawValue
+        guard let _ = try await ShellService.runShellScript(shellCommand) else { return }
+        try? await Task.sleep(for: .seconds(1))
+        try await serverStatus.updateServerStatus()
     }
 }
