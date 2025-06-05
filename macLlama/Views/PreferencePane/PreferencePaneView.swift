@@ -23,7 +23,7 @@ enum AppSettings {
     static let hostPort: Int = 11434
     
     func getHostURL() -> String {
-        return "\(AppSettings.hostAddress):\(AppSettings.hostPort)"
+        return "\(AppSettings.hostAddress.isEmpty ? "localhost" : AppSettings.hostAddress):\(AppSettings.hostPort)"
     }
 }
 
