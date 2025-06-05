@@ -15,6 +15,19 @@ actor OllamaNetworkService {
         }
     }
     
+    static var apiHostAddress: String {
+        let hostProtocol = UserDefaults.standard.string(forKey: "hostProtocol") ?? "http://"
+        let hostAddress = UserDefaults.standard.string(forKey: "hostAddress") ?? "127.0.0.1"
+        let hostPort = UserDefaults.standard.string(forKey: "hostPort") ?? "11434"
+        let fullAddress = "\(hostProtocol)\(hostAddress):\(hostPort)"
+        
+        #if DEBUG
+        debugPrint("Called API: \(fullAddress)")
+        #endif
+        
+        return fullAddress
+    }
+    
     ///Checks availability of Ollama server
     static func isAvailable() async throws -> Bool {
         do {
@@ -45,7 +58,7 @@ actor OllamaNetworkService {
     ///Checks Ollama server is online.
     static func isServerOnline() async throws -> Bool {
         do {
-            let urlString: String = "http://127.0.0.1:11434"
+            let urlString: String = apiHostAddress
             guard let url = URL(string: urlString) else { return false }
             let (_, response) = try await URLSession.shared.data(from: url)
             guard let response = response as? HTTPURLResponse else { return false }
@@ -65,7 +78,7 @@ actor OllamaNetworkService {
     static func getModels() async throws -> [OllamaModel]? {
         do {
             if try await OllamaNetworkService.isServerOnline() {
-                let urlString: String = "http://127.0.0.1:11434/api/tags"
+                let urlString: String = "\(apiHostAddress)/api/tags"
                 guard let url = URL(string: urlString) else { throw URLError(.badURL) }
                 let (data, _) = try await URLSession.shared.data(from: url)
                 let modelList = try JSONDecoder().decode(OllamaModels.self, from: data)

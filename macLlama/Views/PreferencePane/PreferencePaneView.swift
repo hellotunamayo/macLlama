@@ -18,6 +18,13 @@ enum AppSettings {
     static let currentBuildNumber: String? = Bundle.main.infoDictionary?["CFBundleVersion"] as? String //bundle version
     static let lastUpdateCheckDate: Double = Date().timeIntervalSince1970
     static let markdownTheme: String = MarkdownTheme.basic.rawValue
+    static let hostProtocol: String = "http://"
+    static let hostAddress: String = "localhost"
+    static let hostPort: Int = 11434
+    
+    func getHostURL() -> String {
+        return "\(AppSettings.hostAddress.isEmpty ? "localhost" : AppSettings.hostAddress):\(AppSettings.hostPort)"
+    }
 }
 
 enum PreferenceTab {
@@ -31,6 +38,9 @@ struct PreferencePaneView: View {
     @AppStorage("isAutoScrollEnabled") var isAutoScrollEnabled: Bool = AppSettings.isAutoScrollEnabled
     @AppStorage("isAutoUpdateEnabled") var isAutoUpdateEnabled: Bool = AppSettings.isAutoUpdateEnabled
     @AppStorage("markdownTheme") var markdownTheme: String = AppSettings.markdownTheme
+    @AppStorage("hostProtocol") var hostProtocol: String = AppSettings.hostProtocol
+    @AppStorage("hostAddress") var hostAddress: String = AppSettings.hostAddress
+    @AppStorage("hostPort") var hostPort: Int = AppSettings.hostPort
 
     //For older version of macOS
     @State private var selectedTab: PreferenceTab = .general
@@ -41,7 +51,8 @@ struct PreferencePaneView: View {
                 Tab("General", systemImage: "gear") {
                     GeneralView(serverKillWithApp: $serverKillWithApp,
                                 isAutoScrollEnabled: $isAutoScrollEnabled,
-                                promptSuffix: $promptSuffix, isAutoUpdateEnabled: $isAutoUpdateEnabled)
+                                promptSuffix: $promptSuffix, isAutoUpdateEnabled: $isAutoUpdateEnabled,
+                                hostAddress: $hostAddress, hostPort: $hostPort, hostProtocol: $hostProtocol)
                     .frame(width: 600, height: 400)
                 }
                 
@@ -55,11 +66,13 @@ struct PreferencePaneView: View {
                         .frame(width: 600, height: 700)
                 }
             }
-            .navigationTitle("macLlamas Preferences")
+            .navigationTitle("macLlama Preferences")
         } else {
             TabView {
-                GeneralView(serverKillWithApp: $serverKillWithApp, isAutoScrollEnabled: $isAutoScrollEnabled,
-                            promptSuffix: $promptSuffix, isAutoUpdateEnabled: $isAutoUpdateEnabled)
+                GeneralView(serverKillWithApp: $serverKillWithApp,
+                            isAutoScrollEnabled: $isAutoScrollEnabled,
+                            promptSuffix: $promptSuffix, isAutoUpdateEnabled: $isAutoUpdateEnabled,
+                            hostAddress: $hostAddress, hostPort: $hostPort, hostProtocol: $hostProtocol)
                     .tabItem {
                         Label("General", systemImage: "gear")
                     }

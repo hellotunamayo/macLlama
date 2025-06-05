@@ -19,7 +19,7 @@ struct ModelSelectView: View {
     var body: some View {
         HStack{
             Circle()
-                .fill(serverStatus.indicator ? Color.green : Color.red)
+                .fill(serverStatus.isOnline ? Color.green : Color.red)
                 .frame(width: 8, height: 8)
             
             Picker("Current Model", selection: $currentModel) {
@@ -58,10 +58,11 @@ struct ModelSelectView: View {
                     
                     try? await serverStatus.updateServerStatus()
                     
-                    if serverStatus.indicator {
+                    if serverStatus.isOnline {
                         reloadButtonAction()
                     } else {
                         modelList.removeAll()
+                        self.isModelLoading = false
                     }
                     
                     try? await serverStatus.updateServerStatus()
@@ -77,7 +78,7 @@ struct ModelSelectView: View {
                     }
                 }
                 .padding(.vertical, Units.normalGap / 8)
-                .frame(width: 80)
+                .frame(idealWidth: 100)
             }
             .tint(.primary)
             .controlSize(.regular)

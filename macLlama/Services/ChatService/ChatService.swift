@@ -21,7 +21,7 @@ actor OllamaChatService {
         
         messages.append(APIChatMessage(role: "user", content: userInput, images: imageStrings, options: options))
         
-        guard let url = URL(string: "http://localhost:11434/api/chat") else {
+        guard let url = URL(string: "\(OllamaNetworkService.apiHostAddress)/api/chat") else {
             throw URLError(.badURL)
         }
         

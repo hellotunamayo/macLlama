@@ -73,8 +73,8 @@ struct macLlamaApp: App {
         .commands {
             CommandMenu("Utility") {
                 HStack {
-                    Text("Ollama server is \(serverStatus.indicator ? "on" : "off")")
-                        .foregroundStyle(serverStatus.indicator ? .green : .red)
+                    Text("Ollama server is \(serverStatus.isOnline ? "on" : "off")")
+                        .foregroundStyle(serverStatus.isOnline ? .green : .red)
                 }
                 .task {
                     try? await serverStatus.updateServerStatus()
@@ -84,10 +84,19 @@ struct macLlamaApp: App {
                 
                 Button {
                     Task {
-                        let _ = try await ShellService.runShellScript(ShellCommand.startServer.rawValue)
+                        let startCommand = ShellCommand.startServer.rawValue
+                        if let _ = try await ShellService.runShellScript(startCommand) {
+                            
+                            try? await Task.sleep(for: .seconds(1))
+                            try? await serverStatus.updateServerStatus()
+                            
+                            #if DEBUG
+                            debugPrint(serverStatus)
+                            #endif
+                        }
                     }
                 } label: {
-                    Text("Start Ollama Server")
+                    Text("Start Local Ollama Server")
                 }
                 
                 Button {
@@ -97,6 +106,16 @@ struct macLlamaApp: App {
                 } label: {
                     Text("Open Terminal.app")
                 }
+                
+                Divider()
+                
+                Button("Stop Local Ollama server", role: .destructive) {
+                    Task {
+                        let _ = ShellService.killOllama()
+                        try await Task.sleep(for: .seconds(1))
+                        try? await serverStatus.updateServerStatus()
+                    }
+                }
             }
             
             CommandGroup(after: .help) {
@@ -105,13 +124,21 @@ struct macLlamaApp: App {
                 Button {
                     openWindow(id: "updateWindow")
                 } label: {
-                    Text("Check for update")
+                    Text("Check for Update")
                 }
                 
                 Divider()
                 
                 Link("Discuss macLlama on GitHub", destination: URL(string: "https://github.com/hellotunamayo/macLlama/discussions")!)
                 Link("macLlama on GitHub", destination: URL(string: "https://github.com/hellotunamayo/macLlama")!)
+            }
+            
+            CommandGroup(after: .appInfo) {
+                Button {
+                    openWindow(id: "updateWindow")
+                } label: {
+                    Text("Check for Update")
+                }
             }
         }
         
@@ -134,7 +161,7 @@ struct macLlamaApp: App {
         .windowResizability(.contentSize)
         
         //MARK: New version available
-        Window("macLlama update", id: "updateWindow") {
+        Window("Check for Update", id: "updateWindow") {
             UpdatePanelView(updateData: $updateData)
         }
         .windowResizability(.contentSize)

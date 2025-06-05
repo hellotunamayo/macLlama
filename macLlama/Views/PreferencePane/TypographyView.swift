@@ -26,43 +26,42 @@ struct TypographyView: View {
     var body: some View {
         VStack(alignment: .leading) {
             Section("Chat font size") {
-                List{
-                    HStack {
-                        //TODO: Add slider graphical indicator
-                        Slider(value: chatFontSizeProxy, in: 12...32)
-                        Text("\(chatFontSize)pt")
-                        Button {
-                            chatFontSize = 16
-                        } label: {
-                            Image(systemName: "arrow.clockwise")
-                                .resizable()
-                                .frame(width: 12, height: 12)
-                        }
-                        .buttonStyle(.accessoryBarAction)
+                HStack {
+                    //TODO: Add slider graphical indicator
+                    Slider(value: chatFontSizeProxy, in: 12...32)
+                    Text("\(chatFontSize)pt")
+                    Button {
+                        chatFontSize = 16
+                    } label: {
+                        Image(systemName: "arrow.clockwise")
+                            .resizable()
+                            .frame(width: 12, height: 12)
                     }
-                    
-                    Text("Text Example \(chatFontSize)pt")
-                        .font(.system(size: CGFloat(chatFontSize)))
-                        .foregroundStyle(Color.secondary)
-                        .multilineTextAlignment(.center)
-                        .frame(maxWidth: .infinity, minHeight: 40)
-                        .padding(Units.normalGap / 2)
-                        .padding(.top, Units.normalGap * -0.8)
+                    .buttonStyle(.accessoryBarAction)
                 }
-                .clipShape(.rect(cornerRadius: Units.normalGap / 2))
+                
+                Text("Text Example \(chatFontSize)pt")
+                    .font(.system(size: CGFloat(chatFontSize)))
+                    .foregroundStyle(Color.secondary)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity, minHeight: 40)
+                    .padding(Units.normalGap / 2)
+                    .padding(.top, Units.normalGap * -0.8)
             }
             
+            Divider().padding(.vertical)
+            
             Section("Markdown Settings") {
-                List {
-                    HStack {
-                        Picker("Markdown Theme", selection: $selectedMarkdownFormat) {
-                            ForEach(MarkdownTheme.allCases, id: \.self) { theme in
-                                Text(theme.rawValue).tag(theme.rawValue)
-                            }
+                HStack {
+                    Picker("Markdown Theme", selection: $selectedMarkdownFormat) {
+                        ForEach(MarkdownTheme.allCases, id: \.self) { theme in
+                            Text(theme.rawValue).tag(theme.rawValue)
                         }
                     }
                 }
             }
+            
+            Spacer()
         }
         .padding()
     }

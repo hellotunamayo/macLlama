@@ -12,6 +12,7 @@ import SwiftData
 struct ConversationChatView: View {
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.modelContext) var modelContext
+    @Environment(\.openWindow) var openWindow
     @EnvironmentObject var serverStatus: ServerStatus
     
     //Model selector state
@@ -66,6 +67,23 @@ struct ConversationChatView: View {
                 } else {
                     //If model is not exists on Ollama server
                     Text("You haven't added any Ollama models yet.\nPlease open the Preference pane to add one.")
+                        .padding()
+                    
+                    HStack {
+                        SettingsLink {
+                            Label("Open Preference", systemImage: "gear")
+                        }
+                        .buttonStyle(.borderedProminent)
+                        
+                        Button {
+                            Task {
+                                try? await self.initModelList()
+                            }
+                        } label: {
+                            Label("Reload models", systemImage: "arrow.trianglehead.clockwise")
+                        }
+
+                    }
                 }
                 
                 ScrollViewReader { proxy in
@@ -173,31 +191,34 @@ struct ConversationChatView: View {
                 //MARK: Input Area
                 if !self.modelList.isEmpty {
                     ChatInputView(isThinking: $isThinking, prompt: $prompt, images: $promptImages) {
-                        //Save user question to SwiftData
-                        Task {
-                            let userChatMessage: APIChatMessage = APIChatMessage(role: "user", content: self.prompt,
-                                                                                 images: nil, options: nil)
-                            await self.saveSwiftDataHistory(history: userChatMessage)
-                        }
-                        
-                        //Append local chat history
-                        let userQuestion: LocalChatHistory = LocalChatHistory(isUser: true, modelName: self.currentModel,
-                                                                              message: self.prompt)
-                        self.history.append(userQuestion)
-                        self.isThinking = true
-                        
-                        //Check if suffix exists
-                        if let suffix = UserDefaults.standard.string(forKey: "promptSuffix") {
-                            let promptWithSuffix: String = self.prompt + " \(suffix)"
-                            try await self.sendChat(model: self.currentModel, prompt: promptWithSuffix, images: self.promptImages)
+                        if try await OllamaNetworkService.isServerOnline() {
+                            Task {
+                                //Save user question to SwiftData
+                                let userChatMessage: APIChatMessage = APIChatMessage(role: "user", content: self.prompt,
+                                                                                     images: nil, options: nil)
+                                await self.saveSwiftDataHistory(history: userChatMessage)
+                            }
+                            
+                            //Append local chat history
+                            let userQuestion: LocalChatHistory = LocalChatHistory(isUser: true, modelName: self.currentModel,
+                                                                                  message: self.prompt)
+                            self.history.append(userQuestion)
+                            self.isThinking = true
+                            
+                            //Check if suffix exists
+                            if let suffix = UserDefaults.standard.string(forKey: "promptSuffix") {
+                                let promptWithSuffix: String = self.prompt + " \(suffix)"
+                                try await self.sendChat(model: self.currentModel, prompt: promptWithSuffix, images: self.promptImages)
+                            } else {
+                                try await self.sendChat(model: self.currentModel, prompt: self.prompt, images: self.promptImages)
+                            }
                         } else {
-                            try await self.sendChat(model: self.currentModel, prompt: self.prompt, images: self.promptImages)
+                            debugPrint("❌ Unable to connect to the API server. Please verify the server address in Settings.")
                         }
                     }
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .opacity(modelList.isEmpty ? 0.1 : 1)
             .task {
                 try? await self.initModelList()
             }
