@@ -25,13 +25,13 @@ struct ChatHistoryView: View {
     }
     
     var distinctConversationIDs: [String] {
-        var list: [String] = []
+        var list: Set<String> = []
         chatHistory.forEach { history in
-            if !list.contains(history.conversationId.uuidString) {
-                list.append(history.conversationId.uuidString)
-            }
+            let conversationId = history.conversationId.uuidString
+            list.insert(conversationId)
         }
-        return list
+        let resultArray = Array(list)
+        return resultArray
     }
     
     var getInitialTime: [String] {
@@ -45,7 +45,7 @@ struct ChatHistoryView: View {
                 list.append(formattedDateString)
             }
         }
-        return list
+        return list.sorted().reversed()
     }
     
     var body: some View {
