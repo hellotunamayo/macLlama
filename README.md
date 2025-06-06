@@ -1,6 +1,9 @@
 # macLlama: Native macOS GUI for Ollama
 
-![macLlama preview image](macllama_logo.png)
+![macLlama logo image](macllama_logo.png)
+---
+
+![macLlama preview image](ollama_preview.png)
 
 Welcome to **macLlama**! This macOS application, built with SwiftUI, provides a user-friendly interface for interacting with Ollama. Recent updates include the ability to start the Ollama server directly from the app and various UI enhancements.
 
