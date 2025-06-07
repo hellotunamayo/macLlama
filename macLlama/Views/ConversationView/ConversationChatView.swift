@@ -195,7 +195,8 @@ struct ConversationChatView: View {
                             Task {
                                 //Save user question to SwiftData
                                 let userChatMessage: APIChatMessage = APIChatMessage(role: "user", content: self.prompt,
-                                                                                     images: nil, options: nil)
+                                                                                     images: nil, options: nil,
+                                                                                     assistantThink: nil)
                                 await self.saveSwiftDataHistory(history: userChatMessage)
                             }
                             
@@ -282,8 +283,10 @@ extension ConversationChatView {
                 }
                 
                 //Save last response to history
-                if let content = await chatService.allMessages().last?.content {
+                if let content = await chatService.allMessages().last?.content,
+                   let think = await chatService.allMessages().last?.assistantThink {
                     self.history[self.history.count - 1].message = content
+                    self.history[self.history.count - 1].assistantThink = think
                 } else {
                     self.history[self.history.count - 1].message = "Oops! Something went wrong. Please try again."
                 }

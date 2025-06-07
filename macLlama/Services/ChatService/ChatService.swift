@@ -19,7 +19,7 @@ actor OllamaChatService {
             APIChatOption(key: "temperature", value: temperature ?? 0.8)
         ]
         
-        messages.append(APIChatMessage(role: "user", content: userInput, images: imageStrings, options: options))
+        messages.append(APIChatMessage(role: "user", content: userInput, images: imageStrings, options: options, assistantThink: nil))
         
         guard let url = URL(string: "\(OllamaNetworkService.apiHostAddress)/api/chat") else {
             throw URLError(.badURL)
@@ -37,6 +37,7 @@ actor OllamaChatService {
             "model": model,
             "messages": try messages.map { try JSONEncoder().encode($0) }
                 .map { try JSONSerialization.jsonObject(with: $0) },
+            "think": true,
             "stream": true
         ]
         
@@ -46,6 +47,7 @@ actor OllamaChatService {
         
         //Prepare response from Ollama
         var assistantContent = ""
+        var assistantThink: String = ""
         
         //Broadcast model response chunks
         let stream = AsyncStream { continuation in
@@ -58,15 +60,19 @@ actor OllamaChatService {
                               let content = message["content"] as? String else {
                             continue
                         }
+                        let think = message["thinking"] as? String ?? ""
                         
                         assistantContent += content
+                        assistantThink += think
+                        
                         continuation.yield(assistantContent)
                     }
                     
-                    let finalMessage = APIChatMessage(role: "assistant", content: assistantContent, images: nil, options: nil)
+                    let finalMessage = APIChatMessage(role: "assistant", content: assistantContent, images: nil, options: nil, assistantThink: assistantThink)
                     messages.append(finalMessage)
                     
                     #if DEBUG
+                    debugPrint(assistantThink)
                     debugPrint("Request options: \(options)")
                     #endif
                     

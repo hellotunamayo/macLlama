@@ -83,6 +83,9 @@
         }
       }
     },
+    "Assistant thinks..." : {
+
+    },
     "Auto-scroll to bottom on answer completion" : {
       "localizations" : {
         "ja" : {
@@ -426,6 +429,9 @@
           }
         }
       }
+    },
+    "Hide Assistant Thinking" : {
+
     },
     "Host" : {
       "localizations" : {
@@ -995,6 +1001,9 @@
           }
         }
       }
+    },
+    "Show Assistant Thinking" : {
+
     },
     "Start Local Ollama Server" : {
       "localizations" : {
