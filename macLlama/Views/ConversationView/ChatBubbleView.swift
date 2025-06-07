@@ -19,6 +19,14 @@ struct ChatBubbleView: View {
     @State private var chatMessage: String = ""
     @State private var showAssistantThink: Bool = false
     
+    var assistantThinkContext: String? {
+        if let text = self.chatData.assistantThink {
+            return text
+        } else {
+            return nil
+        }
+    }
+    
     @Binding var chatData: LocalChatHistory
     
     var body: some View {
@@ -108,13 +116,50 @@ struct ChatBubbleView: View {
                 }
                 
                 VStack {
-                    if let think = self.chatData.assistantThink,
-                       showAssistantThink == true {
-                        Section("Assistant thinks...") {
-                            TextEditor(text: .constant(think))
-                                .font(.subheadline)
-                                .foregroundStyle(Color.secondary)
+                    if let thinkContext = self.assistantThinkContext, !thinkContext.isEmpty {
+                        VStack(alignment: .leading) {
+                            Button {
+                                withAnimation {
+                                    showAssistantThink.toggle()
+                                }
+                            } label: {
+                                Label(showAssistantThink ? "Hide Assistant Thinking" : "Show Assistant Thinking",
+                                      systemImage: "brain")
+                                .frame(minWidth: Units.chatBubbleMinWidth, maxWidth: .infinity, alignment: .leading)
+                                .padding(EdgeInsets(top: Units.normalGap, leading: Units.normalGap / 4,
+                                                    bottom: Units.normalGap, trailing: 0))
+                            }
+                            .controlSize(.small)
+                            .buttonStyle(.borderless)
+                            .clipShape(Capsule())
+                            .disabled(isThinking ? true : false)
+                            .help("Show or hide assistant thinking")
                         }
+                    }
+                    
+                    if let think = self.chatData.assistantThink, showAssistantThink == true {
+                        VStack {
+                            Text("\(chatData.modelName)'s think")
+                                .font(.title2)
+                                .fontWeight(.bold)
+                                .foregroundStyle(.secondary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding()
+                                .padding(.bottom, 0)
+                            
+                            TextEditor(text: .constant(think))
+                                .font(.body)
+                                .foregroundStyle(Color.secondary)
+                                .lineSpacing(3)
+                                .fixedSize(horizontal: false, vertical: true)
+//                                .frame(minHeight: 200, idealHeight: 200, maxHeight: 600)
+                                .scrollContentBackground(.hidden)
+                                .padding()
+                        }
+                        .background(
+                            RoundedRectangle(cornerRadius: Units.normalGap / 2)
+                                .fill(Color.black)
+                        )
                     }
                     
                     if isMarkdownEnabled && !isThinking {
@@ -159,20 +204,6 @@ struct ChatBubbleView: View {
                 .frame(maxWidth: .infinity, alignment: chatData.isUser ? .trailing : .leading)
                 .onChange(of: self.chatData.message) { _, newValue in
                     self.chatMessage = newValue
-                }
-                
-                VStack {
-                    if chatData.assistantThink != nil {
-                        Button {
-                            withAnimation {
-                                showAssistantThink.toggle()
-                            }
-                        } label: {
-                            Label(showAssistantThink ? "Hide Assistant Thinking" : "Show Assistant Thinking",
-                                  systemImage: "questionmark")
-                        }
-                        
-                    }
                 }
             }
             

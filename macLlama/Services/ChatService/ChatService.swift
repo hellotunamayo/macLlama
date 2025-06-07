@@ -10,7 +10,7 @@ import SwiftUI
 actor OllamaChatService {
     private(set) var messages: [APIChatMessage] = []
     
-    func sendMessage(model: String, userInput: String, images: [NSImage]?,
+    func sendMessage(model: String, userInput: String, images: [NSImage]?, showThink: Bool,
                      predict: Double? = nil, temperature: Double? = nil) async throws -> AsyncStream<String> {
         //Convert NSImage to base64
         let imageStrings = await nsImageArrayToBase64Array(images)
@@ -37,7 +37,7 @@ actor OllamaChatService {
             "model": model,
             "messages": try messages.map { try JSONEncoder().encode($0) }
                 .map { try JSONSerialization.jsonObject(with: $0) },
-            "think": true,
+            "think": showThink,
             "stream": true
         ]
         
@@ -60,10 +60,12 @@ actor OllamaChatService {
                               let content = message["content"] as? String else {
                             continue
                         }
-                        let think = message["thinking"] as? String ?? ""
                         
                         assistantContent += content
-                        assistantThink += think
+                        
+                        if let think = message["thinking"] as? String {
+                            assistantThink += think
+                        }
                         
                         continuation.yield(assistantContent)
                     }
