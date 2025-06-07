@@ -21,6 +21,7 @@ struct APIChatMessage: Identifiable, Codable {
     var content: String
     let images: [String]?
     let options: [APIChatOption]?
+    let assistantThink: String?
 }
 
 struct APIChatOption: Codable {

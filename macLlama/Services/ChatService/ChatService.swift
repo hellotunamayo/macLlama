@@ -10,7 +10,7 @@ import SwiftUI
 actor OllamaChatService {
     private(set) var messages: [APIChatMessage] = []
     
-    func sendMessage(model: String, userInput: String, images: [NSImage]?,
+    func sendMessage(model: String, userInput: String, images: [NSImage]?, showThink: Bool,
                      predict: Double? = nil, temperature: Double? = nil) async throws -> AsyncStream<String> {
         //Convert NSImage to base64
         let imageStrings = await nsImageArrayToBase64Array(images)
@@ -19,7 +19,7 @@ actor OllamaChatService {
             APIChatOption(key: "temperature", value: temperature ?? 0.8)
         ]
         
-        messages.append(APIChatMessage(role: "user", content: userInput, images: imageStrings, options: options))
+        messages.append(APIChatMessage(role: "user", content: userInput, images: imageStrings, options: options, assistantThink: nil))
         
         guard let url = URL(string: "\(OllamaNetworkService.apiHostAddress)/api/chat") else {
             throw URLError(.badURL)
@@ -37,6 +37,7 @@ actor OllamaChatService {
             "model": model,
             "messages": try messages.map { try JSONEncoder().encode($0) }
                 .map { try JSONSerialization.jsonObject(with: $0) },
+            "think": showThink,
             "stream": true
         ]
         
@@ -46,6 +47,7 @@ actor OllamaChatService {
         
         //Prepare response from Ollama
         var assistantContent = ""
+        var assistantThink: String = ""
         
         //Broadcast model response chunks
         let stream = AsyncStream { continuation in
@@ -60,13 +62,19 @@ actor OllamaChatService {
                         }
                         
                         assistantContent += content
+                        
+                        if let think = message["thinking"] as? String {
+                            assistantThink += think
+                        }
+                        
                         continuation.yield(assistantContent)
                     }
                     
-                    let finalMessage = APIChatMessage(role: "assistant", content: assistantContent, images: nil, options: nil)
+                    let finalMessage = APIChatMessage(role: "assistant", content: assistantContent, images: nil, options: nil, assistantThink: assistantThink)
                     messages.append(finalMessage)
                     
                     #if DEBUG
+                    debugPrint(assistantThink)
                     debugPrint("Request options: \(options)")
                     #endif
                     

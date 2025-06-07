@@ -35,6 +35,8 @@ struct ConversationChatView: View {
     //Extra state
     @State private var conversationId: UUID = UUID()
     @State private var hoveredTopButtonTag: Int? = nil
+    @State private var showThink: Bool = false
+    @State private var advancedOptionDrawerIsPresent: Bool = false
     
     //For debouncing (Save for later version)
 //    @State private var cancellableSet = Set<AnyCancellable>()
@@ -133,16 +135,32 @@ struct ConversationChatView: View {
                                         .foregroundStyle(Color(nsColor: .systemGray))
                                         .opacity(self.colorScheme == .dark ? 1.0 : 0.9)
                                 } else {
-                                    VStack {
-                                        ProgressView()
-                                            .frame(width: 14, height: 14)
-                                            .padding(.bottom)
-                                        
-                                        Text("Ollama is Thinking...")
-                                            .font(.title3)
-                                            .foregroundStyle(.secondary)
+                                    if isThinking {
+                                        VStack {
+                                            ProgressView()
+                                                .frame(width: 14, height: 14)
+                                                .padding(.bottom)
+                                            
+                                            Text("Ollama is Thinking...")
+                                                .font(.title3)
+                                                .foregroundStyle(.secondary)
+                                        }
+                                        .padding()
+                                    } else {
+                                        HStack {
+                                            Image("ollama_warning")
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: Units.normalGap * 3, height: Units.normalGap * 3)
+                                                .background(Color.white)
+                                                .clipShape(Circle())
+                                            
+                                            Text("An error occurred while processing your request.\nPlease try again later.")
+                                                .foregroundStyle(.secondary)
+                                                .font(.subheadline)
+                                        }
+                                        .padding()
                                     }
-                                    .padding()
                                 }
                             }
                         }
@@ -188,6 +206,45 @@ struct ConversationChatView: View {
                     }
                 }
     
+                //MARK: Drawer Menu
+                VStack {
+                    Button {
+                        withAnimation(.easeOut(duration: 0.3)) {
+                            advancedOptionDrawerIsPresent.toggle()
+                        }
+                    } label: {
+                        Label(advancedOptionDrawerIsPresent ? "Hide Advanced Options" : "Show Advanced Options",
+                              systemImage: "chevron.right")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.leading)
+                            .frame(maxWidth:.infinity, alignment: .leading)
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.top, Units.normalGap / 4)
+                    
+                    if advancedOptionDrawerIsPresent {
+                        VStack(alignment: .leading) {
+                            Toggle("Enable thinking process", isOn: $showThink)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            
+                            Text("This functionality is intended for use with \"thinking\" models, including examples like DeepSeek R1 and Qwen 3. Attempting to use unsupported models will result in an error.\n(Requires Ollama 0.9.0 or later)")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .lineSpacing(3)
+                                .frame(maxWidth: Units.chatBubbleMinWidth, alignment: .leading)
+                                .padding(.top, 2)
+                        }
+                        .padding(.horizontal, Units.normalGap / 2)
+                        .padding(.vertical)
+                        .background(
+                            RoundedRectangle(cornerRadius: Units.normalGap / 2)
+                                .fill(colorScheme == .dark ? .black : .white)
+                        )
+                    }
+                }
+                .padding(.horizontal)
+                
                 //MARK: Input Area
                 if !self.modelList.isEmpty {
                     ChatInputView(isThinking: $isThinking, prompt: $prompt, images: $promptImages) {
@@ -195,12 +252,14 @@ struct ConversationChatView: View {
                             Task {
                                 //Save user question to SwiftData
                                 let userChatMessage: APIChatMessage = APIChatMessage(role: "user", content: self.prompt,
-                                                                                     images: nil, options: nil)
+                                                                                     images: nil, options: nil,
+                                                                                     assistantThink: nil)
                                 await self.saveSwiftDataHistory(history: userChatMessage)
                             }
                             
                             //Append local chat history
-                            let userQuestion: LocalChatHistory = LocalChatHistory(isUser: true, modelName: self.currentModel,
+                            let userQuestion: LocalChatHistory = LocalChatHistory(isUser: true,
+                                                                                  modelName: self.currentModel,
                                                                                   message: self.prompt)
                             self.history.append(userQuestion)
                             self.isThinking = true
@@ -208,9 +267,11 @@ struct ConversationChatView: View {
                             //Check if suffix exists
                             if let suffix = UserDefaults.standard.string(forKey: "promptSuffix") {
                                 let promptWithSuffix: String = self.prompt + " \(suffix)"
-                                try await self.sendChat(model: self.currentModel, prompt: promptWithSuffix, images: self.promptImages)
+                                try await self.sendChat(model: self.currentModel, prompt: promptWithSuffix,
+                                                        showThink: self.showThink, images: self.promptImages)
                             } else {
-                                try await self.sendChat(model: self.currentModel, prompt: self.prompt, images: self.promptImages)
+                                try await self.sendChat(model: self.currentModel, prompt: self.prompt,
+                                                        showThink: self.showThink, images: self.promptImages)
                             }
                         } else {
                             debugPrint("❌ Unable to connect to the API server. Please verify the server address in Settings.")
@@ -230,7 +291,7 @@ struct ConversationChatView: View {
 //MARK: Internal functions
 extension ConversationChatView {
     ///Send Chat to Ollama server
-    private func sendChat(model: String, prompt: String, images: [NSImage]) async throws {
+    private func sendChat(model: String, prompt: String, showThink: Bool, images: [NSImage]) async throws {
         if try await OllamaNetworkService.isServerOnline() { //server online check
             //Reset user prompt
             self.prompt.removeAll()
@@ -258,7 +319,7 @@ extension ConversationChatView {
 //                    count += 1
 //                }.store(in: &self.cancellableSet)
                 
-                let stream = try await chatService.sendMessage(model: model, userInput: prompt, images: images)
+                let stream = try await chatService.sendMessage(model: model, userInput: prompt, images: images, showThink: self.showThink)
                 for await update in stream {
                     let outputText = update
                     self.history[self.history.count - 1].message = outputText
@@ -282,8 +343,10 @@ extension ConversationChatView {
                 }
                 
                 //Save last response to history
-                if let content = await chatService.allMessages().last?.content {
+                if let content = await chatService.allMessages().last?.content,
+                   let think = await chatService.allMessages().last?.assistantThink {
                     self.history[self.history.count - 1].message = content
+                    self.history[self.history.count - 1].assistantThink = think
                 } else {
                     self.history[self.history.count - 1].message = "Oops! Something went wrong. Please try again."
                 }

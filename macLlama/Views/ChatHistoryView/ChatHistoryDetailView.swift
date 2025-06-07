@@ -74,7 +74,8 @@ struct ChatHistoryDetailView: View {
                                 .padding(.leading)
                             
                             Markdown {
-                                MarkdownContent(conversation.chatData.content)
+                                MarkdownContent(conversation.chatData.content.isEmpty ?
+                                                "⚠️ An error occurred here previously." : conversation.chatData.content)
                             }
                             .markdownTextStyle(\.code) {
                                 FontFamilyVariant(.monospaced)

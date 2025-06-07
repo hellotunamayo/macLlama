@@ -17,6 +17,22 @@
         }
       }
     },
+    "%@'s think" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@の思考"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@모델의 추론 과정"
+          }
+        }
+      }
+    },
     "%lld models available" : {
       "localizations" : {
         "ja" : {
@@ -62,6 +78,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ollama.com 에 있는 모델 추가하기"
+          }
+        }
+      }
+    },
+    "An error occurred while processing your request.\nPlease try again later." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リクエストの処理中にエラーが発生しました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오류가 발생하여 요청 처리에 실패했습니다.\n이후에 다시 시도해 주세요."
           }
         }
       }
@@ -410,6 +442,22 @@
         }
       }
     },
+    "Enable thinking process" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "思考プロセスを有効にする"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thinking 프로세스 활성화"
+          }
+        }
+      }
+    },
     "General" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -423,6 +471,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "일반"
+          }
+        }
+      }
+    },
+    "Hide Advanced Options" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "詳細を隠す"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "고급 옵션 가리기"
+          }
+        }
+      }
+    },
+    "Hide Assistant Thinking" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アシスタントの思考を非表示にする"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "모델의 추론 과정 가리기"
           }
         }
       }
@@ -996,6 +1076,54 @@
         }
       }
     },
+    "Show Advanced Options" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "詳細を表示する"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "고급 옵션 보기"
+          }
+        }
+      }
+    },
+    "Show Assistant Thinking" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アシスタント思考表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "모델의 추론 결과 보기"
+          }
+        }
+      }
+    },
+    "Show or hide assistant thinking" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アシスタント思考の表示/非表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "모델의 추론 결과 보기 / 숨기기"
+          }
+        }
+      }
+    },
     "Start Local Ollama Server" : {
       "localizations" : {
         "ja" : {
@@ -1104,6 +1232,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이 동작은 되돌릴 수 없습니다."
+          }
+        }
+      }
+    },
+    "This functionality is intended for use with \"thinking\" models, including examples like DeepSeek R1 and Qwen 3. Attempting to use unsupported models will result in an error.\n(Requires Ollama 0.9.0 or later)" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この機能は「思考」モデルでの利用を想定しており、DeepSeek R1やQwen 3のような例が含まれます。対応していないモデルを使用しようとするとエラーが発生します。(Ollama 0.9.0以降が必要です)"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 기능은 딥시크 R1 및 Qwen 3와 같은 예를 포함한 \"사고\" 모델에서만 사용 가능합니다. \n지원되지 않는 모델에 기능을 활성화하면 오류가 발생합니다.\n(사용하려면 Ollama 0.9.0 이상 필요)"
           }
         }
       }

@@ -17,4 +17,5 @@ struct LocalChatHistory: Identifiable, Hashable {
     let isUser: Bool
     let modelName: String
     var message: String
+    var assistantThink: String?
 }

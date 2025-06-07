@@ -17,6 +17,15 @@ struct ChatBubbleView: View {
     @State private var messageAnimated: Bool = false
     @State private var isMarkdownEnabled: Bool = false
     @State private var chatMessage: String = ""
+    @State private var showAssistantThink: Bool = false
+    
+    var assistantThinkContext: String? {
+        if let text = self.chatData.assistantThink {
+            return text
+        } else {
+            return nil
+        }
+    }
     
     @Binding var chatData: LocalChatHistory
     
@@ -38,7 +47,7 @@ struct ChatBubbleView: View {
             //MARK: Ollama Answer
             VStack(alignment: chatData.isUser ? .trailing : .leading) {
                 HStack {
-                    if !chatData.isUser {
+                    if !chatData.isUser { //If message is Ollama answer
                         VStack {
                             Text(chatData.modelName)
                                 .padding(.horizontal, Units.normalGap / 1.5)
@@ -107,7 +116,53 @@ struct ChatBubbleView: View {
                 }
                 
                 VStack {
-                    if isMarkdownEnabled {
+                    if let thinkContext = self.assistantThinkContext, !thinkContext.isEmpty {
+                        VStack(alignment: .leading) {
+                            Button {
+                                withAnimation {
+                                    showAssistantThink.toggle()
+                                }
+                            } label: {
+                                Label(showAssistantThink ? "Hide Assistant Thinking" : "Show Assistant Thinking",
+                                      systemImage: "brain")
+                                .frame(minWidth: Units.chatBubbleMinWidth, maxWidth: .infinity, alignment: .leading)
+                                .padding(EdgeInsets(top: Units.normalGap, leading: Units.normalGap / 4,
+                                                    bottom: Units.normalGap, trailing: 0))
+                            }
+                            .controlSize(.small)
+                            .buttonStyle(.borderless)
+                            .clipShape(Capsule())
+                            .disabled(isThinking ? true : false)
+                            .help("Show or hide assistant thinking")
+                        }
+                    }
+                    
+                    if let think = self.chatData.assistantThink, showAssistantThink == true {
+                        VStack {
+                            Text("\(chatData.modelName)'s think")
+                                .font(.title2)
+                                .fontWeight(.bold)
+                                .foregroundStyle(.secondary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding()
+                                .padding(.bottom, 0)
+                            
+                            TextEditor(text: .constant(think))
+                                .font(.body)
+                                .foregroundStyle(Color.secondary)
+                                .lineSpacing(3)
+                                .fixedSize(horizontal: false, vertical: true)
+//                                .frame(minHeight: 200, idealHeight: 200, maxHeight: 600)
+                                .scrollContentBackground(.hidden)
+                                .padding()
+                        }
+                        .background(
+                            RoundedRectangle(cornerRadius: Units.normalGap / 2)
+                                .fill(Color.black)
+                        )
+                    }
+                    
+                    if isMarkdownEnabled && !isThinking {
                         Markdown {
                             MarkdownContent(chatMessage)
                         }
