@@ -49,7 +49,7 @@ struct ChatBubbleView: View {
                 HStack {
                     if !chatData.isUser { //If message is Ollama answer
                         VStack {
-                            Text(chatData.modelName)
+                            Text(ModelSelectView.modelNameWithRemovedPrefix(chatData.modelName) ?? "Unknown Model")
                                 .padding(.horizontal, Units.normalGap / 1.5)
                                 .padding(.vertical, Units.normalGap / 3)
                                 .lineLimit(1)
@@ -139,7 +139,7 @@ struct ChatBubbleView: View {
                     
                     if let think = self.chatData.assistantThink, showAssistantThink == true {
                         VStack {
-                            Text("\(chatData.modelName)'s think")
+                            Text("\(ModelSelectView.modelNameWithRemovedPrefix(chatData.modelName) ?? "Assistant")'s think")
                                 .font(.title2)
                                 .fontWeight(.bold)
                                 .foregroundStyle(.secondary)
