@@ -79,6 +79,11 @@ struct ChatHistoryView: View {
                               primaryButton: .cancel(), secondaryButton: .destructive(Text("Delete"), action: {
                             do {
                                 try modelContext.delete(model: SwiftDataChatHistory.self)
+                                Task {
+                                    //Rest history list
+                                    self.distinctConversationIDs = await self.getDistictHistoryID()
+                                    await self.sortDistictHistoryByDate(distinctHistoryId: distinctConversationIDs)
+                                }
                                 self.selectedId = ""
                             } catch {
                                 debugPrint("Failed to clear all history data.")
