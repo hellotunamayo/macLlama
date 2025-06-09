@@ -16,6 +16,19 @@ struct ModelSelectView: View {
     let ollamaNetworkService: OllamaNetworkService
     let reloadButtonAction: () -> Void
     
+    static var modelNameWithRemovedPrefix: (String) -> String? {
+        { modelName in
+            let pattern = "hf\\.co/[^/]+/"
+            do{
+                let regex = try NSRegularExpression(pattern: pattern)
+                let range = NSRange(location: 0, length: modelName.utf8.count)
+                return regex.stringByReplacingMatches(in: modelName, options: [], range: range, withTemplate: "")
+            } catch {
+                return nil
+            }
+        }
+    }
+    
     var body: some View {
         HStack{
             Circle()
@@ -24,7 +37,7 @@ struct ModelSelectView: View {
             
             Picker("Current Model", selection: $currentModel) {
                 ForEach(modelList, id: \.self) { model in
-                    Text(model.name)
+                    Text(ModelSelectView.modelNameWithRemovedPrefix(model.name) ?? "Unknown Model")
                         .foregroundStyle(.primary)
                         .tag(model.name)
                 }
