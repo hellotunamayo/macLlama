@@ -38,6 +38,10 @@ struct ConversationChatView: View {
     @State private var showThink: Bool = false
     @State private var advancedOptionDrawerIsPresent: Bool = false
     
+    //Local prefix & suffix of prompt
+    @State private var localPrefix: String = ""
+    @State private var localSuffix: String = ""
+    
     //For debouncing (Save for later version)
 //    @State private var cancellableSet = Set<AnyCancellable>()
 //    @State private var timerPublisher: Timer.TimerPublisher? = nil
@@ -224,23 +228,7 @@ struct ConversationChatView: View {
                     .padding(.top, Units.normalGap / 4)
                     
                     if advancedOptionDrawerIsPresent {
-                        VStack(alignment: .leading) {
-                            Toggle("Enable thinking process", isOn: $showThink)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                            
-                            Text("This functionality is intended for use with \"thinking\" models, including examples like DeepSeek R1 and Qwen 3. Attempting to use unsupported models will result in an error.\n(Requires Ollama 0.9.0 or later)")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                                .lineSpacing(3)
-                                .frame(maxWidth: Units.chatBubbleMinWidth, alignment: .leading)
-                                .padding(.top, 2)
-                        }
-                        .padding(.horizontal, Units.normalGap / 2)
-                        .padding(.vertical)
-                        .background(
-                            RoundedRectangle(cornerRadius: Units.normalGap / 2)
-                                .fill(colorScheme == .dark ? .black : .white)
-                        )
+                        AdvancedDrawerView(showThink: $showThink, localPrefix: $localPrefix, localSuffix: $localSuffix)
                     }
                 }
                 .padding(.horizontal)
@@ -265,9 +253,9 @@ struct ConversationChatView: View {
                             self.isThinking = true
                             
                             //Check if suffix exists
-                            if let suffix = UserDefaults.standard.string(forKey: "promptSuffix") {
-                                let promptWithSuffix: String = self.prompt + " \(suffix)"
-                                try await self.sendChat(model: self.currentModel, prompt: promptWithSuffix,
+                            if let globalSuffix = UserDefaults.standard.string(forKey: "promptSuffix") {
+                                let processedPrompt: String = self.localPrefix + " " + self.prompt + self.localSuffix + " \(globalSuffix)"
+                                try await self.sendChat(model: self.currentModel, prompt: processedPrompt,
                                                         showThink: self.showThink, images: self.promptImages)
                             } else {
                                 try await self.sendChat(model: self.currentModel, prompt: self.prompt,
