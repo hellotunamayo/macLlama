@@ -229,6 +229,22 @@
         }
       }
     },
+    "Clear all" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全て削除"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "모두 삭제"
+          }
+        }
+      }
+    },
     "Click here to update" : {
       "localizations" : {
         "ja" : {
@@ -600,6 +616,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "불러오는 중…"
+          }
+        }
+      }
+    },
+    "Local Prefix & Suffix" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ローカル接頭辞と接尾辞"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로컬 접두어 & 접미어"
+          }
+        }
+      }
+    },
+    "Local Prompt Prefix" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ローカル接頭辞"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로컬 접두어"
+          }
+        }
+      }
+    },
+    "Local Prompt Suffix" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ローカル接尾辞"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로컬 접미어"
           }
         }
       }
@@ -1200,6 +1264,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "본문 글꼴 크기 예시 %lld포인트"
+          }
+        }
+      }
+    },
+    "Thinking Process" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "思考プロセス"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "추론 프로세스"
           }
         }
       }
