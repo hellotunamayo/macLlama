@@ -107,7 +107,12 @@ struct ChatInputView: View {
                     }
                 } label: {
                     if self.isThinking {
-                        ThinkingView()
+                        Label("Thinking...", systemImage: "rays")
+                            .font(.title2)
+                            .padding(.horizontal, Units.normalGap)
+                            .padding(.vertical, Units.normalGap / 3.5)
+                            .symbolEffect(.variableColor.iterative)
+                            .frame(minWidth: 100)
                     } else {
                         Label("Send", systemImage: "paperplane.fill")
                             .font(.title2)
