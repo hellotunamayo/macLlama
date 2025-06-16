@@ -143,7 +143,7 @@ struct ChatBubbleView: View {
                                 .font(.title2)
                                 .fontWeight(.bold)
                                 .foregroundStyle(.secondary)
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .greedyFrame(axis: .horizontal, alignment: .leading)
                                 .padding()
                                 .padding(.bottom, 0)
                             
@@ -152,7 +152,6 @@ struct ChatBubbleView: View {
                                 .foregroundStyle(Color.secondary)
                                 .lineSpacing(3)
                                 .fixedSize(horizontal: false, vertical: true)
-//                                .frame(minHeight: 200, idealHeight: 200, maxHeight: 600)
                                 .scrollContentBackground(.hidden)
                                 .padding()
                         }
@@ -201,7 +200,7 @@ struct ChatBubbleView: View {
                 .padding(.vertical, chatData.isUser ? Units.normalGap / 1.5 : 0)
                 .background(chatData.isUser ? Color("UserChatBubbleColor") : .clear)
                 .clipShape(chatData.isUser ? RoundedRectangle(cornerRadius: 8) : RoundedRectangle(cornerRadius: 0))
-                .frame(maxWidth: .infinity, alignment: chatData.isUser ? .trailing : .leading)
+                .greedyFrame(axis: .horizontal, alignment: chatData.isUser ? .trailing : .leading)
                 .onChange(of: self.chatData.message) { _, newValue in
                     self.chatMessage = newValue
                 }

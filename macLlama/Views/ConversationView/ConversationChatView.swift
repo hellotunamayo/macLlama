@@ -222,7 +222,7 @@ struct ConversationChatView: View {
                             .font(.caption)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.leading)
-                            .frame(maxWidth:.infinity, alignment: .leading)
+                            .greedyFrame(axis: .horizontal, alignment: .leading)
                     }
                     .buttonStyle(.plain)
                     .padding(.top, Units.normalGap / 4)
