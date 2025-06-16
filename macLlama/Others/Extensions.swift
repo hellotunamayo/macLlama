@@ -8,17 +8,22 @@
 import SwiftUI
 
 struct GreedyFrame: ViewModifier {
-    var alignment: Alignment = .center
+    var axis: Axis
+    var alignment: Alignment
+    
     func body(content: Content) -> some View {
-        content
-            .frame(maxWidth: .infinity,
-                   maxHeight: .infinity,
-                   alignment: self.alignment)
+        if axis != .horizontal {
+            content
+                .frame(maxHeight: .infinity, alignment: self.alignment)
+        } else {
+            content
+                .frame(maxWidth: .infinity, alignment: self.alignment)
+        }
     }
 }
 
 extension View {
-    func greedyFrame(alignment: Alignment = .center) -> some View {
-        modifier(GreedyFrame(alignment: alignment))
+    func greedyFrame(axis: Axis, alignment: Alignment = .center) -> some View {
+        modifier(GreedyFrame(axis: axis, alignment: alignment))
     }
 }
