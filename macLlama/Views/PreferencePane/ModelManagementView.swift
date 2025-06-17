@@ -21,7 +21,7 @@ struct ModelManagementView: View {
                 List(modelList, id: \.self, selection: $selectedModel) { modelName in
                     HStack {
                         Text(modelName)
-                            .greedyFrame(alignment: .leading)
+                            .greedyFrame(axis: .horizontal, alignment: .leading)
                             .padding(.vertical, Units.normalGap * 0.3)
                     }
                 }

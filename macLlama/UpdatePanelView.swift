@@ -74,7 +74,7 @@ struct UpdatePanelView: View {
                         .controlSize(.large)
                         .padding(.vertical)
                     }
-                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    .greedyFrame(axis: .horizontal, alignment: .trailing)
                 }
                 .frame(width: 500, height: 700)
                 .padding()

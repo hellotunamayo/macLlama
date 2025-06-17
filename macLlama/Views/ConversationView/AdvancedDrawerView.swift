@@ -17,13 +17,14 @@ struct AdvancedDrawerView: View {
         VStack(alignment: .leading) {
             Section("Thinking Process") {
                 Toggle("Enable thinking process", isOn: $showThink)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .greedyFrame(axis: .horizontal, alignment: .leading)
                 
                 Text("This functionality is intended for use with \"thinking\" models, including examples like DeepSeek R1 and Qwen 3. Attempting to use unsupported models will result in an error.\n(Requires Ollama 0.9.0 or later)")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .lineSpacing(3)
-                    .frame(maxWidth: Units.chatBubbleMinWidth, alignment: .leading)
+                    .greedyFrame(axis: .horizontal, alignment: .leading)
+                    .frame(maxWidth: Units.appFrameMinWidth * 0.8)
                     .padding(.top, 2)
             }
             

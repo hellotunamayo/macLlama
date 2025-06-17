@@ -48,7 +48,7 @@ struct ChatHistoryDetailView: View {
                             Text(conversation.chatData.content)
                                 .font(.system(size: CGFloat(chatFontSize)))
                                 .lineSpacing(Units.normalGap / 3)
-                                .frame(maxWidth: .infinity, alignment: .trailing)
+                                .greedyFrame(axis: .horizontal, alignment: .trailing)
                                 .textSelection(.enabled)
                                 .padding()
                                 .clipShape(RoundedRectangle(cornerRadius: Units.normalGap / 2))
@@ -88,7 +88,7 @@ struct ChatHistoryDetailView: View {
                             .markdownTheme(
                                 MarkdownTheme.getTheme(themeName: markdownTheme)
                             )
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .greedyFrame(axis: .horizontal, alignment: .leading)
                             .padding()
                         }
                         .padding(.vertical)
