@@ -44,10 +44,6 @@ struct ConversationChatView: View {
     @State private var localPrefix: String = ""
     @State private var localSuffix: String = ""
     
-    //For debouncing (Save for later version)
-//    @State private var cancellableSet = Set<AnyCancellable>()
-//    @State private var timerPublisher: Timer.TimerPublisher? = nil
-    
     let chatService: OllamaChatService = OllamaChatService()
     let ollamaNetworkService: OllamaNetworkService = OllamaNetworkService()
     let ollamaProfilePicture: NSImage? = NSImage(named: "llama_gray")
