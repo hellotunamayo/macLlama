@@ -82,6 +82,38 @@
         }
       }
     },
+    "Adjusting 'temperature' and 'num_predict' can significantly impact the model's output. Higher temperatures lead to more creative, but potentially less predictable, responses. A larger 'num_predict' may result in longer, more verbose outputs, and can also increase processing time.  Experiment with caution." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'temperature' や 'num_predict' の設定を変更すると、モデルの出力が変わることがあります。'temperature' を高くすると、より面白い、でも予測しづらい回答になることがあります。'num_predict' を大きくすると、長い、詳しくなったり、処理に時間がかかることがあります。試す際は注意してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'temperature'와 'num_predict' 값을 조정하는 것은 모델 출력 결과에 큰 영향을 미칠 수 있습니다. 'temperature' 값이 높을수록 더 창의적이지만 예측 불가능한 응답이 나올 수 있습니다. 'num_predict' 값이 클수록 응답이 길고 자세해질 수 있지만, 처리 시간 또한 증가할 수 있습니다. 신중하게 설정하시기 바랍니다."
+          }
+        }
+      }
+    },
+    "Advanced Settings" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上級設定"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "고급 설정"
+          }
+        }
+      }
+    },
     "An error occurred while processing your request.\nPlease try again later." : {
       "localizations" : {
         "ja" : {
@@ -491,22 +523,6 @@
         }
       }
     },
-    "Hide Advanced Options" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "詳細を隠す"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "고급 옵션 가리기"
-          }
-        }
-      }
-    },
     "Hide Assistant Thinking" : {
       "localizations" : {
         "ja" : {
@@ -847,6 +863,22 @@
         }
       }
     },
+    "num_predict (-1 for unlimited)" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "num_predict (-1で無制限)"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "num_predict (-1일 경우 무제한)"
+          }
+        }
+      }
+    },
     "Ollama is Thinking..." : {
       "localizations" : {
         "ja" : {
@@ -1140,22 +1172,6 @@
         }
       }
     },
-    "Show Advanced Options" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "詳細を表示する"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "고급 옵션 보기"
-          }
-        }
-      }
-    },
     "Show Assistant Thinking" : {
       "localizations" : {
         "ja" : {
@@ -1248,6 +1264,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "로컬 Ollama 서버를 종료"
+          }
+        }
+      }
+    },
+    "temperature" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "temperature"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "temperature"
           }
         }
       }
