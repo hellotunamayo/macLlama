@@ -38,7 +38,7 @@ struct ConversationChatView: View {
     @State private var conversationId: UUID = UUID()
     @State private var hoveredTopButtonTag: Int? = nil
     @State private var showThink: Bool = false
-    @State private var advancedOptionDrawerIsPresent: Bool = false
+    @State private var advancedOptionDrawerIsPresent: NavigationSplitViewVisibility = .all
     
     //Local prefix & suffix of prompt
     @State private var localPrefix: String = ""
@@ -49,7 +49,7 @@ struct ConversationChatView: View {
     let ollamaProfilePicture: NSImage? = NSImage(named: "llama_gray")
 
     var body: some View {
-        NavigationSplitView {
+        NavigationSplitView(columnVisibility: $advancedOptionDrawerIsPresent) {
             ChatSidebarView(showThink: $showThink, localPrefix: $localPrefix, localSuffix: $localSuffix, predict: $predict, temperature: $temperature)
                 .navigationSplitViewColumnWidth(min: 200, ideal: 280, max: 400)
         } detail: {
@@ -253,6 +253,9 @@ struct ConversationChatView: View {
             }
         }
         .navigationSplitViewStyle(.balanced)
+        .onAppear {
+            self.advancedOptionDrawerIsPresent = .detailOnly
+        }
     }
 }
 
