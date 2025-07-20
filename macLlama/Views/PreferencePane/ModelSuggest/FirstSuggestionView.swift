@@ -54,6 +54,11 @@ struct FirstSuggestionView: View {
     
     var body: some View {
         VStack {
+            Image("macLlama-Thinking")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 60, height: 60)
+            
             Text("What is your purpose?")
                 .font(.largeTitle)
                 .fontWeight(.semibold)

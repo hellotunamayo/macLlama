@@ -46,7 +46,7 @@ struct ModelSuggestionView: View {
                                             selectedPurpose: self.$selectedPurpose)
                 }
             }
-            .frame(minHeight: 400)
+            .frame(minHeight: 450)
             .padding(.vertical)
             .navigationTitle("Model Suggestion")
         }
