@@ -17,6 +17,9 @@
         }
       }
     },
+    "%@" : {
+
+    },
     "%@'s think" : {
       "localizations" : {
         "ja" : {
@@ -81,6 +84,9 @@
           }
         }
       }
+    },
+    "Add model to macLlama" : {
+
     },
     "Adjusting 'temperature' and 'num_predict' can significantly impact the model's output. Higher temperatures lead to more creative, but potentially less predictable, responses. A larger 'num_predict' may result in longer, more verbose outputs, and can also increase processing time.  Experiment with caution." : {
       "localizations" : {
@@ -292,6 +298,9 @@
           }
         }
       }
+    },
+    "Close" : {
+
     },
     "Connecting to server..." : {
       "localizations" : {
@@ -587,6 +596,9 @@
         }
       }
     },
+    "Install" : {
+
+    },
     "Kill Ollama server" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -603,6 +615,9 @@
           }
         }
       }
+    },
+    "Large Models (64GB or more of memory usage): Very powerful, but require significant resources and incur higher costs. Best for complex projects." : {
+
     },
     "Llama" : {
       "localizations" : {
@@ -782,6 +797,9 @@
         }
       }
     },
+    "Medium Models (8-32GB of memory usage): Offer a good balance for general tasks." : {
+
+    },
     "Model Management" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -815,6 +833,9 @@
         }
       }
     },
+    "Model Suggestion" : {
+
+    },
     "Network" : {
       "localizations" : {
         "ja" : {
@@ -846,6 +867,9 @@
           }
         }
       }
+    },
+    "Next" : {
+
     },
     "No Chat History Found" : {
       "localizations" : {
@@ -958,6 +982,9 @@
           }
         }
       }
+    },
+    "Previous" : {
+
     },
     "Prompt" : {
       "extractionState" : "manual",
@@ -1204,6 +1231,12 @@
         }
       }
     },
+    "Small Models (2-8GB of memory usage): Ideal for simpler tasks and can run on standard hardware." : {
+
+    },
+    "Sorry, no suitable model found." : {
+
+    },
     "Start Local Ollama Server" : {
       "localizations" : {
         "ja" : {
@@ -1267,6 +1300,9 @@
           }
         }
       }
+    },
+    "Suggestions for you" : {
+
     },
     "temperature" : {
       "localizations" : {
@@ -1428,6 +1464,9 @@
           }
         }
       }
+    },
+    "What is your purpose?" : {
+
     },
     "You" : {
       "extractionState" : "manual",

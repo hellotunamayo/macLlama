@@ -14,6 +14,9 @@ struct ModelManagementView: View {
     @State private var modelNameToPull: String = ""
     @State private var pullingProgressPipeText: String = ""
     @State private var isModelPulling: Bool = false
+    @State private var isSheetPresented: Bool = false
+    
+    @StateObject private var viewModel: ModelManagementViewModel = .init()
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -84,7 +87,20 @@ struct ModelManagementView: View {
 
             Divider().padding(.vertical)
             
-            Section("Add Model from Ollama.com") {
+            Section() {
+                HStack {
+                    Text("Add model to macLlama")
+                    Spacer()
+                    Button {
+                        self.isSheetPresented = true
+                    } label: {
+                        Label("Suggestions for you", systemImage: "wand.and.sparkles.inverse")
+                    }
+                }
+                .sheet(isPresented: self.$isSheetPresented) {
+                    ModelSuggestionView(isSheetPresent: self.$isSheetPresented, modelManagementViewModel: self.viewModel)
+                }
+                
                 HStack {
                     TextField("Model name to pull", text: $modelNameToPull)
                         .textFieldStyle(.roundedBorder)
@@ -93,7 +109,8 @@ struct ModelManagementView: View {
                         if !isModelPulling {
                             isModelPulling.toggle()
                             Task {
-                                try await self.pullModel(modelNameToPull)
+                                pullingProgressPipeText = self.viewModel.pullingProgressPipeText ?? ""
+                                try await viewModel.pullModel(modelNameToPull)
                             }
                         } else {
                             debugPrint("Pull already in progress...")
@@ -109,11 +126,14 @@ struct ModelManagementView: View {
                 
                 TextEditor(text: $pullingProgressPipeText)
                     .disabled(true)
-                    .onChange(of: pullingProgressPipeText) { _, newValue in
-                        if newValue == "" {
-                            Task {
+                    .onReceive(self.viewModel.$pullingProgressPipeText) { newValue in
+                        self.pullingProgressPipeText = newValue ?? ""
+                    }
+                    .onChange(of: self.viewModel.pullingProgressPipeText) { _, newValue in
+                        Task {
+                            if newValue == "" {
                                 await self.refreshModelList()
-                                isModelPulling = false
+                                self.isModelPulling = false
                             }
                         }
                     }
@@ -134,35 +154,6 @@ extension ModelManagementView {
         }
         for model in models {
             self.modelList.append(model.name)
-        }
-    }
-    
-    private func pullModel(_ modelName: String) async throws {
-        let customPath = "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
-        let process = Process()
-        let url = URL(fileURLWithPath: "/bin/zsh")
-        let pipe = Pipe()
-        let outHandle = pipe.fileHandleForReading
-        
-        process.executableURL = url
-        process.standardOutput = pipe
-        process.standardError = pipe
-        process.arguments = ["-c", "\(customPath) ollama pull \(modelName)"]
-        
-        outHandle.readabilityHandler = { pipeHandle in
-            if let line = String(data: pipeHandle.availableData, encoding: .utf8) {
-                Task { @MainActor in
-                    pullingProgressPipeText = line
-                }
-            } else {
-                print("Error decoding data: \(pipeHandle.availableData)")
-            }
-        }
-        
-        do {
-            try process.run()
-        } catch {
-            debugPrint("🔴Failed to run shell script.")
         }
     }
 }
