@@ -18,7 +18,7 @@ actor OllamaNetworkService {
     static var apiHostAddress: String {
         let hostProtocol = UserDefaults.standard.string(forKey: "hostProtocol") ?? "http://"
         let hostAddress = UserDefaults.standard.string(forKey: "hostAddress") ?? "127.0.0.1"
-        let hostPort = UserDefaults.standard.integer(forKey: "hostPort")
+        let hostPort = UserDefaults.standard.string(forKey: "hostPort") ?? "11434"
         let fullAddress = "\(hostProtocol)\(hostAddress):\(hostPort)"
         
         #if DEBUG
