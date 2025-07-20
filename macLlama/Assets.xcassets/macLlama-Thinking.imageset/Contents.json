@@ -1,15 +1,50 @@
 {
   "images" : [
     {
+      "filename" : "macLlama-Thinking-black 1.svg",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
       "filename" : "macLlama-Thinking.svg",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "macLlama-Thinking-black 2.svg",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "macLlama-Thinking 1.svg",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "macLlama-Thinking-black 3.svg",
+      "idiom" : "universal",
+      "scale" : "3x"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "macLlama-Thinking 2.svg",
       "idiom" : "universal",
       "scale" : "3x"
     }
