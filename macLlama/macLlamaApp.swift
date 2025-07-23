@@ -60,9 +60,9 @@ struct macLlamaApp: App {
                         openWindow(id: "updateWindow")
                         self.lastUpdateCheckDate = Date().timeIntervalSince1970
                         
-#if DEBUG
+                        #if DEBUG
                         debugPrint("updated checked in : \(lastUpdateCheckDate)")
-#endif
+                        #endif
                     } catch {
                         
                     }
