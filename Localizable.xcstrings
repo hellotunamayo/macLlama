@@ -769,6 +769,16 @@
         }
       }
     },
+    "macLlama v%@ (%@)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "macLlama v%1$@ (%2$@)"
+          }
+        }
+      }
+    },
     "Markdown Settings" : {
       "extractionState" : "manual",
       "localizations" : {
