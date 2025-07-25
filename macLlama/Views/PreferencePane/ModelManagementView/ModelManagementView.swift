@@ -91,11 +91,7 @@ struct ModelManagementView: View {
                 HStack {
                     Text("Add model to macLlama")
                     Spacer()
-                    Button {
-                        self.isSheetPresented = true
-                    } label: {
-                        Label("Suggestions for you", systemImage: "wand.and.sparkles.inverse")
-                    }
+                    self.suggestionModelView(models: self.modelList.isEmpty)
                 }
                 .sheet(isPresented: self.$isSheetPresented) {
                     ModelSuggestionView(isSheetPresent: self.$isSheetPresented, modelManagementViewModel: self.viewModel)
@@ -118,6 +114,7 @@ struct ModelManagementView: View {
                     } label: {
                         if isModelPulling {
                             Label("Pulling \(modelNameToPull)...", systemImage: "rays")
+                                .symbolEffect(.variableColor.iterative)
                         } else {
                             Label("Pull", systemImage: "arrow.down")
                         }
@@ -147,6 +144,28 @@ struct ModelManagementView: View {
 
 //MARK: Functions
 extension ModelManagementView {
+    
+    @ViewBuilder
+    func suggestionModelView(models isModelEmpty: Bool) -> some View {
+        if isModelEmpty {
+            Button {
+                self.isSheetPresented = true
+            } label: {
+                Label("Model Suggestion", systemImage: "wand.and.sparkles.inverse")
+                    .symbolEffect(.pulse.wholeSymbol, options: .speed(2.0))
+            }
+            .buttonStyle(.borderedProminent)
+        } else {
+            Button {
+                self.isSheetPresented = true
+            } label: {
+                Label("Model Suggestion", systemImage: "wand.and.sparkles.inverse")
+            }
+            .buttonStyle(.bordered)
+        }
+        
+    }
+    
     private func refreshModelList() async {
         self.modelList.removeAll()
         guard let models = try? await OllamaNetworkService.getModels() else {

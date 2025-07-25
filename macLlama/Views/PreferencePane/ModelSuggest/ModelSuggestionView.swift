@@ -17,6 +17,7 @@ struct SuggestionModel: Identifiable, Hashable {
     var modelName: String
     var fullName: String
     var modelParameterCount: UInt64
+    var urlString: String? = nil
 }
 
 struct ModelSuggestionView: View {

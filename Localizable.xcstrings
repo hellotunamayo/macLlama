@@ -120,6 +120,9 @@
         }
       }
     },
+    "Already Installed" : {
+
+    },
     "An error occurred while processing your request.\nPlease try again later." : {
       "localizations" : {
         "ja" : {
@@ -599,6 +602,9 @@
     "Install" : {
 
     },
+    "Install Recommended Models" : {
+
+    },
     "Kill Ollama server" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -616,7 +622,7 @@
         }
       }
     },
-    "Large Models (64GB or more of memory usage): Very powerful, but require significant resources and incur higher costs. Best for complex projects." : {
+    "Large Models (32GB or more of memory usage): Very powerful, but require significant resources and have higher costs. Best for complex projects." : {
 
     },
     "Llama" : {
@@ -936,6 +942,7 @@
       }
     },
     "Open Preference" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ja" : {
           "stringUnit" : {
@@ -1118,7 +1125,11 @@
         }
       }
     },
+    "Reload model list" : {
+
+    },
     "Reload models" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ja" : {
           "stringUnit" : {
@@ -1300,9 +1311,6 @@
           }
         }
       }
-    },
-    "Suggestions for you" : {
-
     },
     "temperature" : {
       "localizations" : {
@@ -1502,6 +1510,7 @@
       }
     },
     "You haven't added any Ollama models yet.\nPlease open the Preference pane to add one." : {
+      "extractionState" : "stale",
       "localizations" : {
         "ja" : {
           "stringUnit" : {

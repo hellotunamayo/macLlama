@@ -13,46 +13,6 @@ enum ModelMemoryUsage: String {
     case large = "Large"
 }
 
-struct MemoryUsageView: View {
-    let memoryUsage: ModelMemoryUsage
-    
-    var body: some View {
-        ZStack {
-            switch memoryUsage {
-                case .small:
-                    Capsule()
-                        .stroke(style: StrokeStyle(lineWidth: 1))
-                        .foregroundStyle(.mint)
-                        .background(Color.mint.opacity(0.1))
-                    Text(memoryUsage.rawValue)
-                        .font(.caption)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(.mint)
-                case .medium:
-                    Capsule()
-                        .stroke(style: StrokeStyle(lineWidth: 1))
-                        .foregroundStyle(.orange)
-                        .background(Color.orange.opacity(0.1))
-                    Text(memoryUsage.rawValue)
-                        .font(.caption)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(.orange)
-                case .large:
-                    Capsule()
-                        .stroke(style: StrokeStyle(lineWidth: 1))
-                        .foregroundStyle(.red)
-                        .background(Color.red.opacity(0.1))
-                    Text(memoryUsage.rawValue)
-                        .font(.caption)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(.red)
-            }
-        }
-        .clipShape(Capsule())
-        .frame(maxWidth: CGFloat(memoryUsage.rawValue.count) * 11, maxHeight: Units.controlMinimumSize)
-    }
-}
-
 struct SecondSuggestionView: View {
     @Binding var selectedPurpose: [SuggestionModelPurpose]
     @Binding var isShowing: Bool
@@ -63,6 +23,7 @@ struct SecondSuggestionView: View {
     @State private var psysicalMemory: UInt64?
     @State private var processorCount: UInt64?
     @State private var isPopoverShowing: Bool = false
+    @State private var installedModels: [OllamaModel] = []
     
     let viewModel: ModelSuggestionViewModel
     let modelManagementViewModel: ModelManagementViewModel
@@ -100,22 +61,34 @@ struct SecondSuggestionView: View {
                             .lineLimit(1)
                             .padding(.vertical, 4)
                             
-                        MemoryUsageView(memoryUsage: memoryUsage(model.modelParameterCount))
+                        MemoryUsageIndicatorView(memoryUsage: memoryUsage(model.modelParameterCount))
                             .padding(.leading, 8)
                         
                         Spacer()
                         
-                        Button {
-                            self.isShowing = false
-                            Task {
-                                try await self.modelManagementViewModel.pullModel(model.fullName)
+                        if self.installedModels.contains(where: { $0.name == model.fullName }) {
+                            Label("Already Installed", systemImage: "checkmark.circle")
+                                .foregroundStyle(.green)
+                        } else {
+                            if let urlString = model.urlString {
+                                Link(destination: URL(string: urlString)!) {
+                                    Image(systemName: "safari")
+                                }
+                                .buttonStyle(.bordered)
                             }
-                        } label: {
-                            Label("Install", systemImage: "square.and.arrow.down")
-                                .foregroundStyle(.primary)
+                            
+                            Button {
+                                self.isShowing = false
+                                Task {
+                                    try await self.modelManagementViewModel.pullModel(model.fullName)
+                                }
+                            } label: {
+                                Label("Install", systemImage: "square.and.arrow.down")
+                                    .foregroundStyle(.primary)
+                            }
+                            .tint(.primary)
+                            .buttonStyle(.bordered)
                         }
-                        .tint(.primary)
-                        .buttonStyle(.bordered)
                     }
                     .listRowSeparator(.hidden)
                     .listSectionSeparator(.hidden)
@@ -141,7 +114,7 @@ struct SecondSuggestionView: View {
                             Divider()
                             Text("Medium Models (8-32GB of memory usage): Offer a good balance for general tasks.")
                             Divider()
-                            Text("Large Models (64GB or more of memory usage): Very powerful, but require significant resources and incur higher costs. Best for complex projects.")
+                            Text("Large Models (32GB or more of memory usage): Very powerful, but require significant resources and have higher costs. Best for complex projects.")
                         }
                         .padding()
                     }
@@ -173,11 +146,20 @@ struct SecondSuggestionView: View {
             }
         }
         .task {
-            print(self.selectedPurpose)
+            #if DEBUG
+            debugPrint(self.selectedPurpose)
+            #endif
+            //get system information
             self.cpuInfo = await self.systemInfoService.getCPUInfo() ?? "Unknown"
             self.psysicalMemory = await self.systemInfoService.getProcessInfo(.psysicalMemory)
             self.processorCount = await self.systemInfoService.getProcessInfo(.processorCount)
             await self.suggestion()
+            
+            //set current installed models
+            guard let installedModels = try? await OllamaNetworkService.getModels() else {
+                return
+            }
+            self.installedModels = installedModels
         }
     }
     
@@ -189,5 +171,8 @@ struct SecondSuggestionView: View {
 }
 
 //#Preview {
-//    SecondSuggestionView()
+//    SecondSuggestionView(selectedPurpose: .constant([.codeGeneration]),
+//                         isShowing: .constant(true), step: .constant(2),
+//                         viewModel: .init(),
+//                         modelManagementViewModel: .init())
 //}

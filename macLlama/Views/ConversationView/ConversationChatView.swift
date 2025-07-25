@@ -10,6 +10,9 @@ import Combine
 import SwiftData
 
 struct ConversationChatView: View {
+    @AppStorage("currentSelectedPreference") var currentSelectedPreference: String?
+    
+    @Environment(\.openSettings) var openSettings
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.modelContext) var modelContext
     @Environment(\.openWindow) var openWindow
@@ -62,8 +65,10 @@ struct ConversationChatView: View {
                 //MARK: Conversation view
                 VStack {
                     if !self.modelList.isEmpty {
-                        ModelSelectView(modelList: $modelList, currentModel: $currentModel,
-                                        isModelLoading: $isModelLoading, ollamaNetworkService: self.ollamaNetworkService) {
+                        ModelSelectView(modelList: $modelList,
+                                        currentModel: $currentModel,
+                                        isModelLoading: $isModelLoading,
+                                        ollamaNetworkService: self.ollamaNetworkService) {
                             Task {
                                 try? await self.initModelList()
                             }
@@ -74,24 +79,28 @@ struct ConversationChatView: View {
                             .opacity(self.colorScheme == .dark ? 1.0 : 0.9)
                     } else {
                         //If model is not exists on Ollama server
-                        Text("You haven't added any Ollama models yet.\nPlease open the Preference pane to add one.")
-                            .padding()
-                        
-                        HStack {
-                            SettingsLink {
-                                Label("Open Preference", systemImage: "gear")
-                            }
-                            .buttonStyle(.borderedProminent)
-                            
-                            Button {
-                                Task {
-                                    try? await self.initModelList()
-                                }
-                            } label: {
-                                Label("Reload models", systemImage: "arrow.trianglehead.clockwise")
-                            }
-
+                        Button {
+                            self.currentSelectedPreference = "modelManagement"
+                            openSettings()
+                        } label: {
+                            Label("Install Recommended Models", systemImage: "wand.and.sparkles.inverse")
+                                .font(.title3)
+                                .padding(.horizontal)
                         }
+                        .controlSize(.large)
+                        .symbolEffect(.pulse)
+                        .buttonStyle(.borderedProminent)
+                        .padding(.top)
+                        
+                        Button {
+                            Task {
+                                try await self.initModelList()
+                            }
+                        } label: {
+                            Label("Reload model list", systemImage: "arrow.trianglehead.counterclockwise")
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.top, 4)
                     }
                     
                     ScrollViewReader { proxy in

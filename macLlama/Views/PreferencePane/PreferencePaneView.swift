@@ -21,14 +21,11 @@ enum AppSettings {
     static let hostProtocol: String = "http://"
     static let hostAddress: String = "localhost"
     static let hostPort: Int = 11434
+    static let currentSelectedPrefrenceTab: String = "general"
     
     func getHostURL() -> String {
         return "\(AppSettings.hostAddress.isEmpty ? "localhost" : AppSettings.hostAddress):\(AppSettings.hostPort)"
     }
-}
-
-enum PreferenceTab {
-    case general
 }
 
 struct PreferencePaneView: View {
@@ -41,14 +38,12 @@ struct PreferencePaneView: View {
     @AppStorage("hostProtocol") var hostProtocol: String = AppSettings.hostProtocol
     @AppStorage("hostAddress") var hostAddress: String = AppSettings.hostAddress
     @AppStorage("hostPort") var hostPort: Int = AppSettings.hostPort
+    @AppStorage("currentSelectedPrefrenceTab") var currentTab: String = AppSettings.currentSelectedPrefrenceTab
 
-    //For older version of macOS
-    @State private var selectedTab: PreferenceTab = .general
-    
     var body: some View {
         if #available(macOS 15.0, *) {
-            TabView {
-                Tab("General", systemImage: "gear") {
+            TabView(selection: $currentTab) {
+                Tab("General", systemImage: "gear", value: "general") {
                     GeneralView(serverKillWithApp: $serverKillWithApp,
                                 isAutoScrollEnabled: $isAutoScrollEnabled,
                                 promptSuffix: $promptSuffix, isAutoUpdateEnabled: $isAutoUpdateEnabled,
@@ -56,19 +51,19 @@ struct PreferencePaneView: View {
                     .frame(width: 600, height: 400)
                 }
                 
-                Tab("Typography", systemImage: "textformat") {
+                Tab("Typography", systemImage: "textformat", value: "typography") {
                     TypographyView(chatFontSize: $chatFontSize, selectedMarkdownFormat: $markdownTheme)
                         .frame(width: 600, height: 400)
                 }
                 
-                Tab("Model Management", systemImage: "apple.intelligence") {
+                Tab("Model Management", systemImage: "apple.intelligence", value: "modelManagement") {
                     ModelManagementView()
                         .frame(width: 600, height: 700)
                 }
             }
             .navigationTitle("macLlama Preferences")
         } else {
-            TabView {
+            TabView(selection: self.$currentTab) {
                 GeneralView(serverKillWithApp: $serverKillWithApp,
                             isAutoScrollEnabled: $isAutoScrollEnabled,
                             promptSuffix: $promptSuffix, isAutoUpdateEnabled: $isAutoUpdateEnabled,
@@ -76,20 +71,20 @@ struct PreferencePaneView: View {
                     .tabItem {
                         Label("General", systemImage: "gear")
                     }
-                    .tag(1)
+                    .tag("general")
                 
                 TypographyView(chatFontSize: $chatFontSize, selectedMarkdownFormat: $markdownTheme)
                     .tabItem {
                         Label("Typography", systemImage: "textformat")
                     }
-                    .tag(2)
+                    .tag("typography")
                 
                 ModelManagementView()
                     .tabItem {
                         Label("Model Management", systemImage: "apple.intelligence")
                     }
                     .frame(height: 500)
-                    .tag(3)
+                    .tag("modelManagement")
             }
             .tabViewStyle(.automatic)
             .frame(maxWidth: 600)

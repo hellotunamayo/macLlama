@@ -13,9 +13,9 @@ struct StartServerView: View {
     @State private var isOllamaServerError: Bool = false
     @State private var ollamaServerErrorMessage: String = ""
     @State private var isConnecting: Bool = false
-    @State private var raysRotationAngle: Double = 0.0
     
     let ollamaNetworkService: OllamaNetworkService = OllamaNetworkService()
+    private var selectedSettingsTab = PreferenceTab.severManagement
     
     var body: some View {
         VStack {
@@ -81,24 +81,18 @@ struct StartServerView: View {
                 if isConnecting {
                     HStack {
                         Image(systemName: "rays")
-                            .rotationEffect(.degrees(raysRotationAngle))
-                            .onAppear {
-                                withAnimation(.linear(duration: 1.5).repeatForever(autoreverses: false)) {
-                                    raysRotationAngle = 360
-                                }
-                            }
+                            .symbolEffect(.variableColor.iterative)
                         Text("Connecting to server...")
                     }
                 } else {
                     Label("Start the server and go", systemImage: "power")
                         .padding(.trailing, Units.normalGap / 4)
                 }
-                
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
             .padding(.top, Units.normalGap / 2)
-            
+
             Divider()
                 .frame(maxWidth: 30)
                 .padding(.vertical, Units.normalGap)
