@@ -29,4 +29,4 @@ enum MarkdownTheme: String, Hashable, CaseIterable {
 
 enum PreferenceTab {
     case general, typography, severManagement
-    }
+}
