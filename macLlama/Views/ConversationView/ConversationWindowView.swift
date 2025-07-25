@@ -8,13 +8,13 @@
 import SwiftUI
 import SwiftData
 
-struct ConversationView: View {
+struct ConversationWindowView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var serverStatus: ServerStatus
     
     var body: some View {
         if serverStatus.isOnline {
-            ConversationChatView()
+            ChatInterfaceView()
                 .environmentObject(serverStatus)
         } else {
             StartServerView()
@@ -26,6 +26,6 @@ struct ConversationView: View {
 
 
 #Preview {
-    ConversationView()
+    ConversationWindowView()
         .modelContainer(for: Item.self, inMemory: true)
 }

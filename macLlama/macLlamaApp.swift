@@ -43,7 +43,7 @@ struct macLlamaApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationStack {
-                ConversationView()
+                ConversationWindowView()
                     .navigationTitle("macLlama")
             }
             .environmentObject(serverStatus)

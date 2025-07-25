@@ -9,7 +9,7 @@ import SwiftUI
 import Combine
 import SwiftData
 
-struct ConversationChatView: View {
+struct ChatInterfaceView: View {
     @AppStorage("currentSelectedPreference") var currentSelectedPreference: String?
     
     @Environment(\.openSettings) var openSettings
@@ -64,20 +64,7 @@ struct ConversationChatView: View {
                 
                 //MARK: Conversation view
                 VStack {
-                    if !self.modelList.isEmpty {
-                        ModelSelectView(modelList: $modelList,
-                                        currentModel: $currentModel,
-                                        isModelLoading: $isModelLoading,
-                                        ollamaNetworkService: self.ollamaNetworkService) {
-                            Task {
-                                try? await self.initModelList()
-                            }
-                        }
-                        
-                        Divider()
-                            .foregroundStyle(Color(nsColor: .systemGray))
-                            .opacity(self.colorScheme == .dark ? 1.0 : 0.9)
-                    } else {
+                    if self.modelList.isEmpty {
                         //If model is not exists on Ollama server
                         Button {
                             self.currentSelectedPreference = "modelManagement"
@@ -101,6 +88,19 @@ struct ConversationChatView: View {
                         }
                         .buttonStyle(.plain)
                         .padding(.top, 4)
+                    } else {
+                        ModelSelectView(modelList: $modelList,
+                                        currentModel: $currentModel,
+                                        isModelLoading: $isModelLoading,
+                                        ollamaNetworkService: self.ollamaNetworkService) {
+                            Task {
+                                try? await self.initModelList()
+                            }
+                        }
+                        
+                        Divider()
+                            .foregroundStyle(Color(nsColor: .systemGray))
+                            .opacity(self.colorScheme == .dark ? 1.0 : 0.9)
                     }
                     
                     ScrollViewReader { proxy in
@@ -222,7 +222,7 @@ struct ConversationChatView: View {
                     }
                     
                     //MARK: Input Area
-                    if !self.modelList.isEmpty {
+                    if self.modelList.count > 0 {
                         ChatInputView(isThinking: $isThinking, prompt: $prompt, images: $promptImages) {
                             if try await OllamaNetworkService.isServerOnline() {
                                 Task {
@@ -267,7 +267,7 @@ struct ConversationChatView: View {
 
 
 //MARK: Internal functions
-extension ConversationChatView {
+extension ChatInterfaceView {
     ///Send Chat to Ollama server
     private func sendChat(model: String, prompt: String, showThink: Bool, images: [NSImage]) async throws {
         if try await OllamaNetworkService.isServerOnline() { //server online check
