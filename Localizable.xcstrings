@@ -941,23 +941,6 @@
         }
       }
     },
-    "Open Preference" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "設定パネルを開く"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "환경설정 열기"
-          }
-        }
-      }
-    },
     "Open Terminal.app" : {
       "localizations" : {
         "ja" : {
@@ -1127,23 +1110,6 @@
     },
     "Reload model list" : {
 
-    },
-    "Reload models" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "モデルリストを更新"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "모델 다시 불러오기"
-          }
-        }
-      }
     },
     "Scroll to Top" : {
       "localizations" : {
@@ -1505,23 +1471,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "macLlama 의 최신 버전이 실행 중입니다."
-          }
-        }
-      }
-    },
-    "You haven't added any Ollama models yet.\nPlease open the Preference pane to add one." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "まだ Ollama モデルを追加していません。追加するには、環境設定を開いてください"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "아직 Ollama 모델을 추가하지 않았습니다. 환경설정 창을 열고 모델을 추가해 주세요."
           }
         }
       }
