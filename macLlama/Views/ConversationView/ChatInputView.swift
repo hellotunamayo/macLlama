@@ -38,33 +38,7 @@ struct ChatInputView: View {
             .frame(height: 70)
             .padding(.horizontal)
             .overlay {
-                if !self.images.isEmpty {
-                    ScrollView (.horizontal) {
-                        LazyHGrid(rows: uploadedImageGridRows) {
-                            ForEach(0..<self.images.count, id: \.self) { index in
-                                ZStack {
-                                    Image(nsImage: images[index])
-                                        .resizable()
-                                        .frame(width: Units.normalGap * 3,
-                                               height: Units.normalGap * 3)
-                                        .padding(.horizontal, Units.normalGap / 8)
-                                    
-                                    Button {
-                                        self.images.remove(at: index)
-                                    } label: {
-                                        Image(systemName: "xmark")
-                                    }
-                                    .background(Color.black)
-                                    .buttonBorderShape(.circle)
-                                    .clipShape(.circle)
-                                    .position(x: 48, y: 3)
-                                }
-                            }
-                        }
-                    }
-                    .frame(height: 80)
-                    .padding(.horizontal)
-                }
+                imagePreview(images: self.images)
             }
             
             //MARK: Text input
@@ -134,6 +108,37 @@ struct ChatInputView: View {
 
 //MARK: Functions
 extension ChatInputView {
+    @ViewBuilder
+    private func imagePreview(images: [NSImage]) -> some View {
+        if images.count > 0 {
+            ScrollView (.horizontal) {
+                LazyHGrid(rows: uploadedImageGridRows) {
+                    ForEach(0..<self.images.count, id: \.self) { index in
+                        ZStack {
+                            Image(nsImage: images[index])
+                                .resizable()
+                                .frame(width: Units.normalGap * 3,
+                                       height: Units.normalGap * 3)
+                                .padding(.horizontal, Units.normalGap / 8)
+                            
+                            Button {
+                                self.images.remove(at: index)
+                            } label: {
+                                Image(systemName: "xmark")
+                            }
+                            .background(Color.black)
+                            .buttonBorderShape(.circle)
+                            .clipShape(.circle)
+                            .position(x: 48, y: 3)
+                        }
+                    }
+                }
+            }
+            .frame(height: 80)
+            .padding(.horizontal)
+        }
+    }
+    
     private func setImage(provider: NSItemProvider) {
         _ = provider.loadDataRepresentation(for: .image) { data, error in
             Task {
