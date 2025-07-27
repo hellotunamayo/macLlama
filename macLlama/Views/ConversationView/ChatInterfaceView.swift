@@ -89,18 +89,13 @@ struct ChatInterfaceView: View {
                         .buttonStyle(.plain)
                         .padding(.top, 4)
                     } else {
-                        ModelSelectView(modelList: $modelList,
-                                        currentModel: $currentModel,
-                                        isModelLoading: $isModelLoading,
-                                        ollamaNetworkService: self.ollamaNetworkService) {
+                        ModelSelectView(modelList: $modelList, currentModel: $currentModel,
+                                        isModelLoading: $isModelLoading, ollamaNetworkService: self.ollamaNetworkService) {
                             Task {
                                 try? await self.initModelList()
                             }
                         }
-                        
-                        Divider()
-                            .foregroundStyle(Color(nsColor: .systemGray))
-                            .opacity(self.colorScheme == .dark ? 1.0 : 0.9)
+                        .zIndex(1)
                     }
                     
                     ScrollViewReader { proxy in
@@ -180,6 +175,7 @@ struct ChatInterfaceView: View {
                                 }
                             }
                         }
+                        .zIndex(0)
                         .onChange(of: isThinking) { _, newValue in
                             //Automatically scroll to the bottom when the answer is complete,
                             //if auto-scrolling is enabled.

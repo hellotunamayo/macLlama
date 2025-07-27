@@ -15,7 +15,7 @@ struct ChatBackgroundView: View {
             Image("macLlama-gray")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(maxWidth: Units.appFrameMinHeight / 2, maxHeight: Units.appFrameMinHeight / 2)
+                .frame(maxWidth: Units.appFrameMinHeight / 3, maxHeight: Units.appFrameMinHeight / 3)
                 .offset(y: Units.appFrameMinHeight / 20 * -1)
                 .opacity(self.colorScheme == .dark ? 0.03 : 0.04)
         }

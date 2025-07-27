@@ -48,7 +48,7 @@ actor ModelSuggestionViewModel {
         return result
     }
     
-    func modelSuggestionBy(memory: UInt64, from models: [SuggestionModel]) -> [SuggestionModel] {
+    func modelSuggestionBy(memory: UInt64, from models: [SuggestionModel]) async -> [SuggestionModel] {
         var result: [SuggestionModel] = []
         models.filter { $0.modelParameterCount <= memory }.sorted { $0.modelParameterCount < $1.modelParameterCount }.forEach { result.append($0) }
         return result

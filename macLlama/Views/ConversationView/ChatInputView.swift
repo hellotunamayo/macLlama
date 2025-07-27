@@ -24,10 +24,12 @@ struct ChatInputView: View {
             ZStack {
                 if images.isEmpty {
                     Label("Drop Images Here", systemImage: "photo.badge.plus")
+                        .greedyFrame(axis: .horizontal, alignment: .leading)
+                        .padding(.leading, Units.normalGap * 0.85)
                 }
                 
                 RoundedRectangle(cornerRadius: Units.normalGap / 3)
-                    .fill(.black.opacity(colorScheme == .dark ? 0.5 : 0.3))
+                    .fill(.black.opacity(colorScheme == .dark ? 0.5 : 0.2))
                     .onDrop(of: [.image], isTargeted: $isTargeted) { providers in
                         guard let provider = providers.first else { return false }
                         setImage(provider: provider)
@@ -37,6 +39,7 @@ struct ChatInputView: View {
             .opacity(isTargeted ? 1 : 0.3)
             .frame(height: 70)
             .padding(.horizontal)
+            .padding(.bottom, Units.normalGap / 2.5)
             .overlay {
                 imagePreview(images: self.images)
             }
@@ -81,23 +84,23 @@ struct ChatInputView: View {
                     }
                 } label: {
                     if self.isThinking {
-                        Label("Thinking...", systemImage: "rays")
+                        Image(systemName: "rays")
                             .font(.title2)
                             .padding(.horizontal, Units.normalGap)
                             .padding(.vertical, Units.normalGap / 3.5)
                             .symbolEffect(.variableColor.iterative)
-                            .frame(minWidth: 100)
+                            .frame(width: 36, height: 36)
                     } else {
-                        Label("Send", systemImage: "paperplane.fill")
+                        Image(systemName: "paperplane.fill")
                             .font(.title2)
                             .padding(.horizontal, Units.normalGap)
                             .padding(.vertical, Units.normalGap / 3.5)
-                            .frame(minWidth: 100)
+                            .frame(width: 36, height: 36)
                     }
                 }
                 .tint(self.isThinking ? .gray : .accent)
                 .buttonStyle(.borderedProminent)
-                .frame(height: 40)
+                .clipShape(Circle())
                 .keyboardShortcut(.return) //WHY cmd+return???? ¯\(°_o)/¯
             }
             .padding()
