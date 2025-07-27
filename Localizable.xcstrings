@@ -641,22 +641,6 @@
         }
       }
     },
-    "Loading..." : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "読み込み中..."
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "불러오는 중…"
-          }
-        }
-      }
-    },
     "Local Prefix & Suffix" : {
       "localizations" : {
         "ja" : {
@@ -1332,22 +1316,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "추론 프로세스"
-          }
-        }
-      }
-    },
-    "Thinking..." : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "考えています..."
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "생각하는 중..."
           }
         }
       }
