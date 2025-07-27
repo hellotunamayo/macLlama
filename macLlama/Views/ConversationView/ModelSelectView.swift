@@ -48,9 +48,16 @@ struct ModelSelectView: View {
                                 self.isModelSelecting.toggle()
                             }
                         }, label: {
+                            
                             ZStack {
-                                Capsule()
-                                    .fill(colorScheme == .dark ? .black.opacity(0.4) : .gray.opacity(0.1))
+                                if #available(macOS 26.0, *) {
+                                    Capsule()
+                                        .fill(colorScheme == .dark ? .black.opacity(0.4) : .gray.opacity(0.1))
+                                        .glassEffect()
+                                } else {
+                                    Capsule()
+                                        .fill(colorScheme == .dark ? .black.opacity(0.4) : .gray.opacity(0.1))
+                                }
                                 
                                 Text(ModelSelectView.modelNameWithRemovedPrefix(currentModel) ?? "Unknown Model")
                                     .lineLimit(1)
@@ -62,6 +69,7 @@ struct ModelSelectView: View {
                         .position(x: self.modelSelectPositionX,
                                   y: geometry.bounds(of: .named("CustomSelection"))!.minY + Units.normalGap)
                         .frame(width: self.modelSelectWidth, height: Units.normalGap * 2)
+                        
                         .zIndex(2)
                         
                         if isModelSelecting {
@@ -103,8 +111,14 @@ struct ModelSelectView: View {
                     
                 } label: {
                     ZStack {
-                        Circle()
-                            .fill(colorScheme == .dark ? .gray.opacity(0.5) : .gray.opacity(0.2))
+                        if #available(macOS 26.0, *){
+                            Circle()
+                                .fill(.white.opacity(0.0001))
+                                .glassEffect()
+                        } else {
+                            Circle()
+                                .fill(colorScheme == .dark ? .gray.opacity(0.5) : .gray.opacity(0.2))
+                        }
                         
                         if self.isModelLoading {
                             Image(systemName: "rays")
