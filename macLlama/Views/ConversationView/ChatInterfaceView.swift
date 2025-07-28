@@ -255,6 +255,7 @@ struct ChatInterfaceView: View {
             }
         }
         .navigationSplitViewStyle(.balanced)
+        .navigationTitle("macLlama")
     }
 }
 

@@ -42,32 +42,29 @@ struct macLlamaApp: App {
     
     var body: some Scene {
         WindowGroup {
-            NavigationStack {
-                ConversationWindowView()
-                    .navigationTitle("macLlama")
-            }
-            .environmentObject(serverStatus)
-            .frame(minWidth: Units.appFrameMinWidth, idealWidth: Units.appFrameMinWidth,
-                   minHeight: Units.appFrameMinHeight, idealHeight: Units.appFrameMinHeight)
-            .task {
-                //auto check for updates
-                let intervalSinceLastCheck: TimeInterval = Date().timeIntervalSince1970 - TimeInterval(lastUpdateCheckDate)
-                if isAutoUpdateEnabled && intervalSinceLastCheck > 60 * 60 * 24 { //Check update every 1 day
-                    do {
-                        let githubService = GithubService()
-                        guard let checkVersionResult = try await githubService.checkForUpdates() else { return }
-                        self.updateData = checkVersionResult
-                        openWindow(id: "updateWindow")
-                        self.lastUpdateCheckDate = Date().timeIntervalSince1970
-                        
-                        #if DEBUG
-                        debugPrint("updated checked in : \(lastUpdateCheckDate)")
-                        #endif
-                    } catch {
-                        
+            ConversationWindowView()
+                .environmentObject(serverStatus)
+                .frame(minWidth: Units.appFrameMinWidth, idealWidth: Units.appFrameMinWidth,
+                       minHeight: Units.appFrameMinHeight, idealHeight: Units.appFrameMinHeight)
+                .task {
+                    //auto check for updates
+                    let intervalSinceLastCheck: TimeInterval = Date().timeIntervalSince1970 - TimeInterval(lastUpdateCheckDate)
+                    if isAutoUpdateEnabled && intervalSinceLastCheck > 60 * 60 * 24 { //Check update every 1 day
+                        do {
+                            let githubService = GithubService()
+                            guard let checkVersionResult = try await githubService.checkForUpdates() else { return }
+                            self.updateData = checkVersionResult
+                            openWindow(id: "updateWindow")
+                            self.lastUpdateCheckDate = Date().timeIntervalSince1970
+                            
+                            #if DEBUG
+                            debugPrint("updated checked in : \(lastUpdateCheckDate)")
+                            #endif
+                        } catch {
+                            debugPrint("Error checking for updates: \(error)")
+                        }
                     }
                 }
-            }
         }
         .modelContainer(for: SwiftDataChatHistory.self)
         .commands {
