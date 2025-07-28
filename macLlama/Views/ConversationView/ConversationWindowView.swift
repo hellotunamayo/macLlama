@@ -24,7 +24,6 @@ struct ConversationWindowView: View {
     }
 }
 
-
 #Preview {
     ConversationWindowView()
         .modelContainer(for: Item.self, inMemory: true)
