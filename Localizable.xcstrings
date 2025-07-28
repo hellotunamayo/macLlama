@@ -535,6 +535,18 @@
         }
       }
     },
+    "Global Prefix" : {
+
+    },
+    "Global Prompt Prefix:" : {
+
+    },
+    "Global Prompt Suffix:" : {
+
+    },
+    "Global Suffix" : {
+
+    },
     "Hide Assistant Thinking" : {
       "localizations" : {
         "ja" : {
@@ -987,22 +999,6 @@
         }
       }
     },
-    "Prompt suffix" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "プロンプトサフィックス"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "프롬프트 접미어"
-          }
-        }
-      }
-    },
     "Prompt Suffix" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1016,22 +1012,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "프롬프트 접미어"
-          }
-        }
-      }
-    },
-    "Prompt Suffix:" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "プロンプトサフィックス:"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "프롬프트 접미어:"
           }
         }
       }

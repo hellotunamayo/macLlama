@@ -10,6 +10,7 @@ import SwiftUI
 struct GeneralView: View {
     @Binding var serverKillWithApp: Bool
     @Binding var isAutoScrollEnabled: Bool
+    @Binding var promptPrefix: String
     @Binding var promptSuffix: String
     @Binding var isAutoUpdateEnabled: Bool
     @Binding var hostAddress: String
@@ -71,8 +72,16 @@ struct GeneralView: View {
             
             Section("Prompt") {
                 HStack {
-                    Text("Prompt Suffix:")
-                    TextField("Prompt suffix", text: $promptSuffix)
+                    Text("Global Prompt Prefix:")
+                    TextField("Global Prefix", text: $promptPrefix)
+                        .textFieldStyle(.roundedBorder)
+                        .padding(.leading, 3)
+                }
+                .padding(.vertical, 5)
+                
+                HStack {
+                    Text("Global Prompt Suffix:")
+                    TextField("Global Suffix", text: $promptSuffix)
                         .textFieldStyle(.roundedBorder)
                         .padding(.leading, 3)
                 }

@@ -236,15 +236,12 @@ struct ChatInterfaceView: View {
                                 self.history.append(userQuestion)
                                 self.isThinking = true
                                 
-                                //Check if suffix exists
-                                if let globalSuffix = UserDefaults.standard.string(forKey: "promptSuffix") {
-                                    let processedPrompt: String = self.localPrefix + " " + self.prompt + self.localSuffix + " \(globalSuffix)"
-                                    try await self.sendChat(model: self.currentModel, prompt: processedPrompt,
-                                                            showThink: self.showThink, images: self.promptImages)
-                                } else {
-                                    try await self.sendChat(model: self.currentModel, prompt: self.prompt,
-                                                            showThink: self.showThink, images: self.promptImages)
-                                }
+                                //Check if prefix & suffix exists
+                                let globalPrefix: String = UserDefaults.standard.string(forKey: "promptPrefix") ?? ""
+                                let globalSuffix: String = UserDefaults.standard.string(forKey: "promptSuffix") ?? ""
+                                let finalPrompt: String = globalPrefix + " " + self.localPrefix + " " + self.prompt + self.localSuffix + globalSuffix
+                                try await self.sendChat(model: self.currentModel, prompt: finalPrompt,
+                                                        showThink: self.showThink, images: self.promptImages)
                             } else {
                                 debugPrint("❌ Unable to connect to the API server. Please verify the server address in Settings.")
                             }

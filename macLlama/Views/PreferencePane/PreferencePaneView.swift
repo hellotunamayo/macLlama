@@ -13,6 +13,7 @@ enum AppSettings {
     static let isAutoScrollEnabled: Bool = false
     static let chatFontSize: Int = 16
     static let promptSuffix: String = ""
+    static let promptPrefix: String = ""
     static let isAutoUpdateEnabled: Bool = true
     static let currentVersionNumber: String? = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String //version number
     static let currentBuildNumber: String? = Bundle.main.infoDictionary?["CFBundleVersion"] as? String //bundle version
@@ -32,6 +33,7 @@ struct PreferencePaneView: View {
     @AppStorage("serverKillWithApp") var serverKillWithApp: Bool = AppSettings.serverKillWithApp
     @AppStorage("chatFontSize") var chatFontSize: Int = AppSettings.chatFontSize
     @AppStorage("promptSuffix") var promptSuffix: String = AppSettings.promptSuffix
+    @AppStorage("promptPrefix") var promptPrefix: String = AppSettings.promptPrefix
     @AppStorage("isAutoScrollEnabled") var isAutoScrollEnabled: Bool = AppSettings.isAutoScrollEnabled
     @AppStorage("isAutoUpdateEnabled") var isAutoUpdateEnabled: Bool = AppSettings.isAutoUpdateEnabled
     @AppStorage("markdownTheme") var markdownTheme: String = AppSettings.markdownTheme
@@ -45,7 +47,7 @@ struct PreferencePaneView: View {
             TabView(selection: $currentTab) {
                 Tab("General", systemImage: "gear", value: "general") {
                     GeneralView(serverKillWithApp: $serverKillWithApp,
-                                isAutoScrollEnabled: $isAutoScrollEnabled,
+                                isAutoScrollEnabled: $isAutoScrollEnabled, promptPrefix: $promptPrefix,
                                 promptSuffix: $promptSuffix, isAutoUpdateEnabled: $isAutoUpdateEnabled,
                                 hostAddress: $hostAddress, hostPort: $hostPort, hostProtocol: $hostProtocol)
                     .frame(width: 600, height: 400)
@@ -65,7 +67,7 @@ struct PreferencePaneView: View {
         } else {
             TabView(selection: self.$currentTab) {
                 GeneralView(serverKillWithApp: $serverKillWithApp,
-                            isAutoScrollEnabled: $isAutoScrollEnabled,
+                            isAutoScrollEnabled: $isAutoScrollEnabled, promptPrefix: $promptPrefix,
                             promptSuffix: $promptSuffix, isAutoUpdateEnabled: $isAutoUpdateEnabled,
                             hostAddress: $hostAddress, hostPort: $hostPort, hostProtocol: $hostProtocol)
                     .tabItem {
