@@ -147,6 +147,9 @@ struct ModelSelectView: View {
                 try? await serverStatus.updateServerStatus()
             }
         }
+        .background(
+            setBackground()
+        )
     }
 }
 
@@ -217,6 +220,16 @@ extension ModelSelectView {
             .frame(width: self.modelSelectWidth, height: Units.appFrameMinHeight * 0.25)
             .offset(x: Units.normalGap * -0.9)
             .zIndex(1)
+        }
+    }
+    
+    private func setBackground() -> some View{
+        if #available(macOS 26.0, *) {
+            let gradientColorSet: Color = colorScheme == .dark ? .black.opacity(0.2) : .clear
+            return LinearGradient(gradient: Gradient(colors: [gradientColorSet, .clear]),
+                                  startPoint: .center, endPoint: .bottom)
+        } else {
+            return Color(nsColor: .windowBackgroundColor)
         }
     }
 }
