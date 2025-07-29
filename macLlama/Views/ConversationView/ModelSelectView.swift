@@ -37,9 +37,16 @@ struct ModelSelectView: View {
     var body: some View {
         VStack {
             HStack{
-                Circle()
-                    .fill(serverStatus.isOnline ? Color.green : Color.red)
-                    .frame(width: 8, height: 8)
+                if #available(macOS 26.0, *) {
+                    Circle()
+                        .fill(serverStatus.isOnline ? Color.green.opacity(0.8) : Color.red.opacity(0.8))
+                        .glassEffect()
+                        .frame(width: 8, height: 8)
+                } else {
+                    Circle()
+                        .fill(serverStatus.isOnline ? Color.green : Color.red)
+                        .frame(width: 8, height: 8)
+                }
                 
                 GeometryReader { geometry in
                     VStack {
