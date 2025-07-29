@@ -8,8 +8,8 @@ import SwiftUI
 
 ///Unit constants
 struct Units {
-    ///480.0
-    static let appFrameMinWidth: CGFloat = 480.0
+    ///580.0
+    static let appFrameMinWidth: CGFloat = 580.0
     ///800.0
     static let appFrameMinHeight: CGFloat = 800.0
     ///450.0
