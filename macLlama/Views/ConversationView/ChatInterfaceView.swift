@@ -63,7 +63,7 @@ struct ChatInterfaceView: View {
                 }
                 
                 //MARK: Conversation view
-                VStack {
+                ZStack(alignment: .top) {
                     if self.modelList.isEmpty {
                         //If model is not exists on Ollama server
                         Button {
@@ -98,161 +98,150 @@ struct ChatInterfaceView: View {
                         .zIndex(1)
                     }
                     
-                    ScrollViewReader { proxy in
-                        ScrollView {
-                            ForEach(0..<self.history.count, id: \.self) { index in
-                                VStack {
-                                    if history[index].message != "" {
-                                        ChatBubbleView(isThinking: self.$isThinking, chatData: $history[index])
-                                            .padding()
-                                            .id(index)
-                                        
-                                        if !history[index].isUser {
-                                            Button {
-                                                if index > 0 && !isThinking {
-                                                    withAnimation {
-                                                        proxy.scrollTo(index, anchor: .top)
-                                                    }
-                                                }
-                                            } label: {
-                                                if let hovered = self.hoveredTopButtonTag, hovered == index {
-                                                    Text("Scroll to Top")
-                                                        .padding(.horizontal)
-                                                } else {
-                                                    Image(systemName: "arrow.up")
-                                                        .padding(.horizontal)
-                                                }
-                                            }
-                                            .disabled(isThinking ? true : false)
-                                            .buttonStyle(.bordered)
-                                            .opacity(isThinking ? 0 : 0.7)
-                                            .clipShape(.capsule)
-                                            .padding()
-                                            .onHover { enter in
-                                                if enter {
-                                                    withAnimation(.easeOut(duration: 0.3)) {
-                                                        self.hoveredTopButtonTag = index
-                                                    }
-                                                } else {
-                                                    withAnimation(.easeOut(duration: 0.3)) {
-                                                        self.hoveredTopButtonTag = nil
-                                                    }
-                                                }
-                                            }
-                                        }
+                    VStack {
+                        ScrollViewReader { proxy in
+                            ScrollView {
+                                ForEach(0..<self.history.count, id: \.self) { index in
+                                    VStack {
+                                        if history[index].message != "" {
+                                            ChatBubbleView(isThinking: self.$isThinking, chatData: $history[index])
+                                                .padding(EdgeInsets(top: index == 0 ? Units.normalGap * 4 : Units.normalGap,
+                                                                    leading: Units.normalGap,
+                                                                    bottom: Units.normalGap, trailing: Units.normalGap))
+                                                .id(index)
                                             
-                                        Divider()
-                                            .foregroundStyle(Color(nsColor: .systemGray))
-                                            .opacity(self.colorScheme == .dark ? 1.0 : 0.9)
-                                    } else {
-                                        if isThinking {
-                                            VStack {
-                                                ProgressView()
-                                                    .frame(width: 14, height: 14)
-                                                    .padding(.bottom)
-                                                
-                                                Text("Ollama is Thinking...")
-                                                    .font(.title3)
-                                                    .foregroundStyle(.secondary)
+                                            if !history[index].isUser {
+                                                setGotoTopButton(index: index, proxy: proxy)
+                                                    .disabled(isThinking ? true : false)
+                                                    .opacity(isThinking ? 0 : 0.7)
+                                                    .clipShape(.capsule)
+                                                    .padding()
+                                                    .onHover { enter in
+                                                        if enter {
+                                                            withAnimation(.easeOut(duration: 0.3)) {
+                                                                self.hoveredTopButtonTag = index
+                                                            }
+                                                        } else {
+                                                            withAnimation(.easeOut(duration: 0.3)) {
+                                                                self.hoveredTopButtonTag = nil
+                                                            }
+                                                        }
+                                                    }
                                             }
-                                            .padding()
+                                                
+                                            Divider()
+                                                .foregroundStyle(Color(nsColor: .systemGray))
+                                                .opacity(self.colorScheme == .dark ? 1.0 : 0.9)
                                         } else {
-                                            HStack {
-                                                Image("ollama_warning")
-                                                    .resizable()
-                                                    .aspectRatio(contentMode: .fit)
-                                                    .frame(width: Units.normalGap * 3, height: Units.normalGap * 3)
-                                                    .background(Color.white)
-                                                    .clipShape(Circle())
+                                            if isThinking {
+                                                VStack {
+                                                    ProgressView()
+                                                        .frame(width: 14, height: 14)
+                                                        .padding(.bottom)
+                                                    
+                                                    Text("Ollama is Thinking...")
+                                                        .font(.title3)
+                                                        .foregroundStyle(.secondary)
+                                                }
+                                                .padding()
+                                            } else {
+                                                HStack {
+                                                    Image("ollama_warning")
+                                                        .resizable()
+                                                        .aspectRatio(contentMode: .fit)
+                                                        .frame(width: Units.normalGap * 3, height: Units.normalGap * 3)
+                                                        .background(Color.white)
+                                                        .clipShape(Circle())
+                                                    
+                                                    Text("An error occurred while processing your request.\nPlease try again later.")
+                                                        .foregroundStyle(.secondary)
+                                                        .font(.subheadline)
+                                                }
+                                                .padding()
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            .zIndex(0)
+                            .onChange(of: isThinking) { _, newValue in
+                                //Automatically scroll to the bottom when the answer is complete,
+                                //if auto-scrolling is enabled.
+                                if !newValue && UserDefaults.standard.bool(forKey: "isAutoScrollEnabled") {
+                                    withAnimation(.linear(duration: 2.0)) {
+                                        proxy.scrollTo(history.count - 1, anchor: .bottom)
+                                    }
+                                }
+                            }
+                            .onChange(of: history.count) { _, _ in
+                                if UserDefaults.standard.bool(forKey: "isAutoScrollEnabled") {
+                                    autoScrollTask = Task {
+                                        while !Task.isCancelled {
+                                            if self.isAutoScrolling == true {
+                                                proxy.scrollTo(history.count - 1, anchor: .bottom)
                                                 
-                                                Text("An error occurred while processing your request.\nPlease try again later.")
-                                                    .foregroundStyle(.secondary)
-                                                    .font(.subheadline)
-                                            }
-                                            .padding()
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        .zIndex(0)
-                        .onChange(of: isThinking) { _, newValue in
-                            //Automatically scroll to the bottom when the answer is complete,
-                            //if auto-scrolling is enabled.
-                            if !newValue && UserDefaults.standard.bool(forKey: "isAutoScrollEnabled") {
-                                withAnimation(.linear(duration: 2.0)) {
-                                    proxy.scrollTo(history.count - 1, anchor: .bottom)
-                                }
-                            }
-                        }
-                        .onChange(of: history.count) { _, _ in
-                            if UserDefaults.standard.bool(forKey: "isAutoScrollEnabled") {
-                                autoScrollTask = Task {
-                                    while !Task.isCancelled {
-                                        if self.isAutoScrolling == true {
-                                            proxy.scrollTo(history.count - 1, anchor: .bottom)
-                                            
-                                            try? await Task.sleep(nanoseconds: 1_000_000_000)
-                                            
-                                            if self.isAutoScrolling == false {
-                                                break
+                                                try? await Task.sleep(nanoseconds: 1_000_000_000)
+                                                
+                                                if self.isAutoScrolling == false {
+                                                    break
+                                                }
                                             }
                                         }
                                     }
+                                } else {
+                                    autoScrollTask = nil
                                 }
-                            } else {
-                                autoScrollTask = nil
+                            }
+                            .onAppear {
+                                NSEvent.addLocalMonitorForEvents(matching: .scrollWheel) { event in
+                                    if isThinking {
+                                        self.isAutoScrolling = false
+                                        guard let autoScrollTask = self.autoScrollTask else { return event }
+                                        autoScrollTask.cancel()
+                                        self.autoScrollTask = nil
+                                    }
+                                    return event
+                                }
                             }
                         }
-                        .onAppear {
-                            NSEvent.addLocalMonitorForEvents(matching: .scrollWheel) { event in
-                                if isThinking {
-                                    self.isAutoScrolling = false
-                                    guard let autoScrollTask = self.autoScrollTask else { return event }
-                                    autoScrollTask.cancel()
-                                    self.autoScrollTask = nil
+                        
+                        //MARK: Input Area
+                        if self.modelList.count > 0 {
+                            ChatInputView(isThinking: $isThinking, prompt: $prompt, images: $promptImages) {
+                                if try await OllamaNetworkService.isServerOnline() {
+                                    Task {
+                                        //Save user question to SwiftData
+                                        let userChatMessage: APIChatMessage = APIChatMessage(role: "user", content: self.prompt,
+                                                                                             images: nil, options: nil,
+                                                                                             assistantThink: nil)
+                                        await self.saveSwiftDataHistory(history: userChatMessage)
+                                    }
+                                    
+                                    //Append local chat history
+                                    let userQuestion: LocalChatHistory = LocalChatHistory(isUser: true,
+                                                                                          modelName: self.currentModel,
+                                                                                          message: self.prompt)
+                                    self.history.append(userQuestion)
+                                    self.isThinking = true
+                                    
+                                    //Check if prefix & suffix exists
+                                    let globalPrefix: String = UserDefaults.standard.string(forKey: "promptPrefix") ?? ""
+                                    let globalSuffix: String = UserDefaults.standard.string(forKey: "promptSuffix") ?? ""
+                                    let finalPrompt: String = globalPrefix + " " + self.localPrefix + " " + self.prompt + self.localSuffix + globalSuffix
+                                    try await self.sendChat(model: self.currentModel, prompt: finalPrompt,
+                                                            showThink: self.showThink, images: self.promptImages)
+                                } else {
+                                    debugPrint("❌ Unable to connect to the API server. Please verify the server address in Settings.")
                                 }
-                                return event
-                            }
-                        }
-                    }
-                    
-                    //MARK: Input Area
-                    if self.modelList.count > 0 {
-                        ChatInputView(isThinking: $isThinking, prompt: $prompt, images: $promptImages) {
-                            if try await OllamaNetworkService.isServerOnline() {
-                                Task {
-                                    //Save user question to SwiftData
-                                    let userChatMessage: APIChatMessage = APIChatMessage(role: "user", content: self.prompt,
-                                                                                         images: nil, options: nil,
-                                                                                         assistantThink: nil)
-                                    await self.saveSwiftDataHistory(history: userChatMessage)
-                                }
-                                
-                                //Append local chat history
-                                let userQuestion: LocalChatHistory = LocalChatHistory(isUser: true,
-                                                                                      modelName: self.currentModel,
-                                                                                      message: self.prompt)
-                                self.history.append(userQuestion)
-                                self.isThinking = true
-                                
-                                //Check if prefix & suffix exists
-                                let globalPrefix: String = UserDefaults.standard.string(forKey: "promptPrefix") ?? ""
-                                let globalSuffix: String = UserDefaults.standard.string(forKey: "promptSuffix") ?? ""
-                                let finalPrompt: String = globalPrefix + " " + self.localPrefix + " " + self.prompt + self.localSuffix + globalSuffix
-                                try await self.sendChat(model: self.currentModel, prompt: finalPrompt,
-                                                        showThink: self.showThink, images: self.promptImages)
-                            } else {
-                                debugPrint("❌ Unable to connect to the API server. Please verify the server address in Settings.")
                             }
                         }
                     }
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .task {
                     try? await self.initModelList()
                 }
             }
+            .background(setBackgroundColor())
         }
         .navigationSplitViewStyle(.balanced)
         .navigationTitle("macLlama")
@@ -355,5 +344,52 @@ extension ChatInterfaceView {
         debugPrint("Chat History Saved in id: \(Date().description(with: .current))")
         debugPrint("Chat History Saved by conversation id: \(self.conversationId.uuidString)")
         #endif
+    }
+    
+    private func setBackgroundColor() -> some View {
+        if #available(macOS 26.0, *) {
+            return Color.clear
+        } else {
+            return Color(nsColor: .windowBackgroundColor)
+        }
+    }
+    
+    @ViewBuilder
+    private func setGotoTopButton(index: Int, proxy: ScrollViewProxy) -> some View {
+        if #available(macOS 26.0, *) {
+            Button {
+                if index > 0 && !isThinking {
+                    withAnimation {
+                        proxy.scrollTo(index, anchor: .top)
+                    }
+                }
+            } label: {
+                if let hovered = self.hoveredTopButtonTag, hovered == index {
+                    Text("Scroll to Top")
+                        .padding(.horizontal)
+                } else {
+                    Image(systemName: "arrow.up")
+                        .padding(.horizontal)
+                }
+            }
+            .glassEffect()
+        } else {
+            Button {
+                if index > 0 && !isThinking {
+                    withAnimation {
+                        proxy.scrollTo(index, anchor: .top)
+                    }
+                }
+            } label: {
+                if let hovered = self.hoveredTopButtonTag, hovered == index {
+                    Text("Scroll to Top")
+                        .padding(.horizontal)
+                } else {
+                    Image(systemName: "arrow.up")
+                        .padding(.horizontal)
+                }
+            }
+            .buttonStyle(.bordered)
+        }
     }
 }
