@@ -20,4 +20,8 @@ struct Units {
     static let controlDefaultSize: CGFloat = 28.0
     ///20.0
     static let controlMinimumSize: CGFloat = 20.0
+    ///400.0
+    static let sideBarWidth: CGFloat = 400.0
+    ///360.0
+    static let chatWindowWidth: CGFloat = 360.0
 }

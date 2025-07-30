@@ -54,7 +54,8 @@ struct ChatInterfaceView: View {
     var body: some View {
         NavigationSplitView(columnVisibility: $advancedOptionDrawerVisibility) {
             ChatSidebarView(showThink: $showThink, localPrefix: $localPrefix, localSuffix: $localSuffix, predict: $predict, temperature: $temperature)
-                .navigationSplitViewColumnWidth(min: 200, ideal: 280, max: 400)
+//                .navigationSplitViewColumnWidth(ideal: Units.sideBarWidth)
+                .toolbar(removing: .sidebarToggle)
         } detail: {
             ZStack {
                 //MARK: Background View(Llama Image)
@@ -90,7 +91,9 @@ struct ChatInterfaceView: View {
                         .padding(.top, 4)
                     } else {
                         ModelSelectView(modelList: $modelList, currentModel: $currentModel,
-                                        isModelLoading: $isModelLoading, ollamaNetworkService: self.ollamaNetworkService) {
+                                        isModelLoading: $isModelLoading,
+                                        advancedOptionDrawerVisibility: $advancedOptionDrawerVisibility,
+                                        ollamaNetworkService: self.ollamaNetworkService) {
                             Task {
                                 try? await self.initModelList()
                             }
@@ -241,9 +244,11 @@ struct ChatInterfaceView: View {
                     try? await self.initModelList()
                 }
             }
+            .frame(minWidth: Units.chatWindowWidth)
             .background(setBackgroundColor())
+            .navigationSplitViewColumnWidth(ideal: Units.chatWindowWidth)
         }
-        .navigationSplitViewStyle(.balanced)
+        .navigationSplitViewStyle(.prominentDetail)
         .navigationTitle("macLlama")
     }
 }
