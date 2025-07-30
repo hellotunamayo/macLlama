@@ -9,12 +9,15 @@ import SwiftUI
 
 struct ModelSelectView: View {
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.openWindow) var openWindow
     @EnvironmentObject var serverStatus: ServerStatus
     @Binding var modelList: [OllamaModel]
     @Binding var currentModel: String
     @Binding var isModelLoading: Bool
+    @Binding var advancedOptionDrawerVisibility: NavigationSplitViewVisibility
     
     @State private var isModelSelecting: Bool = false
+    @State private var glassContainerGap: CGFloat = Units.normalGap * 2.2
     
     let ollamaNetworkService: OllamaNetworkService
     let reloadButtonAction: () -> Void
@@ -36,7 +39,7 @@ struct ModelSelectView: View {
     
     var body: some View {
         VStack {
-            HStack{
+            HStack {
                 if #available(macOS 26.0, *) {
                     Circle()
                         .fill(serverStatus.isOnline ? Color.green.opacity(0.8) : Color.red.opacity(0.8))
@@ -139,6 +142,63 @@ struct ModelSelectView: View {
                 }
                 .controlSize(.regular)
                 .buttonStyle(.plain)
+                
+                Spacer()
+                
+                if #available(macOS 26.0, *) {
+                    GlassEffectContainer(spacing: Units.normalGap * 2.5) {
+                        HStack(spacing: Units.normalGap * 2.5) {
+                            Button {
+                                withAnimation {
+                                    if advancedOptionDrawerVisibility == .detailOnly {
+                                        advancedOptionDrawerVisibility = .automatic
+                                    } else {
+                                        advancedOptionDrawerVisibility = .detailOnly
+                                    }
+                                }
+                            } label: {
+                                Image(systemName: "sidebar.leading")
+                            }
+                            .buttonStyle(.plain)
+                            .frame(width: Units.normalGap * 2.5, height: Units.normalGap * 2.5)
+                            .glassEffect()
+                            .offset(x: glassContainerGap)
+                            
+                            Button {
+                                openWindow(id: "chatHistory")
+                            } label: {
+                                Image(systemName: "list.bullet")
+                            }
+                            .buttonStyle(.plain)
+                            .frame(width: Units.normalGap * 2.5, height: Units.normalGap * 2.5)
+                            .glassEffect()
+                        }
+                    }
+                } else {
+                    HStack(spacing: Units.normalGap) {
+                        Button {
+                            withAnimation {
+                                if advancedOptionDrawerVisibility == .detailOnly {
+                                    advancedOptionDrawerVisibility = .automatic
+                                } else {
+                                    advancedOptionDrawerVisibility = .detailOnly
+                                }
+                            }
+                        } label: {
+                            Image(systemName: "sidebar.leading")
+                        }
+                        .buttonStyle(.plain)
+                        .frame(width: Units.normalGap * 2.5, height: Units.normalGap * 2.5)
+                        
+                        Button {
+                            openWindow(id: "chatHistory")
+                        } label: {
+                            Image(systemName: "list.bullet")
+                        }
+                        .buttonStyle(.plain)
+                        .frame(width: Units.normalGap * 2.5, height: Units.normalGap * 2.5)
+                    }
+                }
             }
             .greedyFrame(axis: .horizontal, alignment: .leading)
             .fixedSize(horizontal: false, vertical: true)
@@ -180,11 +240,10 @@ extension ModelSelectView {
                 }
                 .padding(Units.normalGap)
             }
-            .position(x: self.modelSelectPositionX,
-                      y: geometry.frame(in: .global).minY * 1.5)
+            .position(x: self.modelSelectPositionX - Units.normalGap,
+                      y: geometry.frame(in: .global).maxY + Units.normalGap * 0.75)
             .frame(width: self.modelSelectWidth, height: Units.appFrameMinHeight * 0.25)
-            .glassEffect(in: .rect(cornerRadius: 8.0).offset(x: 0, y: Units.normalGap / 8.0))
-            .offset(x: Units.normalGap * -0.9)
+            .glassEffect(in: .rect(cornerRadius: 8.0).offset(x: -Units.normalGap))
             .zIndex(1)
         } else {
             ScrollView {

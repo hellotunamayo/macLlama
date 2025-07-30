@@ -44,8 +44,7 @@ struct macLlamaApp: App {
         WindowGroup {
             ConversationWindowView()
                 .environmentObject(serverStatus)
-                .frame(minWidth: Units.appFrameMinWidth, idealWidth: Units.appFrameMinWidth,
-                       minHeight: Units.appFrameMinHeight, idealHeight: Units.appFrameMinHeight)
+                .frame(minWidth: Units.sideBarWidth + Units.chatWindowWidth, minHeight: Units.appFrameMinHeight)
                 .task {
                     //auto check for updates
                     let intervalSinceLastCheck: TimeInterval = Date().timeIntervalSince1970 - TimeInterval(lastUpdateCheckDate)
