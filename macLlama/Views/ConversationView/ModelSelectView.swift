@@ -77,9 +77,8 @@ struct ModelSelectView: View {
                         })
                         .buttonStyle(.plain)
                         .position(x: self.modelSelectPositionX,
-                                  y: geometry.bounds(of: .named("CustomSelection"))!.minY + Units.normalGap)
+                                  y: geometry.bounds(of: .named("CustomSelection"))!.minY + Units.normalGap + 4)
                         .frame(width: self.modelSelectWidth, height: Units.normalGap * 2)
-                        
                         .zIndex(2)
                         
                         if isModelSelecting {
