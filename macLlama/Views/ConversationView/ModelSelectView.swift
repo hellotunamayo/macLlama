@@ -51,51 +51,7 @@ struct ModelSelectView: View {
                         .frame(width: 8, height: 8)
                 }
                 
-                GeometryReader { geometry in
-                    VStack {
-                        Button(action: {
-                            withAnimation(.default.speed(2.0)) {
-                                self.isModelSelecting.toggle()
-                            }
-                        }, label: {
-                            
-                            ZStack {
-                                if #available(macOS 26.0, *) {
-                                    Capsule()
-                                        .fill(colorScheme == .dark ? .black.opacity(0.4) : .gray.opacity(0.1))
-                                        .glassEffect()
-                                } else {
-                                    Capsule()
-                                        .fill(colorScheme == .dark ? .black.opacity(0.4) : .gray.opacity(0.1))
-                                }
-                                
-                                Text(ModelSelectView.modelNameWithRemovedPrefix(currentModel) ?? "Unknown Model")
-                                    .lineLimit(1)
-                                    .greedyFrame(axis: .horizontal, alignment: .leading)
-                                    .padding(.horizontal)
-                            }
-                        })
-                        .buttonStyle(.plain)
-                        .position(x: self.modelSelectPositionX,
-                                  y: geometry.bounds(of: .named("CustomSelection"))!.minY + Units.normalGap + 4)
-                        .frame(width: self.modelSelectWidth, height: Units.normalGap * 2)
-                        .zIndex(2)
-                        
-                        if isModelSelecting {
-                            self.modelSelectionScrollView(geometry: geometry)
-                        }
-                    }
-                    .padding(.horizontal)
-                    .task {
-                        guard let lastModelUsed = UserDefaults.standard.string(forKey: "currentModel") else { return }
-                        if lastModelUsed.count > 0, currentModel.count > 0 {
-                            await self.ollamaNetworkService.changeModel(model: lastModelUsed)
-                            self.currentModel = lastModelUsed
-                        }
-                    }
-                }
-                .coordinateSpace(.named("CustomSelection"))
-                .frame(maxWidth: Units.appFrameMinWidth * 0.5)
+                CutomModelSelectPickerView(currentModel: $currentModel, modelList: $modelList)
                 
                 Button {
                     withAnimation {
@@ -174,7 +130,7 @@ struct ModelSelectView: View {
                         }
                     }
                 } else {
-                    HStack(spacing: Units.normalGap) {
+                    HStack {
                         Button {
                             withAnimation {
                                 if advancedOptionDrawerVisibility == .detailOnly {
@@ -186,7 +142,7 @@ struct ModelSelectView: View {
                         } label: {
                             Image(systemName: "sidebar.leading")
                         }
-                        .buttonStyle(.plain)
+                        .buttonStyle(.bordered)
                         .frame(width: Units.normalGap * 2.5, height: Units.normalGap * 2.5)
                         
                         Button {
@@ -194,7 +150,7 @@ struct ModelSelectView: View {
                         } label: {
                             Image(systemName: "list.bullet")
                         }
-                        .buttonStyle(.plain)
+                        .buttonStyle(.bordered)
                         .frame(width: Units.normalGap * 2.5, height: Units.normalGap * 2.5)
                     }
                 }
@@ -214,80 +170,13 @@ struct ModelSelectView: View {
 
 //MARK: ViewBuilders
 extension ModelSelectView {
-    @ViewBuilder
-    private func modelSelectionScrollView(geometry: GeometryProxy) -> some View {
-        if #available(macOS 26.0, *) {
-            ScrollView {
-                VStack {
-                    ForEach(modelList, id: \.self) { model in
-                        HStack {
-                            Text(ModelSelectView.modelNameWithRemovedPrefix(model.name) ?? "Unknown Model")
-                                .lineLimit(1)
-                                .foregroundStyle(.primary)
-                                .padding(.horizontal)
-                                .padding(.vertical, Units.normalGap * 0.30)
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(.white.opacity(0.0001))
-                        .onTapGesture {
-                            self.currentModel = model.name
-                            withAnimation(.default.speed(2.0)) {
-                                self.isModelSelecting = false
-                            }
-                        }
-                    }
-                }
-                .padding(Units.normalGap)
-            }
-            .position(x: self.modelSelectPositionX - Units.normalGap,
-                      y: geometry.frame(in: .global).maxY + Units.normalGap * 0.75)
-            .frame(width: self.modelSelectWidth, height: Units.appFrameMinHeight * 0.25)
-            .glassEffect(in: .rect(cornerRadius: 8.0).offset(x: -Units.normalGap))
-            .zIndex(1)
-        } else {
-            ScrollView {
-                VStack {
-                    ForEach(modelList, id: \.self) { model in
-                        HStack {
-                            Text(ModelSelectView.modelNameWithRemovedPrefix(model.name) ?? "Unknown Model")
-                                .lineLimit(1)
-                                .foregroundStyle(.primary)
-                                .padding(.horizontal)
-                                .padding(.vertical, Units.normalGap * 0.33)
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(.white.opacity(0.0001))
-                        .onTapGesture {
-                            self.currentModel = model.name
-                            withAnimation(.default.speed(2.0)) {
-                                self.isModelSelecting = false
-                            }
-                        }
-                    }
-                }
-                .padding(Units.normalGap)
-            }
-            .background(
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(colorScheme == .dark ? .black : Color(red: 244/255, green: 244/255, blue: 244/255))
-                    .stroke(colorScheme == .dark ? .black : .gray.opacity(0.15), lineWidth: 1.0)
-                    .shadow(color: .black.opacity(0.2), radius: 5, x: 0, y: 0)
-            )
-            .position(x: self.modelSelectPositionX,
-                      y: geometry.frame(in: .global).minY * 1.5)
-            .frame(width: self.modelSelectWidth, height: Units.appFrameMinHeight * 0.25)
-            .offset(x: Units.normalGap * -0.9)
-            .zIndex(1)
-        }
-    }
-    
     private func setBackground() -> some View{
         if #available(macOS 26.0, *) {
             let gradientColorSet: Color = colorScheme == .dark ? .black.opacity(0.2) : .clear
             return LinearGradient(gradient: Gradient(colors: [gradientColorSet, .clear]),
                                   startPoint: .center, endPoint: .bottom)
         } else {
-            return Color(nsColor: .windowBackgroundColor)
+            return Color(nsColor: .clear)
         }
     }
 }
