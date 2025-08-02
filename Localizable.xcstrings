@@ -812,6 +812,9 @@
     "Medium Models (8-32GB of memory usage): Offer a good balance for general tasks." : {
 
     },
+    "Model" : {
+
+    },
     "Model Management" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1132,6 +1135,9 @@
           }
         }
       }
+    },
+    "Select Model" : {
+
     },
     "Send" : {
       "extractionState" : "manual",
