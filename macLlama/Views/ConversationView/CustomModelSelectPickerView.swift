@@ -54,7 +54,7 @@ struct CutomModelSelectPickerView: View {
                         }
                         .glassEffect(in: .rect(cornerRadius: Units.normalGap / 2))
                         .frame(height: self.maxHeight)
-                        .offset(y: maxHeight * 0.6)
+                        .offset(y: maxHeight * 0.58)
                     }
                 }
             } else {
