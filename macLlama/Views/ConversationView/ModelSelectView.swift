@@ -14,7 +14,7 @@ struct ModelSelectView: View {
     @Binding var modelList: [OllamaModel]
     @Binding var currentModel: String
     @Binding var isModelLoading: Bool
-    @Binding var advancedOptionDrawerVisibility: NavigationSplitViewVisibility
+    @Binding var isSettingOn: Bool
     
     @State private var isModelSelecting: Bool = false
     @State private var glassContainerGap: CGFloat = Units.normalGap * 2.2
@@ -104,15 +104,9 @@ struct ModelSelectView: View {
                     GlassEffectContainer(spacing: Units.normalGap * 2.5) {
                         HStack(spacing: Units.normalGap * 2.5) {
                             Button {
-                                withAnimation {
-                                    if advancedOptionDrawerVisibility == .detailOnly {
-                                        advancedOptionDrawerVisibility = .automatic
-                                    } else {
-                                        advancedOptionDrawerVisibility = .detailOnly
-                                    }
-                                }
+                                isSettingOn.toggle()
                             } label: {
-                                Image(systemName: "sidebar.leading")
+                                Image(systemName: "gear")
                             }
                             .buttonStyle(.plain)
                             .frame(width: Units.normalGap * 2.5, height: Units.normalGap * 2.5)
@@ -132,15 +126,9 @@ struct ModelSelectView: View {
                 } else {
                     HStack {
                         Button {
-                            withAnimation {
-                                if advancedOptionDrawerVisibility == .detailOnly {
-                                    advancedOptionDrawerVisibility = .automatic
-                                } else {
-                                    advancedOptionDrawerVisibility = .detailOnly
-                                }
-                            }
+                            isSettingOn.toggle()
                         } label: {
-                            Image(systemName: "sidebar.leading")
+                            Image(systemName: "gear")
                         }
                         .buttonStyle(.bordered)
                         .frame(width: Units.normalGap * 2.5, height: Units.normalGap * 2.5)
@@ -161,22 +149,6 @@ struct ModelSelectView: View {
             .task {
                 try? await serverStatus.updateServerStatus()
             }
-        }
-        .background(
-            setBackground()
-        )
-    }
-}
-
-//MARK: ViewBuilders
-extension ModelSelectView {
-    private func setBackground() -> some View{
-        if #available(macOS 26.0, *) {
-            let gradientColorSet: Color = colorScheme == .dark ? .black.opacity(0.2) : .clear
-            return LinearGradient(gradient: Gradient(colors: [gradientColorSet, .clear]),
-                                  startPoint: .center, endPoint: .bottom)
-        } else {
-            return Color(nsColor: .clear)
         }
     }
 }
