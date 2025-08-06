@@ -35,27 +35,7 @@ struct CustomModelSelectPickerView: View {
                 .offset(y: -1)
                 .frame(maxWidth: Units.appFrameMinWidth * 0.33, maxHeight: Units.normalGap * 1.8)
                 .overlay {
-                    if isOverlayShowing{
-                        List(selection: $currentModel) {
-                            ForEach(modelList, id: \.self) { model in
-                                Text(model.name)
-                                    .lineLimit(1)
-                                    .greedyFrame(axis: .horizontal, alignment: .leading)
-                                    .background(.windowBackground.opacity(0.0001))
-                                    .padding(.vertical, Units.normalGap / 2)
-                                    .listRowSeparator(.hidden)
-                                    .onTapGesture {
-                                        self.currentModel = model.name
-                                        withAnimation {
-                                            isOverlayShowing = false
-                                        }
-                                    }
-                            }
-                        }
-                        .glassEffect(in: .rect(cornerRadius: Units.normalGap / 2))
-                        .frame(height: self.maxHeight)
-                        .offset(y: maxHeight * 0.58)
-                    }
+                    createOverlay()
                 }
             } else {
                 Picker("Model", selection: $currentModel) {
@@ -68,6 +48,33 @@ struct CustomModelSelectPickerView: View {
                 .labelsHidden()
                 .frame(maxWidth: Units.appFrameMinWidth * 0.45)
             }
+        }
+    }
+}
+
+extension CustomModelSelectPickerView {
+    @available(macOS 26.0, *)
+    @ViewBuilder func createOverlay() -> some View {
+        if isOverlayShowing{
+            List(selection: $currentModel) {
+                ForEach(modelList, id: \.self) { model in
+                    Text(model.name)
+                        .lineLimit(1)
+                        .greedyFrame(axis: .horizontal, alignment: .leading)
+                        .background(.windowBackground.opacity(0.0001))
+                        .padding(.vertical, Units.normalGap / 2)
+                        .listRowSeparator(.hidden)
+                        .onTapGesture {
+                            self.currentModel = model.name
+                            withAnimation {
+                                isOverlayShowing = false
+                            }
+                        }
+                }
+            }
+            .glassEffect(in: .rect(cornerRadius: Units.normalGap / 2))
+            .frame(height: self.maxHeight)
+            .offset(y: maxHeight * 0.58)
         }
     }
 }
