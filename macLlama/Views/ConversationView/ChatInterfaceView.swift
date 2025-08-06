@@ -131,30 +131,9 @@ struct ChatInterfaceView: View {
                                             .opacity(self.colorScheme == .dark ? 1.0 : 0.9)
                                     } else {
                                         if isThinking {
-                                            VStack {
-                                                ProgressView()
-                                                    .frame(width: 14, height: 14)
-                                                    .padding(.bottom)
-                                                
-                                                Text("Ollama is Thinking...")
-                                                    .font(.title3)
-                                                    .foregroundStyle(.secondary)
-                                            }
-                                            .padding()
+                                            thinkingView()
                                         } else {
-                                            HStack {
-                                                Image("ollama_warning")
-                                                    .resizable()
-                                                    .aspectRatio(contentMode: .fit)
-                                                    .frame(width: Units.normalGap * 3, height: Units.normalGap * 3)
-                                                    .background(Color.white)
-                                                    .clipShape(Circle())
-                                                
-                                                Text("An error occurred while processing your request.\nPlease try again later.")
-                                                    .foregroundStyle(.secondary)
-                                                    .font(.subheadline)
-                                            }
-                                            .padding()
+                                            errorView()
                                         }
                                     }
                                 }
@@ -353,7 +332,10 @@ extension ChatInterfaceView {
             return Color(nsColor: .windowBackgroundColor)
         }
     }
-    
+}
+
+//MARK: Viewbuilders
+extension ChatInterfaceView {
     @ViewBuilder
     private func setGotoTopButton(index: Int, proxy: ScrollViewProxy) -> some View {
         if #available(macOS 26.0, *) {
@@ -391,5 +373,36 @@ extension ChatInterfaceView {
             }
             .buttonStyle(.bordered)
         }
+    }
+    
+    @ViewBuilder
+    func errorView() -> some View {
+        HStack {
+            Image("ollama_warning")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: Units.normalGap * 3, height: Units.normalGap * 3)
+                .background(Color.white)
+                .clipShape(Circle())
+            
+            Text("An error occurred while processing your request.\nPlease try again later.")
+                .foregroundStyle(.secondary)
+                .font(.subheadline)
+        }
+        .padding()
+    }
+    
+    @ViewBuilder
+    func thinkingView() -> some View {
+        VStack {
+            ProgressView()
+                .frame(width: 14, height: 14)
+                .padding(.bottom)
+            
+            Text("Ollama is Thinking...")
+                .font(.title3)
+                .foregroundStyle(.secondary)
+        }
+        .padding()
     }
 }
