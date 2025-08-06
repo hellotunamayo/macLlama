@@ -7,7 +7,7 @@
 import SwiftUI
 
 //MARK: Custom Picker
-struct CutomModelSelectPickerView: View {
+struct CustomModelSelectPickerView: View {
     
     @Binding var currentModel: String
     @Binding var modelList: [OllamaModel]

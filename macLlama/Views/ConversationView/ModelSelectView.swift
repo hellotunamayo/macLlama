@@ -51,7 +51,7 @@ struct ModelSelectView: View {
                         .frame(width: 8, height: 8)
                 }
                 
-                CutomModelSelectPickerView(currentModel: $currentModel, modelList: $modelList)
+                CustomModelSelectPickerView(currentModel: $currentModel, modelList: $modelList)
                 
                 Button {
                     withAnimation {
