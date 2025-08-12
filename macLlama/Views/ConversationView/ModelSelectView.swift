@@ -23,6 +23,7 @@ struct ModelSelectView: View {
     let reloadButtonAction: () -> Void
     let modelSelectPositionX: CGFloat = Units.appFrameMinWidth * 0.4 * 0.55
     let modelSelectWidth: CGFloat = Units.appFrameMinWidth * 0.5
+    let lastModel = UserDefaults.standard.string(forKey: "lastModel")
     
     static var modelNameWithRemovedPrefix: (String) -> String? {
         { modelName in
@@ -148,6 +149,20 @@ struct ModelSelectView: View {
             .padding()
             .task {
                 try? await serverStatus.updateServerStatus()
+                
+                //select last model used
+                guard let lastModel = self.lastModel else {
+                    #if DEBUG
+                    debugPrint("No last model found.")
+                    #endif
+                    return
+                }
+                if modelList.contains(where: { $0.name == lastModel }) {
+                    currentModel = lastModel
+                }
+            }
+            .onChange(of: currentModel) { _, newValue in
+                UserDefaults.standard.set(newValue, forKey: "lastModel")
             }
         }
     }
