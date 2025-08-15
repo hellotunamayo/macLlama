@@ -15,7 +15,6 @@ struct ChatInterfaceView: View {
     @Environment(\.openSettings) var openSettings
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.modelContext) var modelContext
-    @Environment(\.openWindow) var openWindow
     @EnvironmentObject var serverStatus: ServerStatus
     
     //Model selector state
@@ -26,10 +25,10 @@ struct ChatInterfaceView: View {
     @State private var prompt: String = ""
     @State private var modelList: [OllamaModel] = []
     @State private var isThinking: Bool = false
+    @State private var isFetchingWebSearch: Bool = false
     @State private var promptImages: [NSImage] = []
     @State private var predict: Double = -1
     @State private var temperature: Double = 0.7
-    @State private var webSearchPrompt: String = ""
     
     //Chat history state
     @State private var history: [LocalChatHistory] = []
@@ -43,6 +42,7 @@ struct ChatInterfaceView: View {
     @State private var hoveredTopButtonTag: Int? = nil
     @State private var showThink: Bool = false
     @State private var isSettingOn: Bool = false
+    @State private var isWebSearchOn: Bool = false
     
     //Local prefix & suffix of prompt
     @State private var localPrefix: String = ""
@@ -185,7 +185,7 @@ struct ChatInterfaceView: View {
                     
                     //MARK: Input Area
                     if self.modelList.count > 0 {
-                        ChatInputView(isThinking: $isThinking, prompt: $prompt, images: $promptImages) {
+                        ChatInputView(isThinking: $isThinking, isWebSearchEnabled: $isWebSearchOn, prompt: $prompt, images: $promptImages) {
                             if try await OllamaNetworkService.isServerOnline() {
                                 Task {
                                     //Save user question to SwiftData
@@ -205,6 +205,7 @@ struct ChatInterfaceView: View {
                                 //Check if prefix & suffix exists
                                 let globalPrefix: String = UserDefaults.standard.string(forKey: "promptPrefix") ?? ""
                                 let globalSuffix: String = UserDefaults.standard.string(forKey: "promptSuffix") ?? ""
+                                
                                 let finalPrompt: String = globalPrefix + " " + self.localPrefix + " " + self.prompt + self.localSuffix + globalSuffix
                                 try await self.sendChat(model: self.currentModel, prompt: finalPrompt,
                                                         showThink: self.showThink, images: self.promptImages)
@@ -224,11 +225,10 @@ struct ChatInterfaceView: View {
         .navigationSplitViewColumnWidth(ideal: Units.chatWindowWidth)
         .navigationTitle("macLlama")
         .sheet(isPresented: $isSettingOn) {
-            ChatSettingsView(showThink: $showThink, localPrefix: $localPrefix, localSuffix: $localSuffix, predict: $predict, temperature: $temperature)
+            ChatSettingsView(showThink: $showThink, localPrefix: $localPrefix, localSuffix: $localSuffix, predict: $predict, temperature: $temperature, isWebSerchOn: $isWebSearchOn)
         }
     }
 }
-
 
 //MARK: Internal functions
 extension ChatInterfaceView {
@@ -433,7 +433,7 @@ extension ChatInterfaceView {
                 .frame(width: 14, height: 14)
                 .padding(.bottom)
             
-            Text("Ollama is Thinking...")
+            Text(self.isFetchingWebSearch ? "Fetching web search results..." : "Ollama is Thinking...")
                 .font(.title3)
                 .foregroundStyle(.secondary)
         }
