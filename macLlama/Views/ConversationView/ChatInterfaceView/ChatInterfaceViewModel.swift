@@ -45,8 +45,8 @@ actor ChatInterfaceViewModel {
                                                                           content: whiteSpaceRemovedString)
                 return (summaryResponse, result.items?[8].link ?? "No data")
             } else {
-                let maxLength: Int = 1_000
-                let truncatedText = await self.truncateText(whiteSpaceRemovedString, maxLength: maxLength)
+//                let maxLength: Int = 4_000
+                let truncatedText = await self.truncateText(whiteSpaceRemovedString)
                 return (truncatedText, result.items?[8].link ?? "No data")
             }
         } catch {
@@ -113,7 +113,8 @@ actor ChatInterfaceViewModel {
         return summaryResponse.content.summaryText
     }
     
-    private func truncateText(_ text: String, maxLength: Int) async -> String {
+    private func truncateText(_ text: String, maxLength: Int? = nil) async -> String {
+        let maxLength: Int = maxLength ?? Int.max
         if text.count <= maxLength { return text }
         let endIndex = text.index(text.startIndex, offsetBy: max(0, maxLength - 1))
         return String(text[..<endIndex])
