@@ -271,7 +271,39 @@ extension ChatInterfaceView {
                 debugPrint("Generation Started")
                 #endif
                 
-                let stream = try await chatService.sendMessage(model: model, userInput: prompt, images: images, showThink: self.showThink, predict: self.predict, temperature: self.temperature)
+                var finalPrompt: String = ""
+                
+                //Get summrized information if web search capability is enabled
+                if isWebSearchOn {
+                    self.isFetchingWebSearch = true
+                    if let summary = await self.viewModel.summarizeWebResponse(from: prompt) {
+                        let searchedPrompt = """
+                        You are a helpful AI assistant dedicated to answering questions. Combine the information provided below with your existing knowledge to provide context and clarify details, but *all factual claims* must be directly supported by the provided text, meaning they must be either a direct quote or a paraphrase that accurately reflects the text’s meaning. Always cite the source (e.g., paragraph number, section title) whenever possible.  If the provided text contains conflicting information, acknowledge the conflict and present both perspectives without taking a definitive stance.  You will be asked factual and explanatory questions based on the provided text. Do *not* speculate, offer opinions, or generate information not found within the provided text.
+                    
+                        If the question cannot be answered using the provided text, please respond with: "I'm sorry, the answer to this question isn't available in the provided information."
+                    
+                        When answering, please cite the source and provide the URL for reference.  Format your answers and citations like this:
+                    
+                        Answer derived *directly* from the provided text
+                    
+                        Source: [A brief description of the provided text, e.g., "A summary from the World Wildlife Fund about polar bear populations."]
+                        Reference URL: \(summary.1)  (This URL is for reference and does not need to be displayed in the answer.)
+                    
+                        Here is the information you are to use: \(summary.0)
+                    
+                        The question you will answer is: \(prompt)
+                    """
+                        finalPrompt = searchedPrompt
+                    } else {
+                        finalPrompt = prompt
+                    }
+                    
+                    self.isFetchingWebSearch = false
+                } else {
+                    finalPrompt = prompt
+                }
+                
+                let stream = try await chatService.sendMessage(model: model, userInput: finalPrompt, images: images, showThink: self.showThink, predict: self.predict, temperature: self.temperature)
                 for await update in stream {
                     let outputText = update
                     self.history[self.history.count - 1].message = outputText
