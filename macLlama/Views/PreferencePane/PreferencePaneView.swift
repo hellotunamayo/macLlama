@@ -8,6 +8,8 @@
 import SwiftUI
 
 enum AppSettings {
+    static let googleSearchAPIKey: String = ""
+    static let googleSearchAPICX: String = ""
     static let lastModel: String? = nil
     static let serverKillWithApp: Bool = false
     static let isAutoScrollEnabled: Bool = false
@@ -41,6 +43,8 @@ struct PreferencePaneView: View {
     @AppStorage("hostAddress") var hostAddress: String = AppSettings.hostAddress
     @AppStorage("hostPort") var hostPort: Int = AppSettings.hostPort
     @AppStorage("currentSelectedPrefrenceTab") var currentTab: String = AppSettings.currentSelectedPrefrenceTab
+    @AppStorage("googleSearchAPIKey") var googleSearchAPIKey: String = AppSettings.googleSearchAPIKey
+    @AppStorage("googleSearchAPICX") var googleSearchAPICX: String = AppSettings.googleSearchAPICX
 
     var body: some View {
         if #available(macOS 15.0, *) {
@@ -61,6 +65,11 @@ struct PreferencePaneView: View {
                 Tab("Model Management", systemImage: "apple.intelligence", value: "modelManagement") {
                     ModelManagementView()
                         .frame(width: 600, height: 700)
+                }
+                
+                Tab("Extra Settings", systemImage: "gearshape.2", value: "extraSettings") {
+                    ExtraSettingsView(googleSearchAPIKey: $googleSearchAPIKey, googleSearchAPICX: $googleSearchAPICX)
+                        .frame(maxWidth: 600, minHeight: 400)
                 }
             }
             .navigationTitle("macLlama Preferences")
@@ -87,6 +96,13 @@ struct PreferencePaneView: View {
                     }
                     .frame(height: 500)
                     .tag("modelManagement")
+                
+                ExtraSettingsView(googleSearchAPIKey: $googleSearchAPIKey, googleSearchAPICX: $googleSearchAPICX)
+                    .tabItem {
+                        Label("Extra Settings", systemImage: "gearshape.2")
+                    }
+                    .frame(height: 500)
+                    .tag("extraSettings")
             }
             .tabViewStyle(.automatic)
             .frame(maxWidth: 600)
