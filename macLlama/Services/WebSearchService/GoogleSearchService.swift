@@ -5,6 +5,14 @@
 //  Created by Minyoung Yoo on 8/13/25.
 //
 import Foundation
+import FoundationModels
+
+@available(macOS 26.0, *)
+@Generable
+struct RecommendedQuery {
+    @Guide(description: "This is the query user want to search for.")
+    var searchQuery: String
+}
 
 struct SearchResult: Decodable, Sendable {
     let items: [SearchResultItem]?
@@ -23,12 +31,24 @@ actor GoogleSearchService {
         let apiKey = UserDefaults.standard.string(forKey: "googleSearchAPIKey") ?? ""
         let cxKey = UserDefaults.standard.string(forKey: "googleSearchAPICX") ?? ""
         let endpoint = "https://www.googleapis.com/customsearch/v1?key=\(apiKey)&cx=\(cxKey)"
+        var suggestedSearchQuery: String
         #if DEBUG
         debugPrint("Google Search API Endpoint: \(endpoint)")
         #endif
-        let requestString = endpoint + "&q=\(queryString)"
-        let url = URL(string: requestString)!
+        
+        if #available(macOS 26.0, *) {
+            suggestedSearchQuery = await self.getSearchKeyword(from: queryString) ?? queryString
+        } else {
+            suggestedSearchQuery = queryString
+        }
+        
+        #if DEBUG
+        debugPrint("Suggested Search Query: \(suggestedSearchQuery)")
+        #endif
+        
         do {
+            let requestString = endpoint + "&q=\(suggestedSearchQuery)"
+            guard let url = URL(string: requestString) else { throw URLError(.badURL) }
             let (data, response) = try await URLSession.shared.data(from: url)
             if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
                 print("HTTP status code: \(httpResponse.statusCode)")
@@ -38,6 +58,28 @@ actor GoogleSearchService {
         } catch {
             print(error)
             throw error
+        }
+    }
+    
+    @available(macOS 26.0, *)
+    private func getSearchKeyword(from userPrompt: String) async -> String? {
+        let session = LanguageModelSession()
+        do {
+            let prompt = """
+            You are a specialized assistant designed to optimize Google Advanced Search queries. You are connected to a Google Advanced Search API, and your goal is to generate effective search terms that will retrieve the most relevant and high-quality results. The user’s original prompt is: \(userPrompt)
+            """
+            let result: String = try await session.respond(
+                to: prompt,
+                generating: RecommendedQuery.self
+            ).content.searchQuery
+            
+            return result
+            
+        } catch {
+            #if DEBUG
+            debugPrint("Failed to generate recommended query: \(error)")
+            #endif
+            return nil
         }
     }
     
