@@ -17,7 +17,7 @@ struct SummaryResult {
 actor ChatInterfaceViewModel {
     private let searchService = GoogleSearchService()
     
-    func summarizeWebResponse(from prompt: String) async -> (String,String)? {
+    func getWebResponse(from prompt: String) async -> (String,String)? {
         let actor = GoogleSearchService()
         do {
             let userPrompt: String = prompt
