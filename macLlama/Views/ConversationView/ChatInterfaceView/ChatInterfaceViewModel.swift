@@ -17,21 +17,24 @@ struct SummaryResult {
 actor ChatInterfaceViewModel {
     private let searchService = GoogleSearchService()
     
-    func summarizeWebResponse(from prompt: String) async -> String? {
+    func summarizeWebResponse(from prompt: String) async -> (String,String)? {
         let actor = GoogleSearchService()
         do {
             let userPrompt: String = prompt
             guard let result = try await actor.fetchSearchResults(for: userPrompt) else { return nil }
             
-#if DEBUG
-            //            print("User's prompt is: \(prompt)")
-            //            print("Search Result from: \(result.items?[8].link ?? "No data")")
-            //            print("-----")
-            //            print(result.items?[0].snippet ?? "No data")
-            //            print("-----")
-#endif
+            #if DEBUG
+            print("User's prompt is: \(prompt)")
+            print("Search Result from: \(result.items?[8].link ?? "No data")")
+            print("-----")
+            print(result.items?[0].snippet ?? "No data")
+            print("-----")
+            #endif
             
-            guard let firstDataFromFirstURL = await actor.getUrlContents(from: URL(string: (result.items?[0].link)!)!) else { return nil }
+            guard let items = result.items,
+                  let link = items[0].link,
+                  let url = URL(string: link) else { return nil }
+            guard let firstDataFromFirstURL = await actor.getUrlContents(from: url) else { return nil }
             
             let filteredString = await actor.extractAllContentFromTags(tags: ["h1", "p", "table", "td", "tr"], from: firstDataFromFirstURL)
             let tagStrippedString = filteredString.replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression)
@@ -40,11 +43,11 @@ actor ChatInterfaceViewModel {
             if #available(macOS 26.0, *) {
                 let summaryResponse = try await self.summrizeSearchResult(userPrompt: userPrompt,
                                                                           content: whiteSpaceRemovedString)
-                return summaryResponse
+                return (summaryResponse, result.items?[8].link ?? "No data")
             } else {
                 let maxLength: Int = 1_000
                 let truncatedText = await self.truncateText(whiteSpaceRemovedString, maxLength: maxLength)
-                return truncatedText
+                return (truncatedText, result.items?[8].link ?? "No data")
             }
         } catch {
             debugPrint(error)
@@ -81,16 +84,20 @@ actor ChatInterfaceViewModel {
                 generating: SummaryResult.self
             )
             
-            print(summaryResult.content.summaryText)
+            #if DEBUG
+            debugPrint(summaryResult.content.summaryText)
+            #endif
+            
             summrizedChunks.append(summaryResult.content)
         }
         
-        print("-----------------------------")
+        #if DEBUG
+        debugPrint("-----------------------------")
+        #endif
         
         let combinedSummary = summrizedChunks.map{ $0.summaryText }.joined(separator: "\n")
         
         //Summrize through FoundationModels
-        //        let combinedSummary = await self.truncateText(summrizedChunks.joined(), maxLength: maxLength)
         let promptForSummarize: String = """
             You are a helpful assistant. Summarize the text below. Focus on the main topic and key points.\n\n\(combinedSummary)
         """
@@ -98,7 +105,11 @@ actor ChatInterfaceViewModel {
             to: promptForSummarize,
             generating: SummaryResult.self
         )
-        print(summaryResponse.content.summaryText)
+        
+        #if DEBUG
+        debugPrint(summaryResponse.content.summaryText)
+        #endif
+        
         return summaryResponse.content.summaryText
     }
     
