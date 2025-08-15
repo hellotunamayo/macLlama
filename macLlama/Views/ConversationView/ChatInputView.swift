@@ -10,10 +10,12 @@ import SwiftUI
 struct ChatInputView: View {
     @Environment(\.colorScheme) var colorScheme
     @Binding var isThinking: Bool
+    @Binding var isWebSearchEnabled: Bool
     @Binding var prompt: String
     @Binding var images: [NSImage]
     
     @State private var isTargeted: Bool = false
+    @State private var isPopOverOn: Bool = false
     @FocusState private var isPromptFocused: Bool
     
     let sendMessage: () async throws -> Void
@@ -43,6 +45,34 @@ struct ChatInputView: View {
             .overlay {
                 imagePreview(images: self.images)
             }
+            
+            HStack {
+                Button {
+                    withAnimation(.default.speed(2.0)) {
+                        isWebSearchEnabled.toggle()
+                    }
+                } label: {
+                    Label("Web search mode: \(isWebSearchEnabled ? "On" : "Off")", systemImage: isWebSearchEnabled ? "safari.fill" : "safari")
+                        .foregroundStyle(isWebSearchEnabled ? .green.opacity(0.7) : .secondary)
+                }
+                .buttonStyle(.bordered)
+                .buttonBorderShape(.capsule)
+                
+                Button {
+                    isPopOverOn.toggle()
+                } label: {
+                    Label("Show details", systemImage: "info.circle")
+                        .labelStyle(.iconOnly)
+                }
+                .buttonStyle(.plain)
+                .popover(isPresented: $isPopOverOn) {
+                    Text("This feature is experimental.\nYou need to insert an Google Custom Search API key in the preferences.")
+                        .padding()
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.vertical, Units.normalGap / 4)
+            .padding(.leading)
             
             //MARK: Text input
             HStack(alignment: .bottom) {

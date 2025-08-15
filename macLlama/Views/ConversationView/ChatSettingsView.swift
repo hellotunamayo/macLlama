@@ -15,6 +15,7 @@ struct ChatSettingsView: View {
     @Binding var localSuffix: String
     @Binding var predict: Double
     @Binding var temperature: Double
+    @Binding var isWebSerchOn: Bool
     
     var decimalFormatter: NumberFormatter {
         let formatter = NumberFormatter()
@@ -25,6 +26,26 @@ struct ChatSettingsView: View {
     public var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
+                Section("Web Search result integration") {
+                    Toggle("Use web search result (Experimental)", isOn: $isWebSerchOn)
+                        .greedyFrame(axis: .horizontal, alignment: .leading)
+                    
+                    SettingsLink {
+                        Text("Open Preference")
+                    }
+                    
+                    Text("This feature is in early development and relies on Google Search results to enhance LLM responses. To enable it, you will need to obtain your own Google Search API Key and Custom Search Engine ID (CX).")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineSpacing(3)
+                        .greedyFrame(axis: .horizontal, alignment: .leading)
+                        .frame(maxWidth: Units.appFrameMinWidth * 0.8)
+                        .padding(.top, 2)
+                }
+                
+                Divider()
+                    .padding(.vertical, Units.normalGap)
+                
                 Section("Thinking Process") {
                     Toggle("Enable thinking process", isOn: $showThink)
                         .greedyFrame(axis: .horizontal, alignment: .leading)
