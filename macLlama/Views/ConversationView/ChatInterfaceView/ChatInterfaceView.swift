@@ -29,6 +29,7 @@ struct ChatInterfaceView: View {
     @State private var promptImages: [NSImage] = []
     @State private var predict: Double = -1
     @State private var temperature: Double = 0.7
+    @State private var webSearchPrompt: String = ""
     
     //Chat history state
     @State private var history: [LocalChatHistory] = []
@@ -50,6 +51,7 @@ struct ChatInterfaceView: View {
     let chatService: OllamaChatService = OllamaChatService()
     let ollamaNetworkService: OllamaNetworkService = OllamaNetworkService()
     let ollamaProfilePicture: NSImage? = NSImage(named: "llama_gray")
+    let viewModel: ChatInterfaceViewModel = ChatInterfaceViewModel()
 
     var body: some View {
         ZStack {
@@ -92,10 +94,27 @@ struct ChatInterfaceView: View {
                             try? await self.initModelList()
                         }
                     }
-                                    .zIndex(1)
+                    .zIndex(1)
                 }
                 
                 VStack {
+                    #if DEBUG
+                    VStack {
+                        TextField("Type prompt for test", text: $webSearchPrompt)
+                        Button {
+                            Task {
+                                guard let summary = await self.viewModel.summarizeWebResponse(from: webSearchPrompt) else {
+                                    return
+                                }
+                            }
+                        } label: {
+                            Text("Summrize the prompt search result from FoudationModel.")
+                        }
+                    }
+                    .padding(.top, Units.normalGap * 6)
+                    .frame(maxWidth: 500)
+                    #endif
+                    
                     ScrollViewReader { proxy in
                         ScrollView {
                             ForEach(0..<self.history.count, id: \.self) { index in
@@ -313,7 +332,7 @@ extension ChatInterfaceView {
     }
     
     ///Save SwiftData history
-    func saveSwiftDataHistory(history: APIChatMessage) async {
+    private func saveSwiftDataHistory(history: APIChatMessage) async {
         let chatHistory: SwiftDataChatHistory = SwiftDataChatHistory(conversationId: self.conversationId,
                                                                      conversationDate: Date(),
                                                                      chatData: history)

@@ -139,6 +139,9 @@
         }
       }
     },
+    "API Key" : {
+
+    },
     "Ask something (⌘ + return to send)" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -371,6 +374,9 @@
         }
       }
     },
+    "CX" : {
+
+    },
     "Delete" : {
       "localizations" : {
         "ja" : {
@@ -518,6 +524,9 @@
         }
       }
     },
+    "Extra Settings" : {
+
+    },
     "General" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -545,6 +554,15 @@
 
     },
     "Global Suffix" : {
+
+    },
+    "Google Custom Search" : {
+
+    },
+    "Google Custom Search API Key" : {
+
+    },
+    "Google Custom Search Engine ID (CX)" : {
 
     },
     "Hide Assistant Thinking" : {
@@ -1191,6 +1209,9 @@
         }
       }
     },
+    "Show/Hide" : {
+
+    },
     "Small Models (2-8GB of memory usage): Ideal for simpler tasks and can run on standard hardware." : {
 
     },
@@ -1260,6 +1281,9 @@
           }
         }
       }
+    },
+    "Summrize the prompt search result from FoudationModel." : {
+
     },
     "temperature" : {
       "localizations" : {
@@ -1356,6 +1380,9 @@
           }
         }
       }
+    },
+    "Type prompt for test" : {
+
     },
     "Typography" : {
       "extractionState" : "manual",
