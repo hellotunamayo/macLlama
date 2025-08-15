@@ -98,23 +98,6 @@ struct ChatInterfaceView: View {
                 }
                 
                 VStack {
-                    #if DEBUG
-                    VStack {
-                        TextField("Type prompt for test", text: $webSearchPrompt)
-                        Button {
-                            Task {
-                                guard let summary = await self.viewModel.summarizeWebResponse(from: webSearchPrompt) else {
-                                    return
-                                }
-                            }
-                        } label: {
-                            Text("Summrize the prompt search result from FoudationModel.")
-                        }
-                    }
-                    .padding(.top, Units.normalGap * 6)
-                    .frame(maxWidth: 500)
-                    #endif
-                    
                     ScrollViewReader { proxy in
                         ScrollView {
                             ForEach(0..<self.history.count, id: \.self) { index in
