@@ -67,7 +67,7 @@ struct PreferencePaneView: View {
                         .frame(width: 600, height: 700)
                 }
                 
-                Tab("Extra Settings", systemImage: "gearshape.2", value: "extraSettings") {
+                Tab("Web Search", systemImage: "safari", value: "webSearch") {
                     ExtraSettingsView(googleSearchAPIKey: $googleSearchAPIKey, googleSearchAPICX: $googleSearchAPICX)
                         .frame(maxWidth: 600, minHeight: 400)
                 }
@@ -99,10 +99,10 @@ struct PreferencePaneView: View {
                 
                 ExtraSettingsView(googleSearchAPIKey: $googleSearchAPIKey, googleSearchAPICX: $googleSearchAPICX)
                     .tabItem {
-                        Label("Extra Settings", systemImage: "gearshape.2")
+                        Label("Web Search", systemImage: "safari")
                     }
                     .frame(height: 500)
-                    .tag("extraSettings")
+                    .tag("webSearch")
             }
             .tabViewStyle(.automatic)
             .frame(maxWidth: 600)

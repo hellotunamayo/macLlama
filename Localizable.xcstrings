@@ -524,9 +524,6 @@
         }
       }
     },
-    "Extra Settings" : {
-
-    },
     "Fetching web search results..." : {
 
     },
@@ -1444,6 +1441,9 @@
           }
         }
       }
+    },
+    "Web Search" : {
+
     },
     "Web search mode: %@" : {
 
