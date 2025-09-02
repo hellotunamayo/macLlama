@@ -31,14 +31,14 @@ struct ChatInterfaceView: View {
     @State private var temperature: Double = 0.7
     
     //Chat history state
-    @State private var history: [LocalChatHistory] = []
+    @State var history: [LocalChatHistory]
     
     //Auto scrolling state
     @State private var isAutoScrolling: Bool = false
     @State private var autoScrollTask: Task<Void, Never>?
     
     //Extra state
-    @State private var conversationId: UUID = UUID()
+    @State var conversationId: UUID
     @State private var hoveredTopButtonTag: Int? = nil
     @State private var showThink: Bool = false
     @State private var isSettingOn: Bool = false
@@ -102,8 +102,8 @@ struct ChatInterfaceView: View {
                         ScrollView {
                             ForEach(0..<self.history.count, id: \.self) { index in
                                 VStack {
-                                    if history[index].message != "" {
-                                        ChatBubbleView(isThinking: self.$isThinking, chatData: $history[index])
+                                    if history[index].message.count > 0 {
+                                        ChatBubbleView(isThinking: self.$isThinking, chatMessage: self.history[index].message ,chatData: $history[index])
                                             .padding(EdgeInsets(top: index == 0 ? Units.normalGap * 4 : Units.normalGap,
                                                                 leading: Units.normalGap,
                                                                 bottom: Units.normalGap, trailing: Units.normalGap))
@@ -261,13 +261,14 @@ extension ChatInterfaceView {
                     self.isFetchingWebSearch = true
                     if let summary = await self.viewModel.getWebResponse(from: prompt) {
                         let searchedPrompt = """
-                        You are a helpful AI assistant dedicated to answering questions. Combine the information provided below with your existing knowledge to provide context and clarify details, but *all factual claims* must be directly supported by the provided text, meaning they must be either a direct quote or a paraphrase that accurately reflects the text’s meaning. Always cite the source (e.g., paragraph number, section title) whenever possible.  If the provided text contains conflicting information, acknowledge the conflict and present both perspectives without taking a definitive stance.  You will be asked factual and explanatory questions based on the provided text. Do *not* speculate, offer opinions, or generate information not found within the provided text.
+                        You are a helpful AI assistant dedicated to answering questions. Combine the information provided below with your existing knowledge to provide context and clarify details, but *all factual claims* must be directly supported by the provided text, meaning they must be either a direct quote or a paraphrase that accurately reflects the text’s meaning. Always cite the source (e.g., paragraph number, section title) whenever possible. If the provided text contains conflicting information, acknowledge the conflict and present both perspectives without taking a definitive stance.  You will be asked factual and explanatory questions based on the provided text. Do *not* speculate, offer opinions, or generate information not found within the provided text.
                     
                         If the question cannot be answered using the provided text, please respond with: "I'm sorry, the answer to this question isn't available in the provided information."
                     
                         When answering, please cite the source and provide the URL for reference.  Format your answers and citations like this:
                     
                         Answer derived *directly* from the provided text
+                        Answer *must* answered in the language user questioned
                     
                         Source: [A brief description of the provided text, e.g., "A summary from the World Wildlife Fund about polar bear populations."]
                         Reference URL: \(summary.1)  (This URL is for reference and does not need to be displayed in the answer.)

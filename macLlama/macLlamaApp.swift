@@ -42,7 +42,7 @@ struct macLlamaApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ConversationWindowView()
+            ConversationWindowView(conversationId: nil)
                 .environmentObject(serverStatus)
                 .frame(minWidth: Units.appFrameMinWidth, minHeight: Units.appFrameMinHeight)
                 .task {
@@ -171,5 +171,11 @@ struct macLlamaApp: App {
         .keyboardShortcut("h", modifiers: [.command, .shift], localization: .automatic)
         .modelContainer(for: SwiftDataChatHistory.self)
         .windowResizability(.contentSize)
+        
+        WindowGroup(id: "newConversationWindow", for: String.self) { string in
+            ConversationWindowView(conversationId: string.wrappedValue)
+                .environmentObject(serverStatus)
+        }
+        .modelContainer(for: SwiftDataChatHistory.self)
     }
 }

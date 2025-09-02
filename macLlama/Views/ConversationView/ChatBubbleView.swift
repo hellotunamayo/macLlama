@@ -12,11 +12,13 @@ struct ChatBubbleView: View {
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("chatFontSize") var chatFontSize: Int = AppSettings.chatFontSize
     @AppStorage("markdownTheme") var markdownTheme: String = AppSettings.markdownTheme
+    
     @Binding var isThinking: Bool
+    
+    @State var chatMessage: String
     @State private var messageAnimationFactor: CGFloat = 0.0
     @State private var messageAnimated: Bool = false
     @State private var isMarkdownEnabled: Bool = false
-    @State private var chatMessage: String = ""
     @State private var showAssistantThink: Bool = false
     
     var assistantThinkContext: String? {
