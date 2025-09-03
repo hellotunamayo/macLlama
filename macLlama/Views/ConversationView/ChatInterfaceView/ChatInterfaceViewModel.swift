@@ -11,7 +11,7 @@ import FoundationModels
 @available(macOS 26.0, *)
 @Generable
 struct SummaryResult {
-    @Guide(description: "This is the summary text of the search result. provide this as output within 30 words.")
+    @Guide(description: "This is the summary text of the search result.")
     var summaryText: String
 }
 
@@ -75,7 +75,7 @@ actor ChatInterfaceViewModel {
             let instructions: String = "Summarize the result of user's prompt: \(userPrompt)."
             let localSession: LanguageModelSession = LanguageModelSession(instructions: instructions)
             let summaryResult = try await localSession.respond(
-                to: "Summrize this text. Focus on the main topic and key points. Result must be under 20 words.\n\n\(chunks[i])",
+                to: "Summrize this text. Focus on the main topic and key points.\n\nThe text is: \(chunks[i])",
                 generating: SummaryResult.self
             )
             
