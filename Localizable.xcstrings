@@ -18,7 +18,20 @@
       }
     },
     "%@" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        }
+      }
     },
     "%@'s think" : {
       "localizations" : {
@@ -86,7 +99,20 @@
       }
     },
     "Add model to macLlama" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macLlamaにモデルを追加する"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macLlama 에 모델 추가"
+          }
+        }
+      }
     },
     "Adjusting 'temperature' and 'num_predict' can significantly impact the model's output. Higher temperatures lead to more creative, but potentially less predictable, responses. A larger 'num_predict' may result in longer, more verbose outputs, and can also increase processing time.  Experiment with caution." : {
       "localizations" : {
@@ -121,7 +147,20 @@
       }
     },
     "Already Installed" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "既にインストール済み"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설치됨"
+          }
+        }
+      }
     },
     "An error occurred while processing your request.\nPlease try again later." : {
       "localizations" : {
@@ -140,7 +179,20 @@
       }
     },
     "API Key" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Key"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API 키"
+          }
+        }
+      }
     },
     "Ask something (⌘ + return to send)" : {
       "extractionState" : "manual",
@@ -306,7 +358,20 @@
       }
     },
     "Close" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "閉じる"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "닫기"
+          }
+        }
+      }
     },
     "Connecting to server..." : {
       "localizations" : {
@@ -375,7 +440,20 @@
       }
     },
     "CX" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CX"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CX"
+          }
+        }
+      }
     },
     "Delete" : {
       "localizations" : {
@@ -525,7 +603,20 @@
       }
     },
     "Fetching web search results..." : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ウェブ検索結果を取得しています…"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "웹 검색 결과 가져오는 중…"
+          }
+        }
+      }
     },
     "General" : {
       "extractionState" : "manual",
@@ -545,25 +636,116 @@
       }
     },
     "Global Prefix" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Global Prefix"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Global Prefix"
+          }
+        }
+      }
     },
     "Global Prompt Prefix:" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Global Prompt Prefix:"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Global Prompt Prefix:"
+          }
+        }
+      }
     },
     "Global Prompt Suffix:" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Global Prompt Suffix:"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Global Prompt Suffix:"
+          }
+        }
+      }
     },
     "Global Suffix" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Global Suffix"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Global Suffix"
+          }
+        }
+      }
     },
     "Google Custom Search" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google カスタム検索"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google 커스텀 검색"
+          }
+        }
+      }
     },
     "Google Custom Search API Key" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google カスタム検索 API キー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google 커스텀 검색 API 키"
+          }
+        }
+      }
     },
     "Google Custom Search Engine ID (CX)" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google カスタム検索エンジン ID (CX)"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google 커스텀 검색 엔진 ID (CX)"
+          }
+        }
+      }
     },
     "Hide Assistant Thinking" : {
       "localizations" : {
@@ -630,10 +812,36 @@
       }
     },
     "Install" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "インストール"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설치"
+          }
+        }
+      }
     },
     "Install Recommended Models" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "推奨モデルをインストールする"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "추천 모델 설치"
+          }
+        }
+      }
     },
     "Kill Ollama server" : {
       "extractionState" : "manual",
@@ -653,7 +861,20 @@
       }
     },
     "Large Models (32GB or more of memory usage): Very powerful, but require significant resources and have higher costs. Best for complex projects." : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "大規模モデル（32GB以上のメモリ使用量）：非常に強力ですが、多くのリソースを必要とし、コストも高くなります。複雑なプロジェクトに最適です。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "큰 모델 (32GB 이상 메모리 필요): 강력한 성능이지만 시스템 자원과 높은 에너지 소모가 필요합니다. 복잡한 작업에 알맞습니다."
+          }
+        }
+      }
     },
     "Llama" : {
       "localizations" : {
@@ -720,7 +941,20 @@
       }
     },
     "Local Settings" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ローカル設定"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로컬 설정"
+          }
+        }
+      }
     },
     "mac" : {
       "localizations" : {
@@ -793,6 +1027,18 @@
             "state" : "new",
             "value" : "macLlama v%1$@ (%2$@)"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macLlama v%1$@ (%2$@)"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macLlama v%1$@ (%2$@)"
+          }
         }
       }
     },
@@ -831,10 +1077,36 @@
       }
     },
     "Medium Models (8-32GB of memory usage): Offer a good balance for general tasks." : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "中規模モデル（8～32GBのメモリ使用量）：一般的なタスクに適したバランスを提供します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "중간 모델 (8-32GB 메모리 필요): 일반적인 작업에 알맞도록 성능과 자원 소모가 균형잡힌 모델"
+          }
+        }
+      }
     },
     "Model" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "モデル"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "모델"
+          }
+        }
+      }
     },
     "Model Management" : {
       "extractionState" : "manual",
@@ -870,7 +1142,20 @@
       }
     },
     "Model Suggestion" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提案モデル"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "모델 추천"
+          }
+        }
+      }
     },
     "Network" : {
       "localizations" : {
@@ -905,7 +1190,20 @@
       }
     },
     "Next" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "次のステップ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음"
+          }
+        }
+      }
     },
     "No Chat History Found" : {
       "localizations" : {
@@ -972,7 +1270,20 @@
       }
     },
     "Open Preference" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "環境設定を開く"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정화면 열기"
+          }
+        }
+      }
     },
     "Open Terminal.app" : {
       "localizations" : {
@@ -1007,7 +1318,36 @@
       }
     },
     "Previous" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "前のステップ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이전"
+          }
+        }
+      }
+    },
+    "Print Chat History" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "チャット履歴を表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "채팅 히스토리 출력"
+          }
+        }
+      }
     },
     "Prompt" : {
       "extractionState" : "manual",
@@ -1110,10 +1450,36 @@
       }
     },
     "Reload model list" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "モデルリストをリロード"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "모델 목록 불러오기"
+          }
+        }
+      }
     },
     "Resume this conversation" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この会話を再開"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "대화 이어서 하기"
+          }
+        }
+      }
     },
     "Scroll to Top" : {
       "localizations" : {
@@ -1164,7 +1530,20 @@
       }
     },
     "Select Model" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "モデルを選択"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "모델 선택"
+          }
+        }
+      }
     },
     "Send" : {
       "extractionState" : "manual",
@@ -1200,7 +1579,20 @@
       }
     },
     "Show details" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "詳細を表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "상세 정보 보기"
+          }
+        }
+      }
     },
     "Show or hide assistant thinking" : {
       "localizations" : {
@@ -1219,13 +1611,52 @@
       }
     },
     "Show/Hide" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "表示/非表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "보이기/가리기"
+          }
+        }
+      }
     },
     "Small Models (2-8GB of memory usage): Ideal for simpler tasks and can run on standard hardware." : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小規模モデル（2〜8GBのメモリ使用量）：より簡単なタスクに最適で、標準的なハードウェアで動作します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "경량 모델 (2-8GB 메모리 필요): 일반적인 하드웨어에서 구동 가능한 단순 작업용 모델"
+          }
+        }
+      }
     },
     "Sorry, no suitable model found." : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "適切なモデルが見つかりませんでした。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "죄송합니다. 알맞는 모델을 찾을 수 없습니다."
+          }
+        }
+      }
     },
     "Start Local Ollama Server" : {
       "localizations" : {
@@ -1356,10 +1787,36 @@
       }
     },
     "This feature is experimental.\nYou need to insert an Google Custom Search API key in the preferences." : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この機能は実験段階です。\n設定でGoogle カスタム検索 API キーを挿入する必要があります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 기능은 현재 실험 단계입니다.\n설정에서 Google 커스텀 검색 API 키를 입력하셔야 사용 가능합니다."
+          }
+        }
+      }
     },
     "This feature is in early development and relies on Google Search results to enhance LLM responses. To enable it, you will need to obtain your own Google Search API Key and Custom Search Engine ID (CX)." : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この機能は初期開発段階であり、Google 検索の結果を利用してLLMの応答を強化します。有効にするには、ご自身のGoogle 検索 API キーとカスタム検索エンジン ID (CX) を取得する必要があります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 기능은 초기 개발 단계에 있으며, LLM 답변을 향상시키기 위해 Google 검색 결과를 활용합니다. 이 기능을 사용하려면 Google 검색 API 키와 커스텀 검색 엔진 ID(CX)를 직접 발급받아야 합니다."
+          }
+        }
+      }
     },
     "This functionality is intended for use with \"thinking\" models, including examples like DeepSeek R1 and Qwen 3. Attempting to use unsupported models will result in an error.\n(Requires Ollama 0.9.0 or later)" : {
       "localizations" : {
@@ -1411,7 +1868,20 @@
       }
     },
     "Use web search result (Experimental)" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ウェブ検索結果を使用 (実験的)"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "웹 검색 기능 사용 (실험적 기능)"
+          }
+        }
+      }
     },
     "Utility" : {
       "localizations" : {
@@ -1446,16 +1916,68 @@
       }
     },
     "Web Search" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ウェブ検索"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "웹 검색"
+          }
+        }
+      }
     },
     "Web search mode: %@" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ウェブ検索モード: %@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "웹 검색 모드: %@"
+          }
+        }
+      }
     },
     "Web Search result integration" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ウェブ検索結果統合"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "웹 검색 결과 통합"
+          }
+        }
+      }
     },
     "What is your purpose?" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "あなたの目的は何ですか？"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사용 목적이 무엇인가요?"
+          }
+        }
+      }
     },
     "You" : {
       "extractionState" : "manual",
