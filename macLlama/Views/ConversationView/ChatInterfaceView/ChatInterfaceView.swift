@@ -214,6 +214,16 @@ struct ChatInterfaceView: View {
                             }
                         }
                     }
+                    
+                    #if DEBUG
+                    Button {
+                        for index in 0..<self.history.count {
+                            debugPrint("\(self.history[index].message)")
+                        }
+                    } label: {
+                        Label("Print Chat History", systemImage: "list.bullet")
+                    }
+                    #endif
                 }
             }
             .task {
