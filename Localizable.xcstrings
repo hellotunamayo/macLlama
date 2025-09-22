@@ -1333,22 +1333,6 @@
         }
       }
     },
-    "Print Chat History" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "チャット履歴を表示"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "채팅 히스토리 출력"
-          }
-        }
-      }
-    },
     "Prompt" : {
       "extractionState" : "manual",
       "localizations" : {
