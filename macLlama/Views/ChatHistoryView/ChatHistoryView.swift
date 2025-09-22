@@ -10,6 +10,7 @@ import SwiftData
 
 struct ChatHistoryView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.openWindow) private var openWindow
     @Query(sort: \SwiftDataChatHistory.createdDate, order: .reverse) private var chatHistory: [SwiftDataChatHistory]
     
     @State private var selectedId: String = ""
@@ -58,6 +59,15 @@ struct ChatHistoryView: View {
         .toolbar {
             ToolbarItemGroup {
                 if !selectedId.isEmpty {
+                    //Continue from dedicated conversation button
+                    Button {
+                        openWindow(id: "newConversationWindow", value: selectedId)
+                    } label: {
+                        Label("Resume this conversation", systemImage: "chevron.forward.dotted.chevron.forward")
+                            .labelStyle(.titleAndIcon)
+                            .foregroundStyle(Color.green)
+                    }
+                    
                     Button {
                         try? deleteChatHistory(conversationID: selectedId)
                     } label: {

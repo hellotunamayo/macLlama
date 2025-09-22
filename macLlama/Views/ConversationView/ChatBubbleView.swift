@@ -12,11 +12,13 @@ struct ChatBubbleView: View {
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("chatFontSize") var chatFontSize: Int = AppSettings.chatFontSize
     @AppStorage("markdownTheme") var markdownTheme: String = AppSettings.markdownTheme
+    
     @Binding var isThinking: Bool
+    
+    @State var chatMessage: String
     @State private var messageAnimationFactor: CGFloat = 0.0
     @State private var messageAnimated: Bool = false
     @State private var isMarkdownEnabled: Bool = false
-    @State private var chatMessage: String = ""
     @State private var showAssistantThink: Bool = false
     
     var assistantThinkContext: String? {
@@ -90,12 +92,8 @@ struct ChatBubbleView: View {
                     }
                     
                     VStack {
-                        Label("Copied to clipboard", systemImage: "checkmark.circle")
+                        self.copyMessage()
                             .font(.system(size: 12))
-                            .padding(.horizontal, Units.normalGap / 1.3)
-                            .padding(.vertical, Units.normalGap / 4)
-                            .background(.green.opacity(colorScheme == .dark ? 0.5 : 0.3))
-                            .clipShape(Capsule())
                             .lineLimit(1)
                             .opacity(messageAnimationFactor)
                             .offset(x: messageAnimated ? 0 : messageAnimationFactor + 5)
@@ -240,6 +238,23 @@ extension ChatBubbleView {
                 messageAnimated = false
                 messageAnimationFactor = 0.0
             }
+        }
+    }
+    
+    @ViewBuilder
+    private func copyMessage() -> some View {
+        if #available(macOS 26.0, *) {
+            Label("Copied to clipboard", systemImage: "checkmark.circle")
+                .padding(.horizontal, Units.normalGap / 1.3)
+                .padding(.vertical, Units.normalGap / 4)
+                .glassEffect(.regular.tint(.green.opacity(colorScheme == .dark ? 0.3 : 0.5)))
+                .clipShape(Capsule())
+        } else {
+            Label("Copied to clipboard", systemImage: "checkmark.circle")
+                .padding(.horizontal, Units.normalGap / 1.3)
+                .padding(.vertical, Units.normalGap / 4)
+                .background(.green.opacity(colorScheme == .dark ? 0.5 : 0.3))
+                .clipShape(Capsule())
         }
     }
     

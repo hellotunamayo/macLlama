@@ -42,32 +42,28 @@ struct macLlamaApp: App {
     
     var body: some Scene {
         WindowGroup {
-            NavigationStack {
-                ConversationView()
-                    .navigationTitle("macLlama")
-            }
-            .environmentObject(serverStatus)
-            .frame(minWidth: Units.appFrameMinWidth, idealWidth: Units.appFrameMinWidth,
-                   minHeight: Units.appFrameMinHeight, idealHeight: Units.appFrameMinHeight)
-            .task {
-                //auto check for updates
-                let intervalSinceLastCheck: TimeInterval = Date().timeIntervalSince1970 - TimeInterval(lastUpdateCheckDate)
-                if isAutoUpdateEnabled && intervalSinceLastCheck > 60 * 60 * 24 { //Check update every 1 day
-                    do {
-                        let githubService = GithubService()
-                        guard let checkVersionResult = try await githubService.checkForUpdates() else { return }
-                        self.updateData = checkVersionResult
-                        openWindow(id: "updateWindow")
-                        self.lastUpdateCheckDate = Date().timeIntervalSince1970
-                        
-#if DEBUG
-                        debugPrint("updated checked in : \(lastUpdateCheckDate)")
-#endif
-                    } catch {
-                        
+            ConversationWindowView(conversationId: nil)
+                .environmentObject(serverStatus)
+                .frame(minWidth: Units.appFrameMinWidth, minHeight: Units.appFrameMinHeight)
+                .task {
+                    //auto check for updates
+                    let intervalSinceLastCheck: TimeInterval = Date().timeIntervalSince1970 - TimeInterval(lastUpdateCheckDate)
+                    if isAutoUpdateEnabled && intervalSinceLastCheck > 60 * 60 * 24 { //Check update every 1 day
+                        do {
+                            let githubService = GithubService()
+                            guard let checkVersionResult = try await githubService.checkForUpdates() else { return }
+                            self.updateData = checkVersionResult
+                            openWindow(id: "updateWindow")
+                            self.lastUpdateCheckDate = Date().timeIntervalSince1970
+                            
+                            #if DEBUG
+                            debugPrint("updated checked in : \(lastUpdateCheckDate)")
+                            #endif
+                        } catch {
+                            debugPrint("Error checking for updates: \(error)")
+                        }
                     }
                 }
-            }
         }
         .modelContainer(for: SwiftDataChatHistory.self)
         .commands {
@@ -175,5 +171,11 @@ struct macLlamaApp: App {
         .keyboardShortcut("h", modifiers: [.command, .shift], localization: .automatic)
         .modelContainer(for: SwiftDataChatHistory.self)
         .windowResizability(.contentSize)
+        
+        WindowGroup(id: "newConversationWindow", for: String.self) { string in
+            ConversationWindowView(conversationId: string.wrappedValue)
+                .environmentObject(serverStatus)
+        }
+        .modelContainer(for: SwiftDataChatHistory.self)
     }
 }
