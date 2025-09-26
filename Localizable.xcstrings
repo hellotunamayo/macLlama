@@ -1333,9 +1333,6 @@
         }
       }
     },
-    "Print Chat History" : {
-
-    },
     "Prompt" : {
       "extractionState" : "manual",
       "localizations" : {
