@@ -30,19 +30,7 @@ actor ChatInterfaceViewModel {
         do {
             let userPrompt: String = prompt
             guard let result = try await googleSearchActor.fetchSearchResults(for: userPrompt) else { return nil }
-            
-            #if DEBUG
-            print("User's prompt is: \(prompt)")
-            print("Search Result from: \(result.items?[8].link ?? "No data")")
-            print("-----")
-            print(result.items?[0].snippet ?? "No data")
-            print("-----")
-            #endif
-            
-            guard let items = result.items,
-                  let link = items[0].link,
-                  let url = URL(string: link) else { return nil }
-            
+
             if #available(macOS 26.0, *) {
                 //Apple Foundation Model Support
                 let relevantLink = try await getMostRelevantURLString(userPrompt: prompt, searchResult: result)
@@ -55,6 +43,10 @@ actor ChatInterfaceViewModel {
                 
                 return (summaryResponse, relevantLink)
             } else {
+                guard let items = result.items,
+                      let link = items[0].link,
+                      let url = URL(string: link) else { return nil }
+                
                 let firstDataFromFirstURL = await googleSearchActor.getUrlContents(from: url) ?? ""
                 let whiteSpaceRemovedString = await getWhiteSpaceRemovedText(content: firstDataFromFirstURL)
                 let truncatedText = await self.truncateText(whiteSpaceRemovedString)
