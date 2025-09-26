@@ -34,8 +34,14 @@ actor ChatInterfaceViewModel {
             if #available(macOS 26.0, *) {
                 //Apple Foundation Model Support
                 let relevantLink = try await getMostRelevantURLString(userPrompt: prompt, searchResult: result)
-                let relevantURL = URL(string: relevantLink)
-                let firstDataFromFirstURL = await googleSearchActor.getUrlContents(from: relevantURL!) ?? ""
+                
+                guard let relevantURL = URL(string: relevantLink) else {
+                    return nil
+                }
+                guard let firstDataFromFirstURL = await googleSearchActor.getUrlContents(from: relevantURL) else {
+                    return nil
+                }
+                
                 let whiteSpaceRemovedString = await getWhiteSpaceRemovedText(content: firstDataFromFirstURL)
                 
                 let summaryResponse = try await self.summrizeSearchResult(userPrompt: userPrompt,
@@ -47,7 +53,7 @@ actor ChatInterfaceViewModel {
                       let link = items[0].link,
                       let url = URL(string: link) else { return nil }
                 
-                let firstDataFromFirstURL = await googleSearchActor.getUrlContents(from: url) ?? ""
+                guard let firstDataFromFirstURL = await googleSearchActor.getUrlContents(from: url) else { return nil }
                 let whiteSpaceRemovedString = await getWhiteSpaceRemovedText(content: firstDataFromFirstURL)
                 let truncatedText = await self.truncateText(whiteSpaceRemovedString)
                 return (truncatedText, result.items?[8].link ?? "No data")
