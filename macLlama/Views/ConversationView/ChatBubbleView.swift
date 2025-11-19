@@ -14,18 +14,28 @@ struct ChatBubbleView: View {
     @AppStorage("markdownTheme") var markdownTheme: String = AppSettings.markdownTheme
     
     @Binding var isThinking: Bool
+    @Binding var currentChatMessage: String
+    @Binding var totalHistory: [LocalChatHistory]
     
-    @State var chatMessage: String
+    @State private var chatMessage: String = ""
     @State private var messageAnimationFactor: CGFloat = 0.0
     @State private var messageAnimated: Bool = false
     @State private var isMarkdownEnabled: Bool = false
     @State private var showAssistantThink: Bool = false
     
+    let currentChatBubbleIndex: Int
     var assistantThinkContext: String? {
         if let text = self.chatData.assistantThink {
             return text
         } else {
             return nil
+        }
+    }
+    var isLastBubble: Bool {
+        if totalHistory.count - 1 == currentChatBubbleIndex {
+            return true
+        } else {
+            return false
         }
     }
     
@@ -177,7 +187,11 @@ struct ChatBubbleView: View {
                         .padding(.top, Units.normalGap / 4)
                     } else {
                         if !chatData.isUser {
-                            TextEditor(text: $chatMessage)
+                            #if DEBUG
+                            Text("\(currentChatBubbleIndex) / \(totalHistory.count - 1)")
+                            #endif
+
+                            TextEditor(text: isLastBubble ? $currentChatMessage : $chatMessage)
                                 .font(.system(size: CGFloat(chatFontSize)))
                                 .lineSpacing(CGFloat(chatFontSize / 3))
                                 .scrollDisabled(true)
@@ -199,8 +213,10 @@ struct ChatBubbleView: View {
                 .background(chatData.isUser ? Color("UserChatBubbleColor") : .clear)
                 .clipShape(chatData.isUser ? RoundedRectangle(cornerRadius: 8) : RoundedRectangle(cornerRadius: 0))
                 .greedyFrame(axis: .horizontal, alignment: chatData.isUser ? .trailing : .leading)
-                .onChange(of: self.chatData.message) { _, newValue in
-                    self.chatMessage = newValue
+                .onChange(of: isThinking) { _, newValue in
+                    if newValue == false && self.isLastBubble == true {
+                        self.chatMessage = self.currentChatMessage
+                    }
                 }
             }
             

@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+@preconcurrency import Combine
 
 actor OllamaChatService {
     private(set) var messages: [APIChatMessage] = []
+    nonisolated private let currentMessage: PassthroughSubject<String, Never> = .init()
+    nonisolated var messagePublisher: AnyPublisher<String, Never> { currentMessage.eraseToAnyPublisher() }
     
     func sendMessage(model: String, userInput: String, images: [NSImage]?, showThink: Bool,
                      predict: Double? = nil, temperature: Double? = nil) async throws -> AsyncStream<String> {
@@ -67,6 +70,7 @@ actor OllamaChatService {
                             assistantThink += think
                         }
                         
+                        self.currentMessage.send(assistantContent)
                         continuation.yield(assistantContent)
                     }
                     

@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import Combine
+@preconcurrency import Combine
 import SwiftData
 
 struct ChatInterfaceView: View {
@@ -32,6 +32,8 @@ struct ChatInterfaceView: View {
     
     //Chat history state
     @State var history: [LocalChatHistory]
+    @State var currentGeneratingChat: String = ""
+    @State private var cancellables: Set<AnyCancellable> = []
     
     //Auto scrolling state
     @State private var isAutoScrolling: Bool = false
@@ -48,7 +50,7 @@ struct ChatInterfaceView: View {
     @State private var localPrefix: String = ""
     @State private var localSuffix: String = ""
     
-    let chatService: OllamaChatService = OllamaChatService()
+    @State private var chatService: OllamaChatService = OllamaChatService()
     let ollamaNetworkService: OllamaNetworkService = OllamaNetworkService()
     let ollamaProfilePicture: NSImage? = NSImage(named: "llama_gray")
     let viewModel: ChatInterfaceViewModel = ChatInterfaceViewModel()
@@ -103,7 +105,11 @@ struct ChatInterfaceView: View {
                             ForEach(0..<self.history.count, id: \.self) { index in
                                 VStack {
                                     if history[index].message.count > 0 {
-                                        ChatBubbleView(isThinking: self.$isThinking, chatMessage: self.history[index].message ,chatData: $history[index])
+                                        ChatBubbleView(isThinking: self.$isThinking,
+                                                       currentChatMessage: $currentGeneratingChat,
+                                                       totalHistory: $history,
+                                                       currentChatBubbleIndex: index,
+                                                       chatData: $history[index])
                                             .padding(EdgeInsets(top: index == 0 ? Units.normalGap * 4 : Units.normalGap,
                                                                 leading: Units.normalGap,
                                                                 bottom: Units.normalGap, trailing: Units.normalGap))
@@ -218,6 +224,11 @@ struct ChatInterfaceView: View {
             }
             .task {
                 try? await self.initModelList()
+            }
+            .onAppear {
+                chatService.messagePublisher.receive(on: RunLoop.main).sink { message in
+                    self.currentGeneratingChat = message
+                }.store(in: &cancellables)
             }
         }
         .frame(minWidth: Units.chatWindowWidth)
