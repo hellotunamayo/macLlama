@@ -32,7 +32,7 @@ struct ChatInterfaceView: View {
     
     //Chat history state
     @State var history: [LocalChatHistory]
-    @State var currentGeneratingChat: String = ""
+    @State var currentGeneratingResponse: String = ""
     @State private var cancellables: Set<AnyCancellable> = []
     
     //Auto scrolling state
@@ -106,8 +106,8 @@ struct ChatInterfaceView: View {
                                 VStack {
                                     if history[index].message.count > 0 {
                                         ChatBubbleView(isThinking: self.$isThinking,
-                                                       currentChatMessage: $currentGeneratingChat,
-                                                       totalHistory: $history,
+                                                       currentGeneratingResponse: $currentGeneratingResponse,
+                                                       chatHistory: $history,
                                                        currentChatBubbleIndex: index,
                                                        chatData: $history[index])
                                             .padding(EdgeInsets(top: index == 0 ? Units.normalGap * 4 : Units.normalGap,
@@ -228,7 +228,7 @@ struct ChatInterfaceView: View {
                 
                 //subscribe currently generating response
                 await chatService.currentResponsePublisher().receive(on: RunLoop.main).sink { message in
-                    self.currentGeneratingChat = message
+                    self.currentGeneratingResponse = message
                 }.store(in: &cancellables)
             }
         }

@@ -14,8 +14,8 @@ struct ChatBubbleView: View {
     @AppStorage("markdownTheme") var markdownTheme: String = AppSettings.markdownTheme
     
     @Binding var isThinking: Bool
-    @Binding var currentChatMessage: String
-    @Binding var totalHistory: [LocalChatHistory]
+    @Binding var currentGeneratingResponse: String
+    @Binding var chatHistory: [LocalChatHistory]
     
     @State private var chatMessage: String = ""
     @State private var messageAnimationFactor: CGFloat = 0.0
@@ -32,7 +32,7 @@ struct ChatBubbleView: View {
         }
     }
     var isLastBubble: Bool {
-        if totalHistory.count - 1 == currentChatBubbleIndex {
+        if chatHistory.count - 1 == currentChatBubbleIndex {
             return true
         } else {
             return false
@@ -188,10 +188,10 @@ struct ChatBubbleView: View {
                     } else {
                         if !chatData.isUser {
                             #if DEBUG
-                            Text("\(currentChatBubbleIndex) / \(totalHistory.count - 1)")
+                            Text("\(currentChatBubbleIndex) / \(chatHistory.count - 1)")
                             #endif
 
-                            TextEditor(text: isLastBubble ? $currentChatMessage : $chatMessage)
+                            TextEditor(text: isLastBubble ? $currentGeneratingResponse : $chatMessage)
                                 .font(.system(size: CGFloat(chatFontSize)))
                                 .lineSpacing(CGFloat(chatFontSize / 3))
                                 .scrollDisabled(true)
@@ -215,7 +215,7 @@ struct ChatBubbleView: View {
                 .greedyFrame(axis: .horizontal, alignment: chatData.isUser ? .trailing : .leading)
                 .onChange(of: isThinking) { _, newValue in
                     if newValue == false && self.isLastBubble == true {
-                        self.chatMessage = self.currentChatMessage
+                        self.chatMessage = self.currentGeneratingResponse
                     }
                 }
             }
