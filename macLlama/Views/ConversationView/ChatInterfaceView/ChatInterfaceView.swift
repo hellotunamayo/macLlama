@@ -223,10 +223,11 @@ struct ChatInterfaceView: View {
                 }
             }
             .task {
+                //initialize model list
                 try? await self.initModelList()
-            }
-            .onAppear {
-                chatService.messagePublisher.receive(on: RunLoop.main).sink { message in
+                
+                //subscribe currently generating response
+                await chatService.currentResponsePublisher().receive(on: RunLoop.main).sink { message in
                     self.currentGeneratingChat = message
                 }.store(in: &cancellables)
             }

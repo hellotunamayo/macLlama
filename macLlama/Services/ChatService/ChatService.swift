@@ -6,12 +6,11 @@
 //
 
 import SwiftUI
-@preconcurrency import Combine
+import Combine
 
 actor OllamaChatService {
     private(set) var messages: [APIChatMessage] = []
-    nonisolated private let currentMessage: PassthroughSubject<String, Never> = .init()
-    nonisolated var messagePublisher: AnyPublisher<String, Never> { currentMessage.eraseToAnyPublisher() }
+    private let currentResponseSubject: PassthroughSubject<String, Never> = .init()
     
     func sendMessage(model: String, userInput: String, images: [NSImage]?, showThink: Bool,
                      predict: Double? = nil, temperature: Double? = nil) async throws -> AsyncStream<String> {
@@ -70,7 +69,7 @@ actor OllamaChatService {
                             assistantThink += think
                         }
                         
-                        self.currentMessage.send(assistantContent)
+                        self.sendToMessageSubject(assistantContent)
                         continuation.yield(assistantContent)
                     }
                     
@@ -90,6 +89,14 @@ actor OllamaChatService {
         }
         
         return stream
+    }
+    
+    private func sendToMessageSubject(_ value: String) {
+        currentResponseSubject.send(value)
+    }
+    
+    public func currentResponsePublisher() -> AnyPublisher<String, Never> {
+        return currentResponseSubject.eraseToAnyPublisher()
     }
     
     ///Convert NSImage array to Base64 String array
