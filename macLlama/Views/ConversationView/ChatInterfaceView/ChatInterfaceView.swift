@@ -230,6 +230,11 @@ struct ChatInterfaceView: View {
                 await chatService.currentResponsePublisher().receive(on: RunLoop.main).sink { message in
                     self.currentGeneratingResponse = message
                 }.store(in: &cancellables)
+                
+                //subscribe currently generating response
+                await chatService.answeringPublisher().receive(on: RunLoop.main).sink { thinking in
+                    self.isThinking = thinking
+                }.store(in: &cancellables)
             }
         }
         .frame(minWidth: Units.chatWindowWidth)
@@ -324,7 +329,7 @@ extension ChatInterfaceView {
                 
                 //Reset state
                 await MainActor.run {
-                    self.isThinking = false
+//                    self.isThinking = false
                     self.isAutoScrolling = false
                     self.autoScrollTask = nil
                 }

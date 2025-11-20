@@ -11,6 +11,7 @@ import Combine
 actor OllamaChatService {
     private(set) var messages: [APIChatMessage] = []
     private let currentResponseSubject: PassthroughSubject<String, Never> = .init()
+    private let answeringSubject: PassthroughSubject<Bool, Never> = .init()
     
     func sendMessage(model: String, userInput: String, images: [NSImage]?, showThink: Bool,
                      predict: Double? = nil, temperature: Double? = nil) async throws -> AsyncStream<String> {
@@ -55,6 +56,9 @@ actor OllamaChatService {
         let stream = AsyncStream { continuation in
             Task {
                 do {
+                    //start thinking
+                    self.sendToAnsweringSubject(true)
+                    
                     for try await line in bytesStream.lines {
                         guard let data = line.data(using: .utf8),
                               let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
@@ -76,6 +80,9 @@ actor OllamaChatService {
                     let finalMessage = APIChatMessage(role: "assistant", content: assistantContent, images: nil, options: nil, assistantThink: assistantThink)
                     messages.append(finalMessage)
                     
+                    //end thinking
+                    self.sendToAnsweringSubject(false)
+                    
                     #if DEBUG
                     debugPrint(assistantThink)
                     debugPrint("Request options: \(options)")
@@ -95,8 +102,16 @@ actor OllamaChatService {
         currentResponseSubject.send(value)
     }
     
+    private func sendToAnsweringSubject(_ value: Bool) {
+        answeringSubject.send(value)
+    }
+    
     public func currentResponsePublisher() -> AnyPublisher<String, Never> {
         return currentResponseSubject.eraseToAnyPublisher()
+    }
+    
+    public func answeringPublisher() -> AnyPublisher<Bool, Never> {
+        return answeringSubject.eraseToAnyPublisher()
     }
     
     ///Convert NSImage array to Base64 String array
