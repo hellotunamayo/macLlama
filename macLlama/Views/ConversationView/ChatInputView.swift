@@ -18,7 +18,7 @@ struct ChatInputView: View {
     @State private var isPopOverOn: Bool = false
     @FocusState private var isPromptFocused: Bool
     
-    let sendMessage: () async throws -> Void
+    let sendMessage: (_ isPurge: Bool) async throws -> Void
     let uploadedImageGridRows: [GridItem] = [GridItem(.fixed(30))]
     
     var body: some View {
@@ -47,6 +47,14 @@ struct ChatInputView: View {
             }
             
             HStack {
+                Button {
+                    Task {
+                        try await sendMessage(true)
+                    }
+                } label: {
+                    Label("Purge the model from memory", systemImage: "trash")
+                }
+                
                 Button {
                     withAnimation(.default.speed(2.0)) {
                         isWebSearchEnabled.toggle()
@@ -108,7 +116,7 @@ struct ChatInputView: View {
                     } else {
                         if !prompt.isEmpty {
                             Task {
-                                try await self.sendMessage()
+                                try await self.sendMessage(false)
                             }
                         }
                     }

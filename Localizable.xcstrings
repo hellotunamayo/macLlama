@@ -1410,6 +1410,9 @@
         }
       }
     },
+    "Purge the model from memory" : {
+
+    },
     "Quit macLlama" : {
       "localizations" : {
         "ja" : {

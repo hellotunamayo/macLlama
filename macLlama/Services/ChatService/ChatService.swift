@@ -14,7 +14,7 @@ actor OllamaChatService {
     private let answeringSubject: PassthroughSubject<Bool, Never> = .init()
     
     func sendMessage(model: String, userInput: String, images: [NSImage]?, showThink: Bool,
-                     predict: Double? = nil, temperature: Double? = nil) async throws -> AsyncStream<String> {
+                     predict: Double? = nil, temperature: Double? = nil, keepAliveTime: Int = 5) async throws -> AsyncStream<String> {
         //Convert NSImage to base64
         let imageStrings = await nsImageArrayToBase64Array(images)
         let options = [
@@ -41,7 +41,8 @@ actor OllamaChatService {
             "messages": try messages.map { try JSONEncoder().encode($0) }
                 .map { try JSONSerialization.jsonObject(with: $0) },
             "think": showThink,
-            "stream": true
+            "stream": true,
+            "keep_alive": keepAliveTime
         ]
         
         request.httpBody = try JSONSerialization.data(withJSONObject: requestBody)

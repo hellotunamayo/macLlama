@@ -191,7 +191,7 @@ struct ChatInterfaceView: View {
                     
                     //MARK: Input Area
                     if self.modelList.count > 0 {
-                        ChatInputView(isThinking: $isThinking, isWebSearchEnabled: $isWebSearchOn, prompt: $prompt, images: $promptImages) {
+                        ChatInputView(isThinking: $isThinking, isWebSearchEnabled: $isWebSearchOn, prompt: $prompt, images: $promptImages) { isPurge in
                             if try await OllamaNetworkService.isServerOnline() {
                                 Task {
                                     //Save user question to SwiftData
@@ -213,8 +213,16 @@ struct ChatInterfaceView: View {
                                 let globalSuffix: String = UserDefaults.standard.string(forKey: "promptSuffix") ?? ""
                                 
                                 let finalPrompt: String = globalPrefix + " " + self.localPrefix + " " + self.prompt + self.localSuffix + globalSuffix
-                                try await self.sendChat(model: self.currentModel, prompt: finalPrompt,
-                                                        showThink: self.showThink, images: self.promptImages)
+                                
+                                if isPurge {
+                                    Task {
+                                        await purgeModelFromMemory(model: self.currentModel)
+                                    }
+                                } else {
+                                    try await self.sendChat(model: self.currentModel, prompt: finalPrompt,
+                                                            showThink: self.showThink, images: self.promptImages)
+                                }
+                                
                             } else {
                                 debugPrint("❌ Unable to connect to the API server. Please verify the server address in Settings.")
                             }
@@ -250,7 +258,7 @@ struct ChatInterfaceView: View {
 //MARK: Internal functions
 extension ChatInterfaceView {
     ///Send Chat to Ollama server
-    private func sendChat(model: String, prompt: String, showThink: Bool, images: [NSImage]) async throws {
+    private func sendChat(model: String, prompt: String, showThink: Bool, images: [NSImage], keepAliveTime: Int = 5) async throws {
         if try await OllamaNetworkService.isServerOnline() { //server online check
             //Reset user prompt
             self.prompt.removeAll()
@@ -304,7 +312,7 @@ extension ChatInterfaceView {
                     finalPrompt = prompt
                 }
                 
-                let stream = try await chatService.sendMessage(model: model, userInput: finalPrompt, images: images, showThink: self.showThink, predict: self.predict, temperature: self.temperature)
+                let stream = try await chatService.sendMessage(model: model, userInput: finalPrompt, images: images, showThink: self.showThink, predict: self.predict, temperature: self.temperature, keepAliveTime: keepAliveTime)
                 for await update in stream {
                     let outputText = update
                     self.history[self.history.count - 1].message = outputText
@@ -344,6 +352,19 @@ extension ChatInterfaceView {
             self.isThinking = false
             self.isAutoScrolling = false
             self.autoScrollTask = nil
+        }
+    }
+    
+    ///Purge current model from memory
+    private func purgeModelFromMemory(model: String) async {
+        do {
+            let stream = try await chatService.sendMessage(model: model, userInput: "I will purge you from memory. Please wait for me. Just say \"Ollama is purged from memory.\"", images: [], showThink: false, predict: 0.0, temperature: 0.0, keepAliveTime: 0)
+            for await update in stream {
+                let outputText = update
+                self.history[self.history.count - 1].message = outputText
+            }
+        } catch {
+            print(error)
         }
     }
     
